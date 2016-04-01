@@ -1,0 +1,25 @@
+# This is a comment
+# Options File for planet disk code
+# Comment all but 1 option for each block
+
+
+# Enable parallelization
+#+OPENMP
+
+# Enable non-local deposition 
++NONLOCAL
+# Enable non-local deposition through shocks
++SHOCKS
+
+
+
+
+
+
+
+
+
+
+
+
+
