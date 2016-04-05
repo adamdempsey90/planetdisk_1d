@@ -26,12 +26,6 @@ void init_lam_from_file(void) {
 
 void init_lam(void) {
     int i;
-//    double plaw = log(params.bc_lam[0]/params.bc_lam[1])/log(rc[0]/rc[NR-1]);
-#ifdef NU
-    for(i=0;i<NR;i++) {
-        lam[i] = 2*rc[i]/(3*nu(rc[i]));
-    }
-#else
     double mdot0, sig0, x;
 
     if (params.flux_bc) {
@@ -49,7 +43,6 @@ void init_lam(void) {
          lam[i] = params.bc_lam[0]*pow(x,.5-params.gamma) + sig0*pow(rc[i],1-params.gamma)*(1-sqrt(1/x));
      }
     }
-#endif
 #ifdef INITIAL_NOISE
     double locs[7] = {.1,.6, 2, 5, 9, 20 , 30};
     int nlocs = 7; 

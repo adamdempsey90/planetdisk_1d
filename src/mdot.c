@@ -10,12 +10,7 @@ void set_mdot(int planet_torque) {
         cb = ca*(params.gamma - .5);
 
         if (planet_torque) {
-            if (params.nonlocal_torque) {
-                cb -= 2*sqrt(rc[i])*dTr_nl(rc[i],i,planet.a,TRUE);
-            }
-            else {
                 cb -= 2*dTr(rc[i],planet.a)/(sqrt(rc[i]));
-            }
         }  
         
         mdot[i] = cb*lam[i]; 

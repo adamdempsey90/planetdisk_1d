@@ -4,9 +4,6 @@ double cs(double x) {
 
 }
 double nu(double x) {
-#ifdef NU
-    double res = params.nu0*sqrt(planet.a);
-#else
       double res = params.nu0 * pow(x,params.gamma);
 
       if (params.hs_visc) {
@@ -16,7 +13,6 @@ double nu(double x) {
           }
 
       }
-#endif
 
       return res;
 }

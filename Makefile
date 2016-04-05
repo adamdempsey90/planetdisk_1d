@@ -1,5 +1,5 @@
 EXECUTABLE=pdisk1d
-SOURCES=advance_system.c allocate.c calc_coeffs.c dTr.c disk.c hdf5.c initialize.c stepper.c main.c matvec.c mdot.c move_planet.c read_params.c set_dt.c set_grid.c set_matrix.c steady_state.c trisolve.c weights.c dTr_nl.c set_tau.c calc_coeffs_nl.c deposition.c
+SOURCES=advance_system.c allocate.c calc_coeffs.c dTr.c disk.c hdf5.c initialize.c stepper.c main.c matvec.c mdot.c move_planet.c read_params.c set_dt.c set_grid.c set_matrix.c steady_state.c trisolve.c 
 HEADER=defines.h pdisk.h
 
 LAPACKLIB=-llapack -lblas

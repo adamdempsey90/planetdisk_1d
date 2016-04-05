@@ -3,6 +3,7 @@
 void set_matrix(void) {
     int i;
     matrix.size = NR;
+/*
     if (params.nonlocal_torque && !params.shock_dep) {
         matrix.nsol = 3;
 
@@ -10,11 +11,13 @@ void set_matrix(void) {
         MALLOC_SAFE(( matrix.w =  (double *)malloc(sizeof(double)*NR*(matrix.nsol-1)))); 
     }
     else {
-        matrix.nsol = 1;
-        MALLOC_SAFE(( matrix.u =  (double *)malloc(sizeof(double)*NR))); 
-        MALLOC_SAFE(( matrix.w =  (double *)malloc(sizeof(double)*NR))); 
 
-    }
+*/
+#ifdef NONLOCAL
+    matrix.nsol = 1;
+     MALLOC_SAFE(( matrix.u =  (double *)malloc(sizeof(double)*NR))); 
+     MALLOC_SAFE(( matrix.w =  (double *)malloc(sizeof(double)*NR))); 
+#endif
     
     matrix.icol = 0;
     MALLOC_SAFE(( matrix.ld = (double *)malloc(sizeof(double)*(NR-1))));

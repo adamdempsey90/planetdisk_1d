@@ -7,9 +7,9 @@
 #+OPENMP
 
 # Enable non-local deposition 
-+NONLOCAL
+#+NONLOCAL
 # Enable non-local deposition through shocks
-+SHOCKS
+#+SHOCKS
 
 
 

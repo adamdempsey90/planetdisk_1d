@@ -1,33 +1,34 @@
 #include "pdisk.h"
+
 double dTr(double x,double a) {
+    double left_fac, right_fac; 
+    double norm, xi,res;
 
-        double nlfac=0;
-        double xd = planet.xd;
-        double hp = params.h*a;
-        double left_region = (xd-1)*hp/2;
-        double right_region = (xd+1)*hp/2;
-        if ( (fabs(x-a) > left_region) && (fabs(x-a) < right_region)) {
-       //     printf("%lg inside %lg and %lg\n",(x-a)/hp,left_region,right_region);
-            nlfac = 1./hp;
-        }
-        return nlfac;
+    xi = (x-a) / scaleH(a);
 
-
-}
-/*
-double dTr_kana(double x, double a) {
-    
-    double norm = planet.eps*.798*pow(planet.mp*params.mth,2)*pow(a,4);
-    double dist = x-a;
-
-    if (fabs(dist) < params.h*a*1.3) {
-        return 0;
+ //       norm = planet.eps * a*M_PI*(planet.mp*params.mth)*(planet.mp*params.mth); 
+    norm = planet.eps * (planet.mp*params.mth)*(planet.mp*params.mth)/2.;
+    if (planet.symmetric_torque) {
+        right_fac = norm*pow(a/fmax(scaleH(x),fabs(x-a)),4);
     }
     else {
-        if (dist<0) norm *= -1;
-        return norm/(x*pow(fabs(x-a),4));
+        right_fac = norm*pow(x/fmax(scaleH(x),fabs(x-a)),4);
     }
+    left_fac = -norm*pow(x/fmax(scaleH(x),fabs(x-a)),4);    
+    
+    left_fac *= (1-smoothing(xi, -planet.c, planet.delta));
+    right_fac *= smoothing(xi,-planet.c, planet.delta)*smoothing(xi,planet.c,planet.delta);
+    
+    res = left_fac*(1-planet.onesided) + right_fac;
 
 
+    
+
+    return res;
 }
-*/
+
+double smoothing(double x, double x0, double w) {
+    return 0.5*(1 + tanh( (x-x0)/w));
+}
+
+

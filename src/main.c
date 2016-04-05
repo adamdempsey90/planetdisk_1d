@@ -9,9 +9,6 @@ int main(int argc, char *argv[]) {
     else {
         strcpy(parfile,argv[1]);
     }
-#ifdef NU
-    printf("Code compiled with CONSTANT VISCOSITY.\n");
-#endif
 #ifdef OPENMP
     printf("Compilied code with OPENMP, using %d threads\n",OMP_NUM_THREADS);
 #endif
@@ -35,13 +32,11 @@ int main(int argc, char *argv[]) {
     allocate_steady_state_field(&fld_ss);
     
        
-//    test_matvec();
     set_matrix(); 
 
     double total_mass = 0;
     for(i=0;i<NR;i++) total_mass += dr[i]*lam[i];
 
-//    double t_end = params.nvisc * params.tvisc;
     double dt = params.dt;
     int nt = params.nt;
 
@@ -50,14 +45,7 @@ int main(int argc, char *argv[]) {
         fld.sol_mdot[i] = 0;
     }
    
-    if (params.planet_torque && params.nonlocal_torque && params.shock_dep) {
-        steadystate_config_nl(&fld_ss,planet.a);
-
-    }
-    else {
-        steadystate_config(&fld_ss,planet.a);
-    }
-//    steadystate_config_nl(&fld_ss,planet.a);
+    steadystate_config(&fld_ss,planet.a);
 
     fld.vs_ss[0] = fld_ss.vs;
     fld.mdot_ss[0] = fld_ss.mdot;
@@ -88,12 +76,7 @@ int main(int argc, char *argv[]) {
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
-        if (params.nonlocal_torque) {
-            fld.torque[i] = dTr_nl(rc[i],i,planet.a,TRUE);
-        }
-        else {
-            fld.torque[i] = dTr(rc[i],planet.a);
-        }
+        fld.torque[i] = dTr(rc[i],planet.a);
     }
     planet.vs = calc_drift_speed(planet.a,lam);
     fld.avals[0] = planet.a; 
@@ -126,12 +109,7 @@ int main(int argc, char *argv[]) {
         fld.vs[i] = planet.vs;
         
 
-        if (params.planet_torque && params.nonlocal_torque && params.shock_dep) {
-            steadystate_config_nl(&fld_ss,planet.a);
-        }
-        else {
-            steadystate_config(&fld_ss,planet.a);
-        }
+        steadystate_config(&fld_ss,planet.a);
         fld.vs_ss[i] = fld_ss.vs;
         fld.mdot_ss[i] = fld_ss.mdot;
         fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;
@@ -139,12 +117,7 @@ int main(int argc, char *argv[]) {
         for(j=0;j<NR;j++) {
             fld.sol[j + NR*i] = lam[j];
             fld.sol_mdot[j + NR*i] = mdot[j];
-            if (params.nonlocal_torque) {
-                fld.torque[j + NR*i] = dTr_nl(rc[j],j,planet.a,TRUE);
-            }
-            else {
-                fld.torque[j + NR*i] = dTr(rc[j],planet.a);
-            }
+            fld.torque[j + NR*i] = dTr(rc[j],planet.a);
             fld.sol_ss[j + NR*i] = fld_ss.lam[j];
             fld.lamp[j+NR*i] = fld_ss.lamp[j];
             fld.lam0[j+NR*i] = fld_ss.lam0[j];
