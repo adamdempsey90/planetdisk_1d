@@ -1,34 +1,41 @@
-#!/usr/bin/env python
+#!/usr/bin/env/python
 
 from sys import argv
 from subprocess import call
 
 
-def create_defines_file(optfile='../params.opt',sourcedir='../src/'):
-	if sourcedir[-1] != '/':
-		sourcedir += '/'
+def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
+    if sourcedir[-1] != '/':
+        sourcedir += '/'
+    with open(optfile,'r') as f:
+        temp = [x.split('+') for x in f.readlines()]
+        defs=[]
+        for x in temp:
+            if x[0] == '' and '#' not in x:
+                def_str = x[-1].split('\n')[0]
+                defs.append(def_str)
+    if 'NONLOCAL' in defs:
+        call(['cp',sourcedir+'integration/crank_nicholson_step_nl.c',sourcedir+'integration.c'])
+        if 'SHOCK' in defs:
+            call(['cp',sourcedir+'torques/dTr_shocks.c',sourcedir+'dTr.c'])
+        else:
+            call(['cp',sourcedir+'torques/dTr_dep.c',sourcedir+'dTr.c'])
+    else:
+        call(['cp',sourcedir+'integration/crank_nicholson_step.c',sourcedir+'integration.c'])
+        if 'GAUSSIAN' in defs:
+            call(['cp',sourcedir+'torques/dTr_gaussian.c',sourcedir+'dTr.c'])
+        else:
+            call(['cp',sourcedir+'torques/dTr_linear.c',sourcedir+'dTr.c'])
 
-
-	with open(optfile,'r') as f:
-		temp = [x.split('+') for x in f.readlines()]
-		defs=[]
-		for x in temp:
-			if x[0] == '' and '#' not in x:
-				def_str = x[-1].split('\n')[0]
-
-				defs.append(def_str)
-
-	with open(sourcedir + 'defines.h','w') as g:
+    with open(sourcedir + 'defines.h','w') as g:
 		if defs != []:
 			for x in defs:
 				g.write('#define ' + x + '\n')
 		else:
 			g.write('\n')
-
-
-	print 'Created the defines.h file:'
-	call(['cat',sourcedir+'defines.h'])
-	return defs
+    print 'Created the defines.h file:'
+    call(['cat',sourcedir+'defines.h'])
+    return defs
 
 
 
