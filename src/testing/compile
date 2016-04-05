@@ -1,0 +1,5 @@
+#!/bin/bash
+gcc-4.9 -c -O3 -Wall -fopenmp test_solver.c -o test_solver.o
+gcc-4.9 -c -O3 -Wall -fopenmp trisolve.c -o trisolve.o
+gcc-4.9  -lgomp test_solver.o trisolve.o -o tritest
+

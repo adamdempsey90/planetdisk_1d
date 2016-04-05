@@ -1,4 +1,4 @@
-#include <psidk.h>
+#include "pdisk.h"
 void trisolve(double *ld, double *md, double *ud, double *d,double *sol,int n) {
     int i;
     double *cp, *bp, *dp;
