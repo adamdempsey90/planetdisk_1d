@@ -1,6 +1,6 @@
 #include "pdisk.h"
 
-double dTr(double x,double a) {
+double dTr_ex(double x,double a) {
     double left_fac, right_fac; 
     double norm, xi,res;
 

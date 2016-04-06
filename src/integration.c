@@ -3,14 +3,19 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;
     double ap,am, bm,bp, rm, rp;
 
-    for(i=0;i<NR-1;i++) {
+    for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;
         matrix.md[i] = 0;
-        matrix.ud[i] = 0;
-        matrix.ld[i] = 0;
+        matrix.u[i] = 0;
+        matrix.u[i+NR] = 0;
+        matrix.w[i] = 0;
+        matrix.w[i+NR] = 0;
+
+        if (i < NR-1) {
+            matrix.ud[i] = 0;
+            matrix.ld[i] = 0;
+        }
     }
-    matrix.md[NR-1] = 0;
-    matrix.fm[NR-1] = 0;
 
 
 
@@ -19,16 +24,38 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         rm = rmin[i];
         rp = rmin[i+1];
 
-        calc_coeffs(rm,rc[i]-rc[i-1],&am,&bm,aplanet,params.planet_torque);
-        calc_coeffs(rp,rc[i+1]-rc[i],&ap,&bp,aplanet,params.planet_torque);
-
+        am = 3*nu(rm) * (params.gamma - .5)/(rm);
+        bm = 3*nu(rm)/dr[i];
+        ap = 3*nu(rp) * (params.gamma - .5)/(rp);
+        bp = 3*nu(rp)/dr[i];
+        //calc_coeffs(rm,rc[i]-rc[i-1],&am,&bm,aplanet,params.planet_torque);
+        //calc_coeffs(rp,rc[i+1]-rc[i],&ap,&bp,aplanet,params.planet_torque);
+#ifndef NONLOCAL
+        if (params.planet_torque) {
+            am -= 3*sqrt(rm)*dTr_ex(rm,aplanet);
+            ap -= 3*sqrt(rp)*dTr_ex(rp,aplanet);
+        }
+#endif
         matrix.md[i] = (ap-am - bm - bp)*dt/2.;
         matrix.ld[i-1] = (-am + bm)*dt/2.;
         matrix.ud[i] = (ap + bp)*dt/2.;
-      }
+    }
+#ifdef NONLOCAL
+    set_uw(matrix.u,matrix.w,aplanet);
+#endif
+    
+
     if (params.flux_bc) {
-        calc_coeffs(rmin[NR-1],rc[NR-1]-rc[NR-2],&am,&bm,aplanet,params.planet_torque);
-        calc_coeffs(rmin[1],rc[1]-rc[0],&ap,&bp,aplanet,params.planet_torque);
+        am = 3*nu(rmin[1]) * (params.gamma - .5)/(rmin[1]);
+        bm = 3*nu(rmin[1])/dr[i];
+        ap = 3*nu(rmin[NR-1]) * (params.gamma - .5)/(rmin[NR-1]);
+        bp = 3*nu(rmin[NR-1])/dr[i];
+#ifndef NONLOCAL
+        if (params.planet_torque) {
+            am -= 3*sqrt(rmin[1])*dTr_ex(rmin[1],aplanet);
+            ap -= 3*sqrt(rmin[NR-1])*dTr_ex(rmin[NR-1],aplanet);
+        }
+#endif
  //       matrix.md[0] = (ap-bp)*dt/2.;
  //       matrix.ud[0] = (ap+bp)*dt/2.;
         matrix.md[0] = 0; matrix.ud[0] = 0;
@@ -83,8 +110,12 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
     }
 */
-    trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
 
+#ifdef NONLOCAL
+    trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,matrix.u,matrix.w,y,NR);
+#else
+    trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
+#endif
 
     return;
 }
