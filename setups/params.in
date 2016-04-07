@@ -17,7 +17,7 @@ flux_bc = T
 #Time Parameters:
 dt = 1000.0
 cfl = 0.8
-nvisc = 10.0
+nvisc = 30.0
 nt = 100
 release_time = 0
 start_ss = F

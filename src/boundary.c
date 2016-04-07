@@ -1,25 +1,29 @@
 #include "pdisk.h"
 
 void set_boundary(void) {
-    
+    int i;
+    double em,ec,ep;
     double rb = rmin[0];
     double r0 = rc[0];
-    double bb = 3*nu(rb);
-    double ab = bb*(params.gamma - .5)/rb;
 
-    matrix.md[0] -= 1.5*nu(rb)/rb;
-   // matrix.ud[0] = 0;
-   // matrix.ld[NR-2] = 0;
-   // matrix.md[NR-1] = 0;
+
+    i=0;
+    ec = 1.5*nu(rc[i])/sqrt(rc[i]);
+    ep = 1.5*nu(rc[i+1])/sqrt(rc[i+1]);
+    matrix.md[i] = -ec/(sqrt(rc[i+1]) - sqrt(rc[i]))  - 1.5*nu(rb)/rb;
+    matrix.ud[i] = ep/(sqrt(rc[i+1]) - sqrt(rc[i]));
+
+    i=NR-1;
+    ec = 1.5*nu(rc[i])/sqrt(rc[i]);
+    em = 1.5*nu(rc[i-1])/sqrt(rc[i-1]);
+    matrix.md[i] = -ec/(sqrt(rc[i]) - sqrt(rc[i-1]));
+    matrix.ld[i-1] = em/(sqrt(rc[i]) - sqrt(rc[i-1]));
+
     matrix.fm[NR-1] = params.bc_mdot;
+
     matrix.u[0] = 0;
     matrix.u[NR] = 0;
 
-  // matrix.md[0] = 0;
-  // matrix.ud[0] = 0;
-  // matrix.md[NR-1] = 0;
-  // matrix.ld[NR-2] = 0;
-   //matrix.fm[NR-1] = params.bc_mdot;
    
     return;
 

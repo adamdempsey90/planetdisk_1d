@@ -1,8 +1,11 @@
 #include "pdisk.h"
 void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;
-    double ap,am, bm,bp, rm, rp;
-    double dp_tot, dm_tot, dp,dm;
+    double em,ec,ep;
+    double lm,lc,lp;
+    double rm, rp;
+    double dp_tot, dm_tot, dp,dm,dc;
+
     for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;
         matrix.md[i] = 0;
@@ -18,66 +21,53 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     }
 
 #ifdef OPENMP
-#pragma omp parallel for private(i,rm,rp,am,ap,bm,bp) shared(matrix,rc,rmin)
+#pragma omp parallel for private(i,rm,rp,lm,lc,lp,em,ec,ep,dm,dc,dp,dm_tot,dp_tot) shared(matrix,rc,rmin)
 #endif
-    for(i=1;i<NR;i++) {
+    for(i=1;i<NR-1;i++) {
         rm = rmin[i];
         rp = rmin[i+1];
+
+        lm = sqrt(rc[i-1]);
+        lc = sqrt(rc[i]);
+        lp = sqrt(rc[i+1]);
+
+        em = 1.5*nu(rc[i-1])/sqrt(rc[i-1]);
+        ec = 1.5*nu(rc[i])/sqrt(rc[i]);
+        ep = 1.5*nu(rc[i+1])/sqrt(rc[i+1]);
+
         dp_tot = dr[i] + dr[i+1];
         dm_tot = dr[i] + dr[i-1];
         dp = dr[i+1];
-        dm = dr[i];
+        dc = dr[i];
+        dm = dr[i-1];
 
 
-        am = 3*nu(rm) * (params.gamma - .5)/(rm);
-        bm = 6*nu(rm);
-        ap = 3*nu(rp) * (params.gamma - .5)/(rp);
-        bp = 6*nu(rp);
+        matrix.md[i] = -ec*(1./(lc-lm) + 1./(lp-lc));
+        matrix.ld[i-1] = em/(lc-lm);
+        matrix.ud[i] = ep/(lp-lc);
+
 
 #ifndef NONLOCAL
         if (params.planet_torque) {
-            am -= 2*sqrt(rm)*dTr_ex(rm,aplanet);
-            ap -= 2*sqrt(rp)*dTr_ex(rp,aplanet);
+
+            em = 2*sqrt(rm)*dTr_ex(rm,aplanet);
+            ep = 2*sqrt(rp)*dTr_ex(rp,aplanet);
+            matrix.ld[i-1] += em*dc/dm_tot;
+            matrix.ud[i] -= ep*dc/dp_tot;
+            matrix.md[i] += em*dm/dm_tot - ep*dp/dp_tot;
         }
 #endif
         
-        matrix.md[i] = (dp*ap-bp)/dp_tot - (bm+dm*am)/dm_tot;
-        if (i>0) {
-            matrix.ld[i-1] = (bm - dm*am)/dm_tot;
-        }
-        if (i<NR) {
-            matrix.ud[i] = (bp + dm*ap)/dp_tot;
-        }
-    
     }
-    i = 0;
-    rm = rmin[i];
-    rp = rmin[i+1];
-    dp_tot = dr[i] + dr[i+1];
-    dp = dr[i+1];
-    dm = dr[i];
-    ap = 3*nu(rp) * (params.gamma - .5)/(rp);
-    bp = 6*nu(rp);
-    matrix.md[i] = (dp*ap-bp)/dp_tot;
-    matrix.ud[i] = (bp+dm*ap)/dp_tot;
-    i = NR-1;
-    rm = rmin[i];
-    rp = rmin[i+1];
-    dp_tot = dr[i] + dr[i+1];
-    dm_tot = dr[i] + dr[i-1];
-    dp = dr[i+1];
-    dm = dr[i];
-    ap = 3*nu(rp) * (params.gamma - .5)/(rp);
-    bp = 6*nu(rp);
-    matrix.md[i] = -(bm+dm*am)/dm_tot; 
-    matrix.ld[i-1] = (bm-dm*am)/dm_tot;
+    
+    
 #ifdef NONLOCAL
     if (params.planet_torque) {
         set_uw(matrix.u,matrix.w,aplanet);
     }
 #endif
-    set_boundary();
 
+    set_boundary();
     // Coefficient Matrix is all set
 
 #ifdef NONLOCAL    
