@@ -20,7 +20,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 #ifdef OPENMP
 #pragma omp parallel for private(i,rm,rp,am,ap,bm,bp) shared(matrix,rc,rmin)
 #endif
-    for(i=0;i<NR;i++) {
+    for(i=1;i<NR;i++) {
         rm = rmin[i];
         rp = rmin[i+1];
         dp_tot = dr[i] + dr[i+1];
@@ -40,14 +40,37 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
             ap -= 2*sqrt(rp)*dTr_ex(rp,aplanet);
         }
 #endif
-        matrix.md[i] = (dp*ap-bp)/dp_tot - (bm+dm*am)/dp_tot;
+        
+        matrix.md[i] = (dp*ap-bp)/dp_tot - (bm+dm*am)/dm_tot;
         if (i>0) {
             matrix.ld[i-1] = (bm - dm*am)/dm_tot;
         }
         if (i<NR) {
             matrix.ud[i] = (bp + dm*ap)/dp_tot;
         }
+    
     }
+    i = 0;
+    rm = rmin[i];
+    rp = rmin[i+1];
+    dp_tot = dr[i] + dr[i+1];
+    dp = dr[i+1];
+    dm = dr[i];
+    ap = 3*nu(rp) * (params.gamma - .5)/(rp);
+    bp = 6*nu(rp);
+    matrix.md[i] = (dp*ap-bp)/dp_tot;
+    matrix.ud[i] = (bp+dm*ap)/dp_tot;
+    i = NR-1;
+    rm = rmin[i];
+    rp = rmin[i+1];
+    dp_tot = dr[i] + dr[i+1];
+    dm_tot = dr[i] + dr[i-1];
+    dp = dr[i+1];
+    dm = dr[i];
+    ap = 3*nu(rp) * (params.gamma - .5)/(rp);
+    bp = 6*nu(rp);
+    matrix.md[i] = -(bm+dm*am)/dm_tot; 
+    matrix.ld[i-1] = (bm-dm*am)/dm_tot;
 #ifdef NONLOCAL
     if (params.planet_torque) {
         set_uw(matrix.u,matrix.w,aplanet);
@@ -71,8 +94,8 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         matrix.fm[i] += dr[i]*y[i];
         matrix.md[i] = dr[i] - matrix.md[i]*dt/2.;
         if (i<NR-1) {
-            matrix.ld[i] *= -1;
-            matrix.ud[i] *= -1;
+            matrix.ld[i] *= -dt/2.;
+            matrix.ud[i] *= -dt/2.;
         }
     }
 

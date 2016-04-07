@@ -16,6 +16,10 @@ void allocate_steady_state_field(SteadyStateField *tmpfld) {
         tmpfld->ivals[i] = 0;
         tmpfld->kvals[i] = 0;
     }
+    tmpfld->a = planet.a;
+    tmpfld->vs = 0;
+    tmpfld->mdot0 = params.bc_mdot;
+    tmpfld->mdot = params.bc_mdot;
     return;
 }
 

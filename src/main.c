@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     }
     else {
         init_lam();
-    }
+   }
 
     allocate_field(&fld);
     for(i=0;i<NR;i++) {
@@ -48,17 +48,17 @@ int main(int argc, char *argv[]) {
    
     /*
     steadystate_config(&fld_ss,planet.a);
-
+*/
     fld.vs_ss[0] = fld_ss.vs;
     fld.mdot_ss[0] = fld_ss.mdot;
     fld.efficiency[0] = fld_ss.mdot/fld_ss.mdot0;
-*/
+
     if (params.start_ss) {
         for(i=0;i<NR;i++) {
- //           lam[i] = fld_ss.lam[i];
- //           mdot[i] = fld_ss.mdot;
- //           fld.sol[i] = lam[i];
- //           fld.sol_mdot[i] = mdot[i];
+            lam[i] = fld_ss.lam[i];
+            mdot[i] = fld_ss.mdot;
+            fld.sol[i] = lam[i];
+            fld.sol_mdot[i] = mdot[i];
         }
     }
 
@@ -66,11 +66,11 @@ int main(int argc, char *argv[]) {
     for(i=0;i<NR;i++) {
         fld.lami[i] = lam[i];
         fld.mdoti[i] = mdot[i];
-//        fld.sol_ss[i] = fld_ss.lam[i];
-//        fld.lamp[i] = fld_ss.lamp[i];
-//        fld.lam0[i] = fld_ss.lam0[i];
-//        fld.ivals_ss[i] = fld_ss.ivals[i];
- //       fld.kvals_ss[i] = fld_ss.kvals[i];
+        fld.sol_ss[i] = fld_ss.lam[i];
+        fld.lamp[i] = fld_ss.lamp[i];
+        fld.lam0[i] = fld_ss.lam0[i];
+        fld.ivals_ss[i] = fld_ss.ivals[i];
+        fld.kvals_ss[i] = fld_ss.kvals[i];
     }
 
 
@@ -112,19 +112,20 @@ int main(int argc, char *argv[]) {
         
 /*
         steadystate_config(&fld_ss,planet.a);
+*/
         fld.vs_ss[i] = fld_ss.vs;
         fld.mdot_ss[i] = fld_ss.mdot;
         fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;
-*/
+
         for(j=0;j<NR;j++) {
             fld.sol[j + NR*i] = lam[j];
             fld.sol_mdot[j + NR*i] = mdot[j];
             fld.torque[j + NR*i] = dTr_ex(rc[j],planet.a);
-  //          fld.sol_ss[j + NR*i] = fld_ss.lam[j];
-  //          fld.lamp[j+NR*i] = fld_ss.lamp[j];
-  //          fld.lam0[j+NR*i] = fld_ss.lam0[j];
-   //         fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
-   //         fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
+            fld.sol_ss[j + NR*i] = fld_ss.lam[j];
+            fld.lamp[j+NR*i] = fld_ss.lamp[j];
+            fld.lam0[j+NR*i] = fld_ss.lam0[j];
+            fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
+            fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
         }
     
     }
