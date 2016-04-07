@@ -12,8 +12,8 @@ OPENMPFLAG=-fopenmp
 HDF5FLAG=-DH5_USE_16_API
 
 
-LDFLAGS= $(MATHLIB) $(HDF5LIB) 
-CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG)
+LDFLAGS= $(MATHLIB) $(HDF5LIB)  
+CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG)  
 
 
 INCLIB=
@@ -69,10 +69,10 @@ CHEADER=$(addprefix $(SRC),$(HEADER))
 all: $(CSOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(COBJECTS)
-	$(CC)  $(COBJECTS) $(LDLIB) $(LDFLAGS) -o $@
+	$(CC)  $(COBJECTS) $(LDLIB) $(LDFLAGS) -o $@  
 
 $(BIN)%.o: $(SRC)%.c $(CHEADER)
-	$(CC) $(INCLIB) $(CFLAGS) $< -o $@
+	$(CC) $(INCLIB) $(CFLAGS) $< -o $@  
 
 
 clean:

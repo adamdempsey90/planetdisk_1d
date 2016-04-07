@@ -4,7 +4,7 @@ from sys import argv
 from subprocess import call
 
 
-def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
+def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/',extras=None):
     if sourcedir[-1] != '/':
         sourcedir += '/'
     with open(optfile,'r') as f:
@@ -26,7 +26,13 @@ def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
 #            call(['cp',sourcedir+'torques/dTr_gaussian.c',sourcedir+'dTr.c'])
 #        else:
 #            call(['cp',sourcedir+'torques/dTr_linear.c',sourcedir+'dTr.c'])
+    if extras is not None:
+        defs += extras
 
+    if 'OPENMP' in defs:
+        add_library('OPENMP')
+    else:
+        rm_library('OPENMP')
     with open(sourcedir + 'defines.h','w') as g:
 		if defs != []:
 			for x in defs:
@@ -38,6 +44,7 @@ def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
     return defs
 
 def add_library(lib):
+    print 'Adding %s to Makefile'%lib
     if lib.lower() == 'openmp':
         with open('Makefile','r') as f:
             lines = f.readlines()
@@ -52,6 +59,7 @@ def add_library(lib):
         with open('Makefile','w') as f:
             f.write(''.join(lines))
 def rm_library(lib):
+    print 'Removing %s to Makefile'%lib
     if lib.lower() == 'openmp':
         with open('Makefile','r') as f:
             lines = f.readlines()
@@ -60,46 +68,34 @@ def rm_library(lib):
             if 'LDFLAGS' in line:
                 if 'OPENMP' in line:
                     lines[i] = ' '.join(line.split('$(OPENMPLIB)'))
-                if 'CFLAGS' in line:
-                    if 'OPENMP' in line:
-                        lines[i] = ' '.join(line.split('$(OPENMPFLAG)'))
+            if 'CFLAGS' in line:
+                if 'OPENMP' in line:
+                    lines[i] = ' '.join(line.split('$(OPENMPFLAG)'))
         with open('Makefile','w') as f:
             f.write(''.join(lines))
 
 
 if __name__ == "__main__":
 
-	if len(argv) == 2:
-		if str(argv[1])[-4:] == '.opt':
-			optfile = str(argv[1])
-			sourcedir = 'src/'
-		else:
-			sourcedir = str(argv[1])
-			if sourcedir[-1] != '/':
-				sourcedir += '/'
-			optfile = 'params.opt'
-
-	elif len(argv) == 3:
-
-		if str(argv[1])[-4:] == '.opt':
-			optfile = str(argv[1])
-			sourcedir = str(argv[2])
-		else:
-			sourcedir = str(argv[1])
-			if str(argv[2])[-4:] == '.opt':
-				optfile = str(argv[2])
-			else:
-				print 'Could not find options file. Using default.'
-				optfile = 'params.opt'
-
-	else:
-		print 'Using default options file and source directory'
-		optfile = 'setups/params.opt'
-		sourcedir = 'src/'
-
-	if sourcedir[-1] != '/':
-		sourcedir += '/'
-
-	print 'Using Source Directory as: %s\nUsing Options File: %s' %(sourcedir,optfile)
-
-	defs = create_defines_file(optfile,sourcedir)
+    sourcedir = 'src/'
+    optfile = 'setups/params.opt'
+    parfile = 'setups/params.par'
+    extras = None
+    for arg in argv[1:]:
+        if '.opt' in arg:
+            optfile = argv
+        if '.par' in arg:
+            parfile = arg
+        if 'src' in arg:
+            sourcedir = arg
+            if  sourcedir[-1] != '/':
+                sourcedir += '/'
+        else:
+            if extras is None:
+                extras = [arg.upper()]
+            else:
+                extras.append(arg)
+    print 'Using Source Directory as: %s\nUsing Options File: %s' %(sourcedir,optfile)
+    if extras is not None:
+        print 'Found these command line defines', extras
+    defs = create_defines_file(optfile,sourcedir,extras)

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python scripts/config.py $1 $2
+python scripts/config.py "$@" 
 
