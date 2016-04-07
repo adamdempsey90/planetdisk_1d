@@ -15,9 +15,9 @@ bc_mdot = 0.000001
 flux_bc = T
 
 #Time Parameters:
-dt = 100.0
+dt = 1000.0
 cfl = 0.8
-nvisc = 1.0
+nvisc = 10.0
 nt = 100
 release_time = 0
 start_ss = F
