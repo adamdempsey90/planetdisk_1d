@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
-        fld.torque[i] = dTr(rc[i],planet.a);
+        fld.torque[i] = dTr_ex(rc[i],planet.a);
     }
     planet.vs = calc_drift_speed(planet.a,lam);
     fld.avals[0] = planet.a; 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
         for(j=0;j<NR;j++) {
             fld.sol[j + NR*i] = lam[j];
             fld.sol_mdot[j + NR*i] = mdot[j];
-            fld.torque[j + NR*i] = dTr(rc[j],planet.a);
+            fld.torque[j + NR*i] = dTr_ex(rc[j],planet.a);
             fld.sol_ss[j + NR*i] = fld_ss.lam[j];
             fld.lamp[j+NR*i] = fld_ss.lamp[j];
             fld.lam0[j+NR*i] = fld_ss.lam0[j];

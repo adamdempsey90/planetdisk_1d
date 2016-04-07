@@ -19,3 +19,6 @@ double nu(double x) {
 double scaleH(double x) {
     return params.h * x *  pow(x, (params.gamma -.5)/2);
 }
+double smoothing(double x, double x0, double w) {
+    return 0.5*(1 + tanh( (x-x0)/w));
+}

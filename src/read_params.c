@@ -1,53 +1,15 @@
 #include "pdisk.h"
-void set_params(char *parfile) {
-    read_input_file(parfile);
-    
-    params.mach = 1/params.h;
-    params.nu0 = params.alpha * params.h*params.h;
-    params.mth = params.h*params.h*params.h;
-    params.mvisc = sqrt(27.*M_PI/8  * params.alpha * params.mach);
-    params.tvisc = params.ro*params.ro/nu(params.ro); 
-    planet.rh = pow( planet.mp * params.mth/3.,1./3) * planet.a;
-    planet.omp = pow(planet.a,-1.5);
-    planet.dep = params.h*planet.a;
-    planet.T0 = 2*M_PI*planet.a*planet.mp*planet.mp*params.mth/params.h;
-    planet.vs = 0;
 
-    printf("Parameters:\n\tnr = %d\n\talpha = %.1e\n\th = %.2f\n\t(ri,ro) = (%lg,%lg)\n\tMach = %.1f\n\tm_th = %.2e\n\tm_visc = %.2e\n\tt_visc=%.2e\n",
-            params.nr,
-            params.alpha,
-            params.h,
-            params.ri,
-            params.ro,
-            params.mach,
-            params.mth,
-            params.mvisc,
-            params.tvisc);
-
-     printf("Planet properties:\n \
-            \ta = %lg\n \
-            \tmass = %lg mth = %.2e Mstar = %.2e mvisc\n \
-            \tK = %.2e\n \
-            \trh = %lg = %lg h\n",
-            planet.a, 
-            planet.mp,planet.mp*params.mth,planet.mp/params.mvisc,
-            planet.mp*params.h/params.alpha,
-            planet.rh, planet.rh/params.h);
-     printf("\tplanet_torque = %s\n \
-             \tmove_planet = %s\n \
-             \tmove_planet_implicit = %s\n \
-             \tgaussian = %s\n \
-             \tread_initial_conditions = %s\n \
-             \toutputname = %s\n",
-             params.planet_torque ? "TRUE" : "FALSE", 
-             params.move_planet ? "TRUE" : "FALSE", 
-             params.move_planet_implicit ? "TRUE" : "FALSE", 
-             planet.gaussian ? "TRUE" : "FALSE", 
-             params.read_initial_conditions ? "TRUE" : "FALSE", 
-             params.outputname);
+void set_bool(char *buff, int *val) {
+    if ( (!strncmp(buff,"TRUE",MAXSTRLEN)) || (!strncmp(buff,"true",MAXSTRLEN)) || (!strncmp(buff,"True",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"1",MAXSTRLEN))) {
+        *val = TRUE;
+            }
+    else {
+        *val = FALSE;
+            }
     return;
-}
 
+}
 void read_input_file(char *fname) {
     char garbage[100],tmpstr[MAXSTRLEN];
     char *gchar;
@@ -141,14 +103,52 @@ void read_input_file(char *fname) {
 
 }
 
-void set_bool(char *buff, int *val) {
-    if ( (!strncmp(buff,"TRUE",MAXSTRLEN)) || (!strncmp(buff,"true",MAXSTRLEN)) || (!strncmp(buff,"True",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"1",MAXSTRLEN))) {
-        *val = TRUE;
-            }
-    else {
-        *val = FALSE;
-            }
+
+void set_params(char *parfile) {
+    read_input_file(parfile);
+    
+    params.mach = 1/params.h;
+    params.nu0 = params.alpha * params.h*params.h;
+    params.mth = params.h*params.h*params.h;
+    params.mvisc = sqrt(27.*M_PI/8  * params.alpha * params.mach);
+    params.tvisc = params.ro*params.ro/nu(params.ro); 
+    planet.rh = pow( planet.mp * params.mth/3.,1./3) * planet.a;
+    planet.omp = pow(planet.a,-1.5);
+    planet.dep = params.h*planet.a;
+    planet.T0 = 2*M_PI*planet.a*planet.mp*planet.mp*params.mth/params.h;
+    planet.vs = 0;
+
+    printf("Parameters:\n\tnr = %d\n\talpha = %.1e\n\th = %.2f\n\t(ri,ro) = (%lg,%lg)\n\tMach = %.1f\n\tm_th = %.2e\n\tm_visc = %.2e\n\tt_visc=%.2e\n",
+            params.nr,
+            params.alpha,
+            params.h,
+            params.ri,
+            params.ro,
+            params.mach,
+            params.mth,
+            params.mvisc,
+            params.tvisc);
+
+     printf("Planet properties:\n \
+            \ta = %lg\n \
+            \tmass = %lg mth = %.2e Mstar = %.2e mvisc\n \
+            \tK = %.2e\n \
+            \trh = %lg = %lg h\n",
+            planet.a, 
+            planet.mp,planet.mp*params.mth,planet.mp/params.mvisc,
+            planet.mp*params.h/params.alpha,
+            planet.rh, planet.rh/params.h);
+     printf("\tplanet_torque = %s\n \
+             \tmove_planet = %s\n \
+             \tmove_planet_implicit = %s\n \
+             \tgaussian = %s\n \
+             \tread_initial_conditions = %s\n \
+             \toutputname = %s\n",
+             params.planet_torque ? "TRUE" : "FALSE", 
+             params.move_planet ? "TRUE" : "FALSE", 
+             params.move_planet_implicit ? "TRUE" : "FALSE", 
+             planet.gaussian ? "TRUE" : "FALSE", 
+             params.read_initial_conditions ? "TRUE" : "FALSE", 
+             params.outputname);
     return;
-
 }
-

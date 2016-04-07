@@ -9,12 +9,12 @@ double dTr_ex(double x,double a) {
  //       norm = planet.eps * a*M_PI*(planet.mp*params.mth)*(planet.mp*params.mth); 
     norm = planet.eps * (planet.mp*params.mth)*(planet.mp*params.mth)/2.;
     if (planet.symmetric_torque) {
-        right_fac = norm*pow(a/fmax(scaleH(x),fabs(x-a)),4);
+        right_fac = norm*pow(a/fmax(scaleH(a),fabs(x-a)),4);
     }
     else {
-        right_fac = norm*pow(x/fmax(scaleH(x),fabs(x-a)),4);
+        right_fac = norm*pow(x/fmax(scaleH(a),fabs(x-a)),4);
     }
-    left_fac = -norm*pow(x/fmax(scaleH(x),fabs(x-a)),4);    
+    left_fac = -norm*pow(x/fmax(scaleH(a),fabs(x-a)),4);    
     
     left_fac *= (1-smoothing(xi, -planet.c, planet.delta));
     right_fac *= smoothing(xi,-planet.c, planet.delta)*smoothing(xi,planet.c,planet.delta);
@@ -24,11 +24,8 @@ double dTr_ex(double x,double a) {
 
     
 
-    return res;
+    return res/x;
 }
 
-double smoothing(double x, double x0, double w) {
-    return 0.5*(1 + tanh( (x-x0)/w));
-}
 
 

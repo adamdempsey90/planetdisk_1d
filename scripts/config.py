@@ -14,18 +14,18 @@ def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
             if x[0] == '' and '#' not in x:
                 def_str = x[-1].split('\n')[0]
                 defs.append(def_str)
-    if 'NONLOCAL' in defs:
-        call(['cp',sourcedir+'integration/crank_nicholson_step_nl.c',sourcedir+'integration.c'])
-        if 'SHOCK' in defs:
-            call(['cp',sourcedir+'torques/dTr_shocks.c',sourcedir+'dTr.c'])
-        else:
-            call(['cp',sourcedir+'torques/dTr_dep.c',sourcedir+'dTr.c'])
-    else:
-        call(['cp',sourcedir+'integration/crank_nicholson_step.c',sourcedir+'integration.c'])
-        if 'GAUSSIAN' in defs:
-            call(['cp',sourcedir+'torques/dTr_gaussian.c',sourcedir+'dTr.c'])
-        else:
-            call(['cp',sourcedir+'torques/dTr_linear.c',sourcedir+'dTr.c'])
+#    if 'NONLOCAL' in defs:
+#        call(['cp',sourcedir+'integration/crank_nicholson_step_nl.c',sourcedir+'integration.c'])
+#        if 'SHOCK' in defs:
+#            call(['cp',sourcedir+'torques/dTr_shocks.c',sourcedir+'dTr.c'])
+#        else:
+#            call(['cp',sourcedir+'torques/dTr_dep.c',sourcedir+'dTr.c'])
+#    else:
+#        call(['cp',sourcedir+'integration/crank_nicholson_step.c',sourcedir+'integration.c'])
+#        if 'GAUSSIAN' in defs:
+#            call(['cp',sourcedir+'torques/dTr_gaussian.c',sourcedir+'dTr.c'])
+#        else:
+#            call(['cp',sourcedir+'torques/dTr_linear.c',sourcedir+'dTr.c'])
 
     with open(sourcedir + 'defines.h','w') as g:
 		if defs != []:
@@ -37,6 +37,34 @@ def create_defines_file(optfile='../setups/params.opt',sourcedir='../src/'):
     call(['cat',sourcedir+'defines.h'])
     return defs
 
+def add_library(lib):
+    if lib.lower() == 'openmp':
+        with open('Makefile','r') as f:
+            lines = f.readlines()
+
+        for i,line in enumerate(lines):
+            if 'LDFLAGS' in line:
+                if 'OPENMP' not in line:
+                    lines[i] = line.strip() + ' $(OPENMPLIB)\n'
+            if 'CFLAGS' in line:
+                if 'OPENMP' not in line:
+                    lines[i] = line.strip() + ' $(OPENMPFLAG)\n'
+        with open('Makefile','w') as f:
+            f.write(''.join(lines))
+def rm_library(lib):
+    if lib.lower() == 'openmp':
+        with open('Makefile','r') as f:
+            lines = f.readlines()
+
+        for i,line in enumerate(lines):
+            if 'LDFLAGS' in line:
+                if 'OPENMP' in line:
+                    lines[i] = ' '.join(line.split('$(OPENMPLIB)'))
+                if 'CFLAGS' in line:
+                    if 'OPENMP' in line:
+                        lines[i] = ' '.join(line.split('$(OPENMPFLAG)'))
+        with open('Makefile','w') as f:
+            f.write(''.join(lines))
 
 
 if __name__ == "__main__":

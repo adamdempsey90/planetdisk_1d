@@ -1,19 +1,79 @@
 #include "pdisk.h"
-void matvec(double *ld, double *md, double *ud, double *a, double *b, int n) {
+void matvec(double *ld, double *md, double *ud, double *y, double *res, double a, double b,int n) {
+    /* res = a*res + b*mat.y, 
+     * where mat is a tridiagonal matrix with 
+     * md = main diagonal
+     * ld = lower diagonal
+     * ud = upper diagonal
+     */
     int i;
 
-    b[0] += md[0]*a[0] + ud[0]*a[1];
+    res[0] = a*res[0] + b*(md[0]*y[0] + ud[0]*y[1]);
 
 
+
+#ifdef OPENMP
+#pragma omp parallel for private(i) 
+#endif
     for(i=1;i<n-1;i++) {
-        b[i] += ld[i-1]*a[i-1] + md[i]*a[i] + ud[i]*a[i+1];
+        res[i] = a*res[i] + b*( ld[i-1]*y[i-1] + md[i]*y[i] + ud[i]*y[i+1]);
 
     }
-    b[n-1] += ld[n-2]*a[n-2] + md[n-1] * a[n-1];
+    res[n-1] = a*res[n-1] + b*( ld[n-2]*y[n-2] + md[n-1] * y[n-1]);
 
     return;
 }
 
+void matvec_full(double *ld, double *md, double *ud,double *u, double *w, double *y, double *res, double a, double b,int n,int nw) {
+    /* res = a*res + b*(mat + u1 w1^T + u2 w2^T + ...).y, 
+     * where mat is a tridiagonal matrix with 
+     * md = main diagonal
+     * ld = lower diagonal
+     * ud = upper diagonal
+     * u and w are vectors which add to mat via an outer product
+     */
+    int i,j,k;
+    double temp;
+
+
+    res[0] = a*res[0] + b* (md[0]*y[0] + ud[0]*y[1]);
+
+    temp=0;
+#ifdef OPENMP
+#pragma omp parallel for private(j,k) collapse(2) reduction(+:temp)  
+#endif
+    for(j=0;j<nw;j++) {
+        for(k=0;k<n;k++) {
+           temp += b*u[0+n*j]*w[k + n*j]*y[k]; 
+        }
+    }
+    res[0] += temp;
+
+#ifdef OPENMP
+#pragma omp parallel for private(i,j,k)  
+#endif
+    for(i=1;i<n-1;i++) {
+        res[i] = a*res[i] + b* (ld[i-1]*y[i-1] + md[i]*y[i] + ud[i]*y[i+1]);
+        for(j=0;j<nw;j++) {
+            for(k=0;k<n;k++) {
+                res[i] += b*u[i+n*j]*w[k + n*j]*y[k]; 
+            }
+        }
+    }
+    res[n-1] = a*res[n-1] + b*( ld[n-2]*y[n-2] + md[n-1] * y[n-1]);
+
+    temp=0;
+#ifdef OPENMP
+#pragma omp parallel for private(j,k) collapse(2) reduction(+:temp)  
+#endif
+    for(j=0;j<nw;j++) {
+        for(k=0;k<n;k++) {
+            temp += b*u[n-1+n*j]*w[k + n*j]*y[k]; 
+        }
+    }
+    res[n-1] += temp;
+    return;
+}
 double dotprod(double *v1, double *v2, int n) {
     int i;
 
