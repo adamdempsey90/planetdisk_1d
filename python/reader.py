@@ -252,14 +252,12 @@ class Sim(Parameters):
                 ax.set_yscale('log')
         elif q == 'mdot':
             ax.set_ylabel('$\\dot{M}$',fontsize=20)
-            line, = ax.plot(self.rc,self.mdot0/self.mdot0)
+            line, = ax.plot(self.rc,self.mdot[:,0]/self.bc_mdot)
             linep, = ax.plot(self.at[0],1,'o',markersize=10)
 
             #ax.axhline(1,color='k',linestyle='--')
-            dat = self.mdot[:,inds]
+            dat = self.mdot[:,inds]/self.bc_mdot
             dat = dat[:,::skip]
-            for i in range(dat.shape[1]):
-                dat[:,i] /= self.mdot0
         elif q == 'torque':
             ax.set_ylabel('$ \\Lambda(r)$',fontsize=20)
             line, = ax.plot(self.rc,self.torque[:,0])

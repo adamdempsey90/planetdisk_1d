@@ -62,10 +62,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
+    set_mdot(FALSE);
     for(i=0;i<NR;i++) {
+        fld.sol[i] = lam[i];
         fld.lami[i] = lam[i];
         fld.mdoti[i] = mdot[i];
+        fld.sol_mdot[i] = mdot[i];
         fld.sol_ss[i] = fld_ss.lam[i];
         fld.lamp[i] = fld_ss.lamp[i];
         fld.lam0[i] = fld_ss.lam0[i];
