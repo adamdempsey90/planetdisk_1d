@@ -24,6 +24,15 @@ void init_lam_from_file(void) {
 
 }
 
+
+void init_lam(void) {
+    int i;
+    for(i=0;i<NR;i++) {
+        lam[i] = params.bc_mdot*2*rc[i]/(3*nu(rc[i]));
+    }
+    return;
+}
+/*
 void init_lam(void) {
     int i;
     double mdot0, sig0, x;
@@ -53,14 +62,7 @@ void init_lam(void) {
         }
     }
 #endif
-/*
-    for(i=0;i<NR;i++) {
-        
-        lam[i] = 10*exp( -(rc[i]-10)*(rc[i]-10));
-    
-    }
-*/
     set_mdot(FALSE);
     return;
 }
-
+*/

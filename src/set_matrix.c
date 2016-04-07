@@ -13,11 +13,9 @@ void set_matrix(void) {
     else {
 
 */
-#ifdef NONLOCAL
     matrix.nsol = 1;
-     MALLOC_SAFE(( matrix.u =  (double *)malloc(sizeof(double)*NR))); 
-     MALLOC_SAFE(( matrix.w =  (double *)malloc(sizeof(double)*NR))); 
-#endif
+     MALLOC_SAFE(( matrix.u =  (double *)malloc(sizeof(double)*NR*2))); 
+     MALLOC_SAFE(( matrix.w =  (double *)malloc(sizeof(double)*NR*2))); 
     
     matrix.icol = 0;
     MALLOC_SAFE(( matrix.ld = (double *)malloc(sizeof(double)*(NR-1))));
@@ -33,10 +31,14 @@ void set_matrix(void) {
         matrix.fm[i] = 0;
         matrix.u[i] = 0;
         matrix.w[i] = 0;
+        matrix.u[i+NR] = 0;
+        matrix.w[i+NR] = 0;
                 
     }
     matrix.u[NR-1] = 0;
     matrix.w[NR-1] = 0;
+    matrix.u[NR+NR-1] = 0;
+    matrix.w[NR+NR-1] = 0;
     matrix.md[NR-1] = 1;
     matrix.fm[NR-1] = 0;
     return;

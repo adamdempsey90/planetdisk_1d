@@ -1,5 +1,21 @@
 #!/bin/bash
-gcc-4.9 -c -O3 -Wall -fopenmp test_solver.c -o test_solver.o
-gcc-4.9 -c -O3 -Wall -fopenmp trisolve.c -o trisolve.o
-gcc-4.9  -lgomp test_solver.o trisolve.o -o tritest
+
+if [ $USER == zeus ] 
+then
+
+    gcc-4.9 -c -O3 -Wall  test_solver.c -o test_solver.o
+    gcc-4.9 -c -O3 -Wall  trisolve.c -o trisolve.o
+    gcc-4.9 -c -O3 -Wall  matrix_ops.c -o matrix_ops.o
+    gcc-4.9  test_solver.o trisolve.o matrix_ops.o -o tritest
+fi
+if [ $USER != zeus ]
+    then
+
+        gcc-4.9 -c -O3 -Wall -DOPENMP -fopenmp test_solver.c -o test_solver.o
+        gcc-4.9 -c -O3 -Wall -DOPENMP -fopenmp trisolve.c -o trisolve.o
+        gcc-4.9 -c -O3 -Wall -DOPENMP -fopenmp matrix_ops.c -o matrix_ops.o
+        gcc-4.9  -lgomp test_solver.o trisolve.o matrix_ops.o -o tritest
+
+fi
+
 

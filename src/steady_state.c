@@ -29,6 +29,7 @@ void free_steady_state_field(SteadyStateField *tmpfld) {
     return;
 }
 void steadystate_config(SteadyStateField *tmpfld, double a) {
+#ifdef STEADYSTATE
     int i;
     double res,resp;
 
@@ -139,10 +140,11 @@ void steadystate_config(SteadyStateField *tmpfld, double a) {
     }
     tmpfld->vs = tmpfld->lamp[NR-1]*sqrt(rc[NR-1]);
     tmpfld->vs *= -params.bc_mdot * 2*sqrt(a)/(planet.mp*params.mth);
+#endif
     return;
 
 }
-
+/*
 void steadystate_config_nl(SteadyStateField *tmpfld, double a) {
     int i;
     double res;
@@ -200,4 +202,4 @@ void steadystate_config_nl(SteadyStateField *tmpfld, double a) {
     return;
 
 }
-
+*/

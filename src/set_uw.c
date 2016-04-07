@@ -13,7 +13,7 @@ int in_region(double x, double a, double leftr, double rightr) {
 }
 
 double dep_func(double x, double a, double xd, double w) {
-    double dist = x-a;
+    //double dist = x-a;
 /*
     if (dist < 0) dist += xd*w;
     else        dist -= xd*w;
@@ -58,8 +58,8 @@ void set_uw(double *u, double *w, double a, int n) {
             w[i] = dr[i]*dTr_ex(rc[i],a); // lower integral weights
             w[i+n] = 0; // upper integral weights
             
-            facm = dep_func(rm,a,planet.xd,hp);
-            facp = dep_func(rp,a,planet.xd,hp);
+            facm = dep_func(rm,a,xd,hp);
+            facp = dep_func(rp,a,xd,hp);
             u[i] = -2*sqrt(rp)*facp + 2*sqrt(rm)*facm;
             u[i+n] = 0;
 
@@ -69,8 +69,8 @@ void set_uw(double *u, double *w, double a, int n) {
             w[i] = 0; // lower integral weights
             w[i+n] = dr[i]*dTr_ex(rc[i],a);; // upper integral weights
 
-            facm = dep_func(rm,a,planet.xd,hp);
-            facp = dep_func(rp,a,planet.xd,hp);
+            facm = dep_func(rm,a,xd,hp);
+            facp = dep_func(rp,a,xd,hp);
             u[i+n] = -2*sqrt(rp)*facp + 2*sqrt(rm)*facm;
 
             u[i] = 0;

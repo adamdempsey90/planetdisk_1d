@@ -49,7 +49,9 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         }
     }
 #ifdef NONLOCAL
-    set_uw(matrix.u,matrix.w,aplanet);
+    if (params.planet_torque) {
+        set_uw(matrix.u,matrix.w,aplanet);
+    }
 #endif
     set_boundary();
 
