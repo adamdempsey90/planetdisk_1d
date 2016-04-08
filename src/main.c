@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
     }
 
     set_mdot(FALSE);
+    set_torque(planet.a,lam,fld.torque);
     for(i=0;i<NR;i++) {
         fld.sol[i] = lam[i];
         fld.lami[i] = lam[i];
@@ -75,15 +76,10 @@ int main(int argc, char *argv[]) {
         fld.lam0[i] = fld_ss.lam0[i];
         fld.ivals_ss[i] = fld_ss.ivals[i];
         fld.kvals_ss[i] = fld_ss.kvals[i];
+        fld.dTr[i] = dTr_ex(rc[i],planet.a);
     }
 
 
-#ifdef OPENMP
-#pragma omp parallel for private(i)
-#endif
-    for(i=0;i<NR;i++) {
-        fld.torque[i] = dTr_ex(rc[i],planet.a);
-    }
     planet.vs = calc_drift_speed(planet.a,lam);
     fld.avals[0] = planet.a; 
     fld.vs[0] = planet.vs;
@@ -113,7 +109,7 @@ int main(int argc, char *argv[]) {
         set_mdot(params.planet_torque);     
         fld.avals[i] = planet.a;
         fld.vs[i] = planet.vs;
-        
+        set_torque(planet.a,lam,&fld.torque[i*NR]);
 
         steadystate_config(&fld_ss,planet.a);
 
@@ -124,12 +120,12 @@ int main(int argc, char *argv[]) {
         for(j=0;j<NR;j++) {
             fld.sol[j + NR*i] = lam[j];
             fld.sol_mdot[j + NR*i] = mdot[j];
-            fld.torque[j + NR*i] = dTr_ex(rc[j],planet.a);
             fld.sol_ss[j + NR*i] = fld_ss.lam[j];
             fld.lamp[j+NR*i] = fld_ss.lamp[j];
             fld.lam0[j+NR*i] = fld_ss.lam0[j];
             fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
             fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
+            fld.dTr[j + NR*i] = dTr_ex(rc[j],planet.a);
         }
     
     }

@@ -16,6 +16,7 @@ void allocate_field( Field *tmpfld) {
      MALLOC_SAFE( (tmpfld->ivals_ss = (double *)malloc(sizeof(double)*NR*params.nt)));
      MALLOC_SAFE( (tmpfld->kvals_ss = (double *)malloc(sizeof(double)*NR*params.nt)));
 
+     MALLOC_SAFE( (tmpfld->dTr = (double *)malloc(sizeof(double)*NR*params.nt)));
     MALLOC_SAFE( (tmpfld->lamp = (double *)malloc(sizeof(double)*NR*params.nt)));
     MALLOC_SAFE( (tmpfld->lam0 = (double *)malloc(sizeof(double)*NR*params.nt)));
      MALLOC_SAFE( (tmpfld->efficiency = (double *)malloc(sizeof(double)*params.nt)));
@@ -45,6 +46,7 @@ void allocate_field( Field *tmpfld) {
         tmpfld->sol_ss[i] = 0;
         tmpfld->ivals_ss[i] = 0;
         tmpfld->kvals_ss[i] = 0;
+        tmpfld->dTr[i] = 0;
 
     }
     return;
@@ -69,6 +71,7 @@ void free_field( Field *tmpfld) {
     free(tmpfld->nu_grid);
     free(tmpfld->ivals_ss);
     free(tmpfld->kvals_ss);
+    free(tmpfld->dTr);
 
     return;
 }

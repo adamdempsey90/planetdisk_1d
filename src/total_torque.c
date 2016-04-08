@@ -1,4 +1,28 @@
 #include "pdisk.h"
+
+double calc_inner_torque(double a, double *y) {
+    int i;
+    double res = 0;
+//#ifdef OPENMP
+//#pragma omp parallel for private(i) reduction(+:res) 
+//#endif
+    for(i=0;rc[i]<a;i++) {
+        res += dr[i]*dTr_ex(rc[i],a)*y[i];
+    }
+    return res;
+}
+double calc_outer_torque(double a, double *y) {
+    int i;
+    double res = 0;
+//#ifdef OPENMP
+//#pragma omp parallel for private(i) reduction(+:res) 
+//#endif
+    for(i=NR-1;rc[i]>a;i--) {
+        res += dr[i]*dTr_ex(rc[i],a)*y[i];
+    }
+    return res;
+}
+
 double calc_total_torque(double a, double *y) {
     int i;
     double res = 0;
@@ -13,4 +37,28 @@ double calc_total_torque(double a, double *y) {
     return res;
 
 }
+
+
+void set_torque(double a, double *y, double *res) {
+
+#ifndef NONLOCAL
+    int i;
+
+#ifdef OPENMP
+#pragma omp parallel for private(i)
+#endif
+    for(i=0;i<NR;i++) {
+        res[i] = y[i]*dTr_ex(rc[i],a);
+    }
+
+#else
+
+    set_torque_nl(a,y,res);
+#endif
+    
+    return;
+
+}
+
+
 

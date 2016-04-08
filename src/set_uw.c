@@ -90,3 +90,29 @@ void set_uw(double *u, double *w, double a, int n) {
     return;
 
 }
+void set_torque_nl(double a, double *y, double *res) {
+    int i;
+    double TL, TR;
+    double hp, xd;
+
+    hp = params.h*a;
+    xd = planet.xd;
+
+    TL = calc_inner_torque(a,y);
+    TR = calc_outer_torque(a,y);
+
+#ifdef OPENMP
+#pragma omp parallel for private(i)
+#endif
+    for(i=0;i<NR;i++) {
+        if (rc[i] <= a) {
+            res[i] = TL*dep_func(rc[i],a,xd,hp);
+        }
+        else {
+            res[i] = TR*dep_func(rc[i],a,xd,hp);
+        }
+
+    }
+
+    return;
+}

@@ -118,6 +118,7 @@ double *lamp;
 double *lam0;
 double *efficiency;
 double *nu_grid;
+double *dTr;
 } Field;
 
 
@@ -184,3 +185,7 @@ void trisolve(double *ld, double *md, double *ud, double *d,double *sol,int n);
 void trisolve_sm(double *ld, double *md, double *ud, double *d, double *sol, double *u, double *w,int n);
 void trisolve_sm2(double *ld, double *md, double *ud, double *d, double *sol, double *u, double *w,int n);
 double calc_total_torque(double a, double *y);
+void set_torque_nl(double a, double *y, double *res);
+void set_torque(double a, double *y, double *res);
+double calc_inner_torque(double a, double *y);
+double calc_outer_torque(double a, double *y);

@@ -1,5 +1,5 @@
 EXECUTABLE=pdisk1d
-SOURCES=advance_system.c allocate.c boundary.c dTr_dep.c dTr_ex.c disk.c hdf5.c initialize.c integration.c main.c matrix_ops.c mdot.c move_planet.c read_params.c set_grid.c set_matrix.c set_uw.c steady_state.c total_torque.c trisolve.c
+SOURCES=advance_system.c allocate.c boundary.c dTr_ex.c disk.c hdf5.c initialize.c integration.c main.c matrix_ops.c mdot.c move_planet.c read_params.c set_grid.c set_matrix.c set_uw.c steady_state.c total_torque.c trisolve.c
 HEADER=defines.h pdisk.h
 
 LAPACKLIB=-llapack -lblas
@@ -12,8 +12,8 @@ OPENMPFLAG=-fopenmp
 HDF5FLAG=-DH5_USE_16_API
 
 
-LDFLAGS= $(MATHLIB) $(HDF5LIB)  
-CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG)  
+LDFLAGS= $(MATHLIB) $(HDF5LIB) $(OPENMPLIB)
+CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG) $(OPENMPFLAG)
 
 
 INCLIB=

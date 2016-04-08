@@ -4,7 +4,7 @@ ri = 1.56
 ro = 30.0
 
 #Disk Parameters:
-alpha = 0.01
+alpha = 0.003
 gamma = 0.5
 h = 0.05
 
