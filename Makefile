@@ -69,10 +69,10 @@ CHEADER=$(addprefix $(SRC),$(HEADER))
 all: $(CSOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(COBJECTS)
-	$(CC)  $(COBJECTS) $(LDLIB) $(LDFLAGS) -o $@  
+	$(CC)  $(COBJECTS) $(LDLIB) $(LDFLAGS) -o $@ 
 
 $(BIN)%.o: $(SRC)%.c $(CHEADER)
-	$(CC) $(INCLIB) $(CFLAGS) $< -o $@  
+	$(CC) $(INCLIB) $(CFLAGS) $< -o $@ 
 
 
 clean:

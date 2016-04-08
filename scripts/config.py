@@ -50,10 +50,10 @@ def add_library(lib):
             lines = f.readlines()
 
         for i,line in enumerate(lines):
-            if 'LDFLAGS' in line:
+            if 'LDFLAGS=' in line:
                 if 'OPENMP' not in line:
                     lines[i] = line.strip() + ' $(OPENMPLIB)\n'
-            if 'CFLAGS' in line:
+            if 'CFLAGS=' in line:
                 if 'OPENMP' not in line:
                     lines[i] = line.strip() + ' $(OPENMPFLAG)\n'
         with open('Makefile','w') as f:

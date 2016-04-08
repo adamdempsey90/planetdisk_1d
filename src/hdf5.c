@@ -144,6 +144,7 @@ void write_hdf5_file(void) {
 
 
     hsize_t dims1[1] = {NR};
+    hsize_t dims1_2[2] = {2*NR};
     hsize_t dims1_t[1]= {params.nt};
     hsize_t dims1_small[1] = {NR-1};
     hsize_t dims2[2] = {params.nt,NR};
@@ -162,6 +163,8 @@ void write_hdf5_file(void) {
     write_hdf5_double(matrix.ld,dims1_small,1,matrix_id,"ld");
     write_hdf5_double(matrix.ud,dims1_small,1,matrix_id,"ud");
    write_hdf5_double(matrix.fm,dims1,1,matrix_id,"fm");
+   write_hdf5_double(matrix.u,dims1_2,1,matrix_id,"u");
+   write_hdf5_double(matrix.w,dims1_2,1,matrix_id,"w");
 
 // Write Solution
     write_hdf5_double(fld.sol,dims2,2,solution_id,"lam");

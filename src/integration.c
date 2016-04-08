@@ -63,7 +63,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     
 #ifdef NONLOCAL
     if (params.planet_torque) {
-        set_uw(matrix.u,matrix.w,aplanet);
+        set_uw(matrix.u,matrix.w,aplanet,NR);
     }
 #endif
 
@@ -92,7 +92,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
  
 
 #ifdef NONLOCAL
-    trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,matrix.u,matrix.w,y,NR);
+    trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
 #else
     trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
 #endif

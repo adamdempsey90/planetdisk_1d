@@ -9,9 +9,11 @@ int main(int argc, char *argv[]) {
     else {
         strcpy(parfile,argv[1]);
     }
+/*
 #ifdef OPENMP
     printf("Compilied code with OPENMP, using %d threads\n",OMP_NUM_THREADS);
 #endif
+*/
     printf("Reading parameters from %s...\n",parfile);
     set_params(parfile);
     
@@ -46,9 +48,9 @@ int main(int argc, char *argv[]) {
         fld.sol_mdot[i] = 0;
     }
    
-    /*
+    
     steadystate_config(&fld_ss,planet.a);
-*/
+
     fld.vs_ss[0] = fld_ss.vs;
     fld.mdot_ss[0] = fld_ss.mdot;
     fld.efficiency[0] = fld_ss.mdot/fld_ss.mdot0;
@@ -112,9 +114,9 @@ int main(int argc, char *argv[]) {
         fld.avals[i] = planet.a;
         fld.vs[i] = planet.vs;
         
-/*
+
         steadystate_config(&fld_ss,planet.a);
-*/
+
         fld.vs_ss[i] = fld_ss.vs;
         fld.mdot_ss[i] = fld_ss.mdot;
         fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;

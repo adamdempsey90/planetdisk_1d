@@ -120,6 +120,8 @@ class Sim(Parameters):
         self.lower_diag = mat['ld'][:]
         self.upper_diag = mat['ud'][:]
         self.rhs = mat['fm'][:]
+        self.u = mat['u'][:]
+        self.w = mat['w'][:]
         try:
             self.col = mat['col'][:]
         except KeyError:

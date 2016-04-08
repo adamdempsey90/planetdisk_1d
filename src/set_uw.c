@@ -22,13 +22,21 @@ double dep_func(double x, double a, double xd, double w) {
 */
     double leftr = (xd-.5)*w;
     double rightr = (xd+.5)*w;
-        
+    double res;   
     double norm = 1./w;
+
+    if ( (fabs(x-a) > leftr) && (fabs(x-a) <rightr)) {
+        res = norm;
+    }
+    else {
+        res = 0;
+    }
+/*
     double res = smoothing(x,a+leftr,params.h/2)*(1-smoothing(x,a+rightr,params.h/2));
     res += smoothing(x,a-rightr,params.h/2)*(1-smoothing(x,a-leftr,params.h/2));
     return norm*res;
-
-
+*/
+    return res;
 
 
 }

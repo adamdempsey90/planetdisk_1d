@@ -17,7 +17,7 @@ flux_bc = T
 #Time Parameters:
 dt = 100.0
 cfl = 0.8
-nvisc = 5.0
+nvisc = 1.0
 nt = 100
 release_time = 0
 start_ss = F
@@ -36,7 +36,7 @@ shock_dep = F
 hs_visc = F
 one_sided = 0
 a  = 5.2
-mp = 4.0
+mp = 8.0
 G1 = 0.0
 beta = 0.66666667
 delta = 0.05
