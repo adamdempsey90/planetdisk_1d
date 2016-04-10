@@ -103,3 +103,10 @@ void outer(double *v1, double *v2, double *res, int n) {
 
     return;
 }
+void zero_array(double *v, int n) {
+    int i;
+    for(i=0;i<n;i++) {
+        v[i] = 0;
+    }
+    return;
+}

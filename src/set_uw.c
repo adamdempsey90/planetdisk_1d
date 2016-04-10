@@ -13,13 +13,12 @@ int in_region(double x, double a, double leftr, double rightr) {
 }
 
 double dep_func(double x, double a, double xd, double w) {
-    //double dist = x-a;
-/*
+    double dist = x-a;
     if (dist < 0) dist += xd*w;
     else        dist -= xd*w;
     dist *= dist;
-    return exp(- dist * 2*M_PI*M_PI/(w*w))/(w);
-*/
+    return exp(- dist/(2*w*w)) / (sqrt(2*M_PI)*w);
+/*
     double leftr = (xd-.5)*w;
     double rightr = (xd+.5)*w;
     double res;   
@@ -31,12 +30,13 @@ double dep_func(double x, double a, double xd, double w) {
     else {
         res = 0;
     }
+    return res;
+*/
 /*
     double res = smoothing(x,a+leftr,params.h/2)*(1-smoothing(x,a+rightr,params.h/2));
     res += smoothing(x,a-rightr,params.h/2)*(1-smoothing(x,a-leftr,params.h/2));
     return norm*res;
 */
-    return res;
 
 
 }

@@ -1,5 +1,5 @@
 #Grid Parameters:
-nr = 512
+nr = 256
 ri = 1.56
 ro = 30.0
 
@@ -42,6 +42,6 @@ beta = 0.66666667
 delta = 0.05
 c = 0.6666667
 eps = 0.2
-xd = 3.2
+xd = 5.0
 outputname = results.hdf5
 

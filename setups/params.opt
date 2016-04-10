@@ -4,7 +4,7 @@
 
 
 # Enable parallelization
-+OPENMP
+#+OPENMP
 
 # Enable non-local deposition 
 +NONLOCAL

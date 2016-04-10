@@ -189,3 +189,4 @@ void set_torque_nl(double a, double *y, double *res);
 void set_torque(double a, double *y, double *res);
 double calc_inner_torque(double a, double *y);
 double calc_outer_torque(double a, double *y);
+void zero_array(double *v, int n);
