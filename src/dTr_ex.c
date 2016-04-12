@@ -15,10 +15,15 @@ double dTr_ex(double x,double a) {
         right_fac = norm*pow(x/fmax(scaleH(a),fabs(x-a)),4);
     }
     left_fac = -norm*pow(x/fmax(scaleH(a),fabs(x-a)),4);    
-    
+
+/*
+#ifndef TRANSLATE
+    left_fac *= (1-smoothing(xi, -(planet.c+planet.xd), planet.delta));
+    right_fac *= smoothing(xi,-(planet.c+planet.xd), planet.delta)*smoothing(xi,(planet.c+planet.xd),planet.delta);
+#else 
+*/
     left_fac *= (1-smoothing(xi, -planet.c, planet.delta));
     right_fac *= smoothing(xi,-planet.c, planet.delta)*smoothing(xi,planet.c,planet.delta);
-    
     res = left_fac*(1-planet.onesided) + right_fac;
 
 

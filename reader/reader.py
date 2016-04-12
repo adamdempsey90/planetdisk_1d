@@ -85,7 +85,7 @@ class Parameters():
         outname = kargs.pop('outputname',self.outputname)
 
         self.dump_params(fname,outputname=outname,**kargs)
-        call(['./migra',fname])
+        call(['../pdisk1d',fname])
         return outname
 
 class Sim(Parameters):
@@ -154,6 +154,7 @@ class Sim(Parameters):
 #        self.rm = dat[1,1:]
         self.mth = self.h**3
         self.q = self.mp*self.mth
+        self.rh = (self.q/3.)**(1./3) * self.a
         self.disk_mass = np.dot(self.dr,self.lam0)
 #        self.dr = dat[2,1:]
         self.tvisc = self.ro**2/(self.nu(self.ro))

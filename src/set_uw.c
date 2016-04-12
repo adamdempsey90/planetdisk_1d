@@ -13,11 +13,17 @@ int in_region(double x, double a, double leftr, double rightr) {
 }
 
 double dep_func(double x, double a, double xd, double w) {
-    double dist = x-a;
-    if (dist < 0) dist += xd*w;
-    else        dist -= xd*w;
-    dist *= dist;
-    return exp(- dist/(2*w*w)) / (sqrt(2*M_PI)*w);
+    double hp = scaleH(a);
+    double dist = (x-a)/hp;
+    if (xd == 0) {
+        return dTr_ex(x,a);
+    }
+    else {
+        if (dist < 0) dist += (planet.c+xd);
+        else        dist -= (planet.c+xd);
+        dist *= dist;
+        return exp(- dist/(2.)) / (sqrt(2*M_PI)*hp);
+    }
 /*
     double leftr = (xd-.5)*w;
     double rightr = (xd+.5)*w;

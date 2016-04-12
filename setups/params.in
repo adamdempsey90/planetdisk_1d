@@ -1,7 +1,7 @@
 #Grid Parameters:
 nr = 256
-ri = 1.56
-ro = 30.0
+ri = 0.2
+ro = 4.0
 
 #Disk Parameters:
 alpha = 0.003
@@ -11,11 +11,11 @@ h = 0.05
 #Boundary Conditions:
 bc_lam_inner = 0.0
 bc_lam_outer = 1.0
-bc_mdot = 0.000001
+bc_mdot = 0.0000236
 flux_bc = T
 
 #Time Parameters:
-dt = 100.0
+dt = 1000.0
 cfl = 0.8
 nvisc = 1.0
 nt = 100
@@ -35,13 +35,13 @@ nonlocal_torque = F
 shock_dep = F
 hs_visc = F
 one_sided = 0
-a  = 5.2
+a  = 1.0
 mp = 8.0
 G1 = 0.0
 beta = 0.66666667
 delta = 0.05
 c = 0.6666667
-eps = 0.2
-xd = 5.0
+eps = 0.02
+xd  = 0.0
 outputname = results.hdf5
 
