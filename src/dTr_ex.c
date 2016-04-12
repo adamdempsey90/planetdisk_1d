@@ -1,6 +1,8 @@
 #include "pdisk.h"
 
-double dTr_ex(double x,double a) {
+
+
+double dTr_linear(double x,double a) {
     double left_fac, right_fac; 
     double norm, xi,res;
 
@@ -34,3 +36,22 @@ double dTr_ex(double x,double a) {
 
 
 
+double dTr_ex(double x, double a) {
+
+#ifdef TRANSLATE
+    double xd = planet.xd*params.h*a;
+    if (x > a) {
+        xd = fmax(a,x-xd);
+    }
+    else {
+        xd = fmin(a,x+xd);
+    }
+    return dTr_linear(xd,a);
+#else
+    
+    return dTr_linear(x,a);
+
+#endif
+
+
+}

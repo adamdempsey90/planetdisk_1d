@@ -32,6 +32,7 @@ void free_steady_state_field(SteadyStateField *tmpfld) {
 
     return;
 }
+
 void steadystate_config(SteadyStateField *tmpfld, double a) {
     int i;
     double res,resp;
@@ -93,5 +94,77 @@ void steadystate_config(SteadyStateField *tmpfld, double a) {
     tmpfld->vs = tmpfld->lamp[NR-1]*sqrt(rc[NR-1]);
     tmpfld->vs *= -params.bc_mdot * 2*sqrt(a)/(planet.mp*params.mth);
     return;
+
+}
+void steadystate_config_nl(SteadyStateField *tmpfld,double a) {
+    int i,j;
+    double hp, xd;
+    double c1, c2, x;
+    double mdot_fac, lam_fac;
+    double F_fac;
+    double res;
+    double dtr;
+
+    double TL, TR;
+    mdot_fac = params.bc_mdot;
+    xd = planet.xd;
+    w = params.h*a;
+
+
+    c1=0;
+    c2=1.0;
+
+    for(i=0;rc[i]<a;i++) {
+        x = (r-a)/(sqrt(2)*w);
+        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
+        dtr = dTr_ex(rc[i],a)/F_fac;
+        c1 += dr[i]*dtr* sqrt(rc[i]/a);
+        c2 += dr[i]*dtr*erfc(x)/2.;
+    }
+
+    for(i=0;i;rc[i]<a;i++) {
+        tmpfld->lamp[i] = erfc(x)*c1/sqrt(rc[i]*c2) ;
+        tmpfld->lam[i] = (tmpfld->lamp[i] + 1)*tmpfld->lam0[i];
+    }
+
+
+    c1 = 0;
+    c2 = 1.0;
+
+    for(i=NR-1;rc[i]>a;i--) {
+        x = (a-r)/(sqrt(2)*w);
+        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
+        dtr = dTr_ex(rc[i],a)/F_fac;
+        c1 += dr[i]*dtr* sqrt(rc[i]/a);
+        c2 += dr[i]*dtr*erfc(x)/2.;
+    }
+
+    for(i=0;i;rc[i]<a;i++) {
+        tmpfld->lamp[i] = erfc(x)*c1/sqrt(rc[i]*c2) ;
+        tmpfld->lam[i] = (tmpfld->lamp[i] + 1)*tmpfld->lam0[i];
+    }
+
+    for(i=NR-1;rc[i]>a;i++) {
+        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
+        TR += dr[i]*dTr_ex(rc[i],a)/F_fac;
+    }
+    for(i=0;i<NR;i++) {
+        tmpfld->lam0[i] = mdot*l/F_fac;
+        if(rc[i] <= a) {
+            
+        
+
+
+        }
+        else {
+
+
+
+        }
+
+
+   }
+
+
 
 }

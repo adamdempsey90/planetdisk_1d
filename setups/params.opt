@@ -4,9 +4,10 @@
 
 
 # Enable parallelization
-#+OPENMP
++OPENMP
 
 # Enable non-local deposition 
+#+TRANSLATE
 +NONLOCAL
 # Enable non-local deposition through shocks
 #+SHOCKS

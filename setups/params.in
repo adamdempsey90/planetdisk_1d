@@ -15,9 +15,9 @@ bc_mdot = 0.0000236
 flux_bc = T
 
 #Time Parameters:
-dt = 1000.0
+dt = 100.0
 cfl = 0.8
-nvisc = 1.0
+nvisc = 5.0
 nt = 100
 release_time = 0
 start_ss = F
@@ -41,7 +41,7 @@ G1 = 0.0
 beta = 0.66666667
 delta = 0.05
 c = 0.6666667
-eps = 0.02
-xd  = 0.0
-outputname = results.hdf5
+eps = 0.2
+xd  = 5.0
+outputname = results_5.hdf5
 

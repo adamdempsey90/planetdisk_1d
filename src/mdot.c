@@ -13,8 +13,8 @@ void set_mdot(int planet_torque) {
 #endif
     
     for(i=1;i<NR;i++) { 
-        
-        mdot[i] += 1.5*( lam[i]*nu(rc[i])/sqrt(rc[i]) - lam[i-1]*nu(rc[i-1])/sqrt(rc[i-1]))/(sqrt(rc[i])-sqrt(rc[i-1]));
+
+        mdot[i] = -mdot[i]*2*sqrt(rc[i]) + 1.5*( lam[i]*nu(rc[i])/sqrt(rc[i]) - lam[i-1]*nu(rc[i-1])/sqrt(rc[i-1]))/(sqrt(rc[i])-sqrt(rc[i-1]));
 
         if (planet_torque) {
 #ifndef NONLOCAL        
@@ -25,7 +25,7 @@ void set_mdot(int planet_torque) {
         
 
     }
-    mdot[0] += lam[0]*1.5*nu(rmin[0])/rmin[0];
+    mdot[0] = -mdot[0]*2*sqrt(rc[i]) + lam[0]*1.5*nu(rmin[0])/rmin[0];
     return;
 }
 

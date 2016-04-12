@@ -1,1 +1,2 @@
+#define OPENMP
 #define NONLOCAL
