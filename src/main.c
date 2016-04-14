@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
    
     
     steadystate_config(&fld_ss,planet.a);
+    steadystate_config_nl(&fld_ss,planet.a);
 
     fld.vs_ss[0] = fld_ss.vs;
     fld.mdot_ss[0] = fld_ss.mdot;
@@ -112,6 +113,7 @@ int main(int argc, char *argv[]) {
         set_torque(planet.a,lam,&fld.torque[i*NR]);
 
         steadystate_config(&fld_ss,planet.a);
+        steadystate_config_nl(&fld_ss,planet.a);
 
         fld.vs_ss[i] = fld_ss.vs;
         fld.mdot_ss[i] = fld_ss.mdot;

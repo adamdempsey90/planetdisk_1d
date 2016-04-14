@@ -1,23 +1,23 @@
 #Grid Parameters:
-nr = 256
-ri = 0.2
-ro = 4.0
+nr = 512
+ri = 0.3
+ro = 3.0
 
 #Disk Parameters:
-alpha = 0.003
+alpha = 0.001
 gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
 bc_lam_inner = 0.0
 bc_lam_outer = 1.0
-bc_mdot = 0.0000236
+bc_mdot = 0.0001
 flux_bc = T
 
 #Time Parameters:
 dt = 100.0
 cfl = 0.8
-nvisc = 5.0
+nvisc = 2.0
 nt = 100
 release_time = 0
 start_ss = F
@@ -41,7 +41,7 @@ G1 = 0.0
 beta = 0.66666667
 delta = 0.05
 c = 0.6666667
-eps = 0.2
-xd  = 5.0
-outputname = results_5.hdf5
+eps = 0.1
+xd  = 6.0
+outputname = results_6.hdf5
 

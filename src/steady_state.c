@@ -96,14 +96,16 @@ void steadystate_config(SteadyStateField *tmpfld, double a) {
     return;
 
 }
+
 void steadystate_config_nl(SteadyStateField *tmpfld,double a) {
     int i,j;
-    double hp, xd;
+    double w, xd;
     double c1, c2, x;
     double mdot_fac, lam_fac;
     double F_fac;
     double res;
     double dtr;
+    double Fa;
 
     double TL, TR;
     mdot_fac = params.bc_mdot;
@@ -111,19 +113,30 @@ void steadystate_config_nl(SteadyStateField *tmpfld,double a) {
     w = params.h*a;
 
 
+    tmpfld->mdot = mdot_fac;
+    tmpfld->mdot0 = mdot_fac;
+
     c1=0;
     c2=1.0;
-
-    for(i=0;rc[i]<a;i++) {
-        x = (r-a)/(sqrt(2)*w);
-        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
-        dtr = dTr_ex(rc[i],a)/F_fac;
-        c1 += dr[i]*dtr* sqrt(rc[i]/a);
-        c2 += dr[i]*dtr*erfc(x)/2.;
+    for(i=0;i<NR;i++) {
+        tmpfld->lam0[i] = (2./3)*mdot_fac*rc[i]/nu(rc[i]);
     }
 
-    for(i=0;i;rc[i]<a;i++) {
-        tmpfld->lamp[i] = erfc(x)*c1/sqrt(rc[i]*c2) ;
+    for(i=0;rc[i]<=a;i++) {
+        x = (rc[i] - a)/w;
+        x += (xd + planet.c);
+        x = x/sqrt(2);
+        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
+        dtr = dTr_ex(rc[i],a)/F_fac;
+        c1 += dr[i]*dtr* sqrt(rc[i]);
+        c2 -= dr[i]*dtr*erfc(-x)/2.;
+    }
+    Fa = c1/(c2*sqrt(a));
+    for(i=0;rc[i]<=a;i++) {
+        x = (rc[i] - a)/w;
+        x += (xd + planet.c);
+        x = x/sqrt(2);
+        tmpfld->lamp[i] = .5*erfc(-x)*c1/( c2*sqrt(rc[i])) ;
         tmpfld->lam[i] = (tmpfld->lamp[i] + 1)*tmpfld->lam0[i];
     }
 
@@ -132,39 +145,32 @@ void steadystate_config_nl(SteadyStateField *tmpfld,double a) {
     c2 = 1.0;
 
     for(i=NR-1;rc[i]>a;i--) {
-        x = (a-r)/(sqrt(2)*w);
+        x = (rc[i] - a)/w;
+        x -= (xd + planet.c);
+        x /= sqrt(2);
         F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
         dtr = dTr_ex(rc[i],a)/F_fac;
-        c1 += dr[i]*dtr* sqrt(rc[i]/a);
-        c2 += dr[i]*dtr*erfc(x)/2.;
+        c1 += dr[i]*dtr* (sqrt(a)*Fa + sqrt(rc[i]));
+        c2 -= dr[i]*dtr*erfc(-x)/2.;
     }
 
-    for(i=0;i;rc[i]<a;i++) {
-        tmpfld->lamp[i] = erfc(x)*c1/sqrt(rc[i]*c2) ;
+    for(i=NR-1;rc[i]>a;i--) {
+        x = (rc[i] - a)/w;
+        x -= (xd + planet.c);
+        x /= sqrt(2);
+        tmpfld->lamp[i] = Fa*sqrt(a/rc[i]) + .5*erfc(-x)*c1/(c2*sqrt(rc[i])) ;
         tmpfld->lam[i] = (tmpfld->lamp[i] + 1)*tmpfld->lam0[i];
     }
 
-    for(i=NR-1;rc[i]>a;i++) {
-        F_fac = 1.5*nu(rc[i])/sqrt(rc[i]);
-        TR += dr[i]*dTr_ex(rc[i],a)/F_fac;
-    }
+
+    tmpfld->vs = tmpfld->lamp[NR-1]*sqrt(rc[NR-1]);
+    tmpfld->vs *= -params.bc_mdot * 2*sqrt(a)/(planet.mp*params.mth);
+
     for(i=0;i<NR;i++) {
-        tmpfld->lam0[i] = mdot*l/F_fac;
-        if(rc[i] <= a) {
-            
-        
+        tmpfld->ivals[i] = 0;
+        tmpfld->kvals[i] = 0;
+    }
 
-
-        }
-        else {
-
-
-
-        }
-
-
-   }
-
-
-
+    return;
 }
+
