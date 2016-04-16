@@ -1,1 +1,2 @@
-#define NONLOCAL
+#define OPENMP
+#define TORQUEFIT 

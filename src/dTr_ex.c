@@ -1,6 +1,11 @@
 #include "pdisk.h"
 
 
+double fits[3][4] ={ { 0.0012, -.14, 0.0017, -0.115},
+                    {0.08,-0.2,0.11,-0.25},
+                    {0.7,0.06,0.8,0.12}};
+
+
 
 double dTr_linear(double x,double a) {
     double left_fac, right_fac; 
@@ -35,6 +40,37 @@ double dTr_linear(double x,double a) {
 }
 
 
+double dTr_fit(double x, double a) {
+    
+    double eps,mu,s;
+
+    double alpha = params.alpha;
+    double hp = params.h * a;
+    double dist;
+    
+    dist = (x-a)/hp;
+
+
+    if (dist >= 2./3) {
+
+        eps = fits[0][2] * pow(alpha,fits[0][3]);
+        mu = fits[1][2] * pow(alpha,fits[1][3]);
+        s = fits[2][2] * pow(alpha,fits[2][3]);
+
+    }
+    else if (dist <= -2./3) {
+        eps = -fits[0][0] * pow(alpha,fits[0][1]);
+        mu = fits[1][0] * pow(alpha,fits[1][1]);
+        s = fits[2][0] * pow(alpha,fits[2][1]);
+        
+    }
+    else {
+        return 0;
+    }
+    
+    dist = log(fabs(dist)) - mu;
+    return eps*exp(-dist*dist/(2*s*s))/(sqrt(2*M_PI)*s);
+}
 
 double dTr_ex(double x, double a) {
 
@@ -48,9 +84,11 @@ double dTr_ex(double x, double a) {
     }
     return dTr_linear(xd,a);
 #else
-    
+#ifdef TORQUEFIT
+    return dTr_fit(x,a);
+#else
     return dTr_linear(x,a);
-
+#endif
 #endif
 
 
