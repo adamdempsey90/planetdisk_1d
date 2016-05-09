@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+cp ../interpolation.c .
+cp ../../trisolve.c .
+
+gcc -c -O3 interpolation.c -o interpolation.o
+gcc -c -O3 trisolve.c -o trisolve.o
+gcc -c -O3 interptest.c -o interptest.o
+gcc interpolation.o trisolve.o interptest.o -lm -o interptest
+
