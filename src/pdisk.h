@@ -101,24 +101,27 @@ typedef struct TridDiagMat {
 } TriDiagMat;
 
 typedef struct Field {
-double *sol;
-double *sol_mdot;
-double *times;
-double *lami;
-double *mdoti;
-double *avals;
-double *vs; 
-double *torque;
-double *vs_ss;
-double *mdot_ss;
-double *ivals_ss;
-double *kvals_ss;
-double *sol_ss;
-double *lamp;
-double *lam0;
-double *efficiency;
-double *nu_grid;
-double *dTr;
+    double *sol;
+    double *sol_mdot;
+    double *times;
+    double *lami;
+    double *mdoti;
+    double *avals;
+    double *vs; 
+    double *torque;
+    double *vs_ss;
+    double *mdot_ss;
+    double *ivals_ss;
+    double *kvals_ss;
+    double *sol_ss;
+    double *lamp;
+    double *lam0;
+    double *efficiency;
+    double *nu_grid;
+    double *dTr;
+#ifdef GRIDTORQUE
+    double *grid_torque;
+#endif
 } Field;
 
 
@@ -191,3 +194,4 @@ double calc_inner_torque(double a, double *y);
 double calc_outer_torque(double a, double *y);
 void zero_array(double *v, int n);
 void steadystate_config_nl(SteadyStateField *tmpfld,double a);
+void read_torque_file(Field *tmpfld);

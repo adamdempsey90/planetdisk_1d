@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
         fld.nu_grid[i] = nu(rc[i]);
     }
     allocate_steady_state_field(&fld_ss);
+
+#ifdef GRIDTORQUE
+    read_torque_file(&fld);
+#endif
     
        
     set_matrix(); 

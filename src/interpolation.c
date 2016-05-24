@@ -134,7 +134,7 @@ void cubic_spline_interpolation(double *x,double *y,double *xd, double *yd,int n
     free(cs_rhs);
     return;
 }
-void read_torque_file(void) {
+void read_torque_file(Field *tmpfld) {
     int i;
     int nd;
     double nd_d;
@@ -151,7 +151,7 @@ void read_torque_file(void) {
     fread(dtr_torque,sizeof(double),nd,f);
     fclose(f);
 
-    linear_interpolation(rc,grid_torque,r_torque,dtr_torque,NR,nd);
+    linear_interpolation(rmin,tmpfld->grid_torque,r_torque,dtr_torque,NR,nd);
     free(r_torque);
     free(dtr_torque);
     return;
