@@ -40,6 +40,7 @@ typedef struct Parameters {
     char outputname[MAXSTRLEN];
     int nonlocal_torque;
     int shock_dep;
+    int forced_torque;
 } Parameters;
 
 
@@ -69,6 +70,7 @@ typedef struct param_t {
     int symmetric_torque;
     int nonlocal_torque;
     int shock_dep;
+    int forced_torque;
     int hs_visc;
     double one_sided;
     double a;
@@ -119,9 +121,7 @@ typedef struct Field {
     double *efficiency;
     double *nu_grid;
     double *dTr;
-#ifdef GRIDTORQUE
     double *grid_torque;
-#endif
 } Field;
 
 

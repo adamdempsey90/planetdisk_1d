@@ -72,6 +72,8 @@ void read_input_file(char *fname) {
     set_bool(tmpstr,&params.nonlocal_torque);
     read_res=fscanf(f,"shock_dep = %s \n",tmpstr);
     set_bool(tmpstr,&params.shock_dep);
+    read_res=fscanf(f,"forced_torque = %s \n",tmpstr);
+    set_bool(tmpstr,&params.forced_torque);
     read_res=fscanf(f,"hs_visc = %s \n",tmpstr);
     set_bool(tmpstr,&params.hs_visc);
 

@@ -49,12 +49,16 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
 #ifndef NONLOCAL
         if (params.planet_torque) {
-
-            em = 2*sqrt(rm)*dTr_ex(rm,aplanet);
-            ep = 2*sqrt(rp)*dTr_ex(rp,aplanet);
-            matrix.ld[i-1] += em*dc/dm_tot;
-            matrix.ud[i] -= ep*dc/dp_tot;
-            matrix.md[i] += em*dm/dm_tot - ep*dp/dp_tot;
+            if (params.forced_torque) {
+                 matrix.fm[i] += 2*sqrt(rm) * 2*M_PI*rm * fld.grid_torque[i] - 2*sqrt(rp) * 2 *M_PI*rp * fld.grid_torque[i+1];
+            }
+            else {
+                em = 2*sqrt(rm)*dTr_ex(rm,aplanet);
+                ep = 2*sqrt(rp)*dTr_ex(rp,aplanet);
+                matrix.ld[i-1] += em*dc/dm_tot;
+                matrix.ud[i] -= ep*dc/dp_tot;
+                matrix.md[i] += em*dm/dm_tot - ep*dp/dp_tot;
+            }
         }
 #endif
         
@@ -62,10 +66,12 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     
     
 #ifdef NONLOCAL
-    if (params.planet_torque) {
+    if (params.planet_torque && !(params.forced_torque) ) {
         set_uw(matrix.u,matrix.w,aplanet,NR);
     }
 #endif
+
+
 
     set_boundary();
     // Coefficient Matrix is all set

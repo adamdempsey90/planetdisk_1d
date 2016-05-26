@@ -33,6 +33,7 @@ class Parameters():
         ('symmetric_torque',bool),
         ('nonlocal_torque',bool),
         ('shock_dep',bool),
+        ('forced_torque',bool),
         ('hs_visc',bool),
         ('one_sided',float),
         ('a',float),
@@ -340,7 +341,8 @@ class Sim(Parameters):
             if q == 'cmass':
                 liness.set_ydata(np.cumsum(self.lam_ss[:,inds][:,::skip][:,i]*self.dr))
             ax.set_title('t = %.2e viscous times' % (t/self.tvisc))
-            fig.canvas.draw()
+            plt.pause(1e-4)
+            plt.draw()
 
 
     def time_series(self,axes=None,fig=None,scale=True):

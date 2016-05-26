@@ -17,7 +17,7 @@ flux_bc = T
 #Time Parameters:
 dt = 100.0
 cfl = 0.8
-nvisc = 0.14
+nvisc = 1.0
 nt = 100
 release_time = 0
 start_ss = F
@@ -33,6 +33,7 @@ gaussian = F
 symmetric_torque = T
 nonlocal_torque = F
 shock_dep = F
+forced_torque = T
 hs_visc = F
 one_sided = 0
 a  = 1.0

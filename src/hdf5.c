@@ -50,6 +50,7 @@ void write_hdf5_params(hid_t *params_id) {
     out_par.symmetric_torque = planet.symmetric_torque;
     out_par.nonlocal_torque = params.nonlocal_torque;
     out_par.shock_dep = params.shock_dep;
+    out_par.forced_torque = params.forced_torque;
     out_par.hs_visc = params.hs_visc;
     out_par.one_sided = planet.onesided;
     out_par.a = planet.a;
@@ -104,6 +105,7 @@ void write_hdf5_params(hid_t *params_id) {
  HDF5_INSERT_ERROR(H5Tinsert (memtype, "symmetric_torque", HOFFSET (param_t, symmetric_torque), H5T_NATIVE_INT));
  HDF5_INSERT_ERROR(H5Tinsert (memtype, "nonlocal_torque", HOFFSET (param_t, nonlocal_torque), H5T_NATIVE_INT));
  HDF5_INSERT_ERROR(H5Tinsert (memtype, "shock_dep", HOFFSET (param_t, shock_dep), H5T_NATIVE_INT));
+ HDF5_INSERT_ERROR(H5Tinsert (memtype, "forced_torque", HOFFSET (param_t, forced_torque), H5T_NATIVE_INT));
  HDF5_INSERT_ERROR(H5Tinsert (memtype, "hs_visc", HOFFSET (param_t, hs_visc), H5T_NATIVE_INT));
 
     HDF5_INSERT_ERROR(H5Tinsert (memtype, "one_sided", HOFFSET (param_t, one_sided), H5T_NATIVE_DOUBLE));
