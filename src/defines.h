@@ -1,2 +1,2 @@
 #define OPENMP
-#define TORQUEFIT 
+#define GRIDTORQUE

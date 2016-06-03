@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     allocate_steady_state_field(&fld_ss);
 
     if (params.forced_torque) {
-        read_torque_file(&fld);
+        read_torque_file(&fld,params.torque_file);
     }
     
        

@@ -38,6 +38,7 @@ typedef struct Parameters {
     int flux_bc;
     double release_time;
     char outputname[MAXSTRLEN];
+    char torque_file[MAXSTRLEN];
     int nonlocal_torque;
     int shock_dep;
     int forced_torque;
@@ -194,4 +195,4 @@ double calc_inner_torque(double a, double *y);
 double calc_outer_torque(double a, double *y);
 void zero_array(double *v, int n);
 void steadystate_config_nl(SteadyStateField *tmpfld,double a);
-void read_torque_file(Field *tmpfld);
+void read_torque_file(Field *tmpfld,char *trq_file_name);

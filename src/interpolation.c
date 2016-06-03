@@ -134,12 +134,13 @@ void cubic_spline_interpolation(double *x,double *y,double *xd, double *yd,int n
     free(cs_rhs);
     return;
 }
-void read_torque_file(Field *tmpfld) {
+void read_torque_file(Field *tmpfld,char *trq_file_name) {
     int i;
     int nd;
     double nd_d;
 
-    FILE *f = fopen("user_torque.dat","r");
+    printf("Reading torque from file %s\n",trq_file_name);
+    FILE *f = fopen(trq_file_name,"r");
 
     fread(&nd_d,sizeof(double),1,f);
     nd = (int)nd_d;

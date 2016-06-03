@@ -89,6 +89,9 @@ void read_input_file(char *fname) {
     
     read_res=fscanf(f,"outputname = %s\n",tmpstr); 
     sprintf(params.outputname,"outputs/%s",tmpstr);
+
+    read_res=fscanf(f,"torque_file = %s\n",tmpstr); 
+    sprintf(params.torque_file,"%s",tmpstr);
     fclose(f);
     printf("Outputting results to %s...\n",params.outputname);
 

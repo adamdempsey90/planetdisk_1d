@@ -4,14 +4,14 @@ ri = 0.2
 ro = 4.0
 
 #Disk Parameters:
-alpha = 0.003
+alpha = 0.001
 gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
 bc_lam_inner = 0.0
 bc_lam_outer = 1.0
-bc_mdot = 0.000026
+bc_mdot = 0.0000236
 flux_bc = T
 
 #Time Parameters:
@@ -45,4 +45,5 @@ c = 0.6666667
 eps = 0.1
 xd  = 1.0
 outputname = results.hdf5
+torque_file = trq_4_out.dat
 
