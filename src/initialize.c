@@ -27,9 +27,11 @@ void init_lam_from_file(void) {
 
 void init_lam(void) {
     int i;
+    printf("Init lam\n");
     for(i=0;i<NR;i++) {
         lam[i] = params.bc_mdot*2*rc[i]/(3*nu(rc[i]));
     }
+    printf("Done\n");
     return;
 }
 /*

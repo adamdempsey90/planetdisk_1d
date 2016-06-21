@@ -137,13 +137,18 @@ void cubic_spline_interpolation(double *x,double *y,double *xd, double *yd,int n
 void read_torque_file(Field *tmpfld,char *trq_file_name) {
     int i;
     int nd;
-    double nd_d;
+    double temp;
 
     printf("Reading torque from file %s\n",trq_file_name);
     FILE *f = fopen(trq_file_name,"r");
 
-    fread(&nd_d,sizeof(double),1,f);
-    nd = (int)nd_d;
+    fread(&temp,sizeof(double),1,f); // ny
+    nd = (int)temp;
+    fread(&temp,sizeof(double),1,f); // alpha
+    fread(&temp,sizeof(double),1,f); // mdot
+    fread(&temp,sizeof(double),1,f); // h
+    fread(&temp,sizeof(double),1,f); // ymin
+    fread(&temp,sizeof(double),1,f); // ymax
 
     double *r_torque = (double *)malloc(sizeof(double)*nd);
     double *dtr_torque = (double *)malloc(sizeof(double)*nd);
@@ -153,7 +158,9 @@ void read_torque_file(Field *tmpfld,char *trq_file_name) {
     fclose(f);
 
     linear_interpolation(rmin,tmpfld->grid_torque,r_torque,dtr_torque,NR,nd);
+//    linear_interpolation(rc,tmpfld->grid_torquec,r_torque,dtr_torque,NR,nd);
     free(r_torque);
     free(dtr_torque);
+    printf("Done\n");
     return;
 }

@@ -23,11 +23,13 @@ void allocate_field( Field *tmpfld) {
 
      MALLOC_SAFE( (tmpfld->nu_grid =  (double *)malloc(sizeof(double)*NR)));
      MALLOC_SAFE( (tmpfld->grid_torque =  (double *)malloc(sizeof(double)*(NR+1))));
+     MALLOC_SAFE( (tmpfld->grid_torquec =  (double *)malloc(sizeof(double)*(NR))));
     for(i=0;i<NR;i++) {
         tmpfld->lami[i] = 0;
         tmpfld->mdoti[i] = 0;
         tmpfld->nu_grid[i] = 0;
         tmpfld->grid_torque[i] = 0;
+        tmpfld->grid_torquec[i] = 0;
     }
 
     for(i=0;i<params.nt;i++) {
@@ -75,6 +77,7 @@ void free_field( Field *tmpfld) {
     free(tmpfld->kvals_ss);
     free(tmpfld->dTr);
     free(tmpfld->grid_torque);
+    free(tmpfld->grid_torquec);
 
     return;
 }

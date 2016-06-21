@@ -34,6 +34,9 @@ void set_grid(void) {
    
     printf("Grid spacing is dlr = %.3e\n",dlr);    
 
+    if (params.forced_torque) {
+        read_torque_file(&fld,params.torque_file);
+    }
     set_mdot(params.planet_torque);
     return;
 

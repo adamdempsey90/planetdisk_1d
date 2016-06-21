@@ -123,6 +123,7 @@ typedef struct Field {
     double *nu_grid;
     double *dTr;
     double *grid_torque;
+    double *grid_torquec;
 } Field;
 
 

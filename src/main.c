@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     set_params(parfile);
     
         printf("Setting up grid...\n");
+    allocate_field(&fld);
     set_grid();
     printf("Initializing lambda...\n");
     if (params.read_initial_conditions == TRUE) {
@@ -27,15 +28,11 @@ int main(int argc, char *argv[]) {
         init_lam();
    }
 
-    allocate_field(&fld);
     for(i=0;i<NR;i++) {
         fld.nu_grid[i] = nu(rc[i]);
     }
     allocate_steady_state_field(&fld_ss);
 
-    if (params.forced_torque) {
-        read_torque_file(&fld,params.torque_file);
-    }
     
        
     set_matrix(); 
