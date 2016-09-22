@@ -51,7 +51,7 @@ class Parameters():
     def __init__(self,dataspace,fname='results.hdf5'):
            # We read in the from an hdf5 file
         setattr(self,'outputname',fname)
-        for key,datatype in self.key_vals.items()[:-1]:
+        for key,datatype in list(self.key_vals.items())[:-1]:
             try:
                 setattr(self,key,dataspace[key].astype(datatype)[0])
             except AttributeError:
@@ -127,7 +127,7 @@ class Sim(Parameters):
         try:
             self.col = mat['col'][:]
         except KeyError:
-            print 'Could not find col entry in file'
+            print('Could not find col entry in file')
 
         self.lamnp = ss['lam0'][:].transpose()
         self.lam_ss = ss['lam_ss'][:].transpose()
@@ -318,7 +318,7 @@ class Sim(Parameters):
             if logy:
                 ax.set_yscale('log')
         else:
-            print  'q=%s is not a valid option' % q
+            print('q={} is not a valid option'.format(q))
             return
 
         if logx:
@@ -340,7 +340,7 @@ class Sim(Parameters):
                 liness.set_ydata(self.lam_ss[:,inds][:,::skip][:,i]*self.dr)
             if q == 'cmass':
                 liness.set_ydata(np.cumsum(self.lam_ss[:,inds][:,::skip][:,i]*self.dr))
-            ax.set_title('t = %.2e viscous times' % (t/self.tvisc))
+            ax.set_title('t = {:.2e} viscous times'.format(t/self.tvisc))
             plt.pause(1e-4)
             plt.draw()
 
@@ -414,7 +414,7 @@ class Sim(Parameters):
         lowx, highx = axes[1,0].get_xlim()
         lowy, highy = axes[1,0].get_ylim()
         if lowy <= 1 <= highy:
-            add_line(axes[1,0],1l,'y','k',2)
+            add_line(axes[1,0],1,'y','k',2)
 
         lowx, highx = axes[1,1].get_xlim()
         lowy, highy = axes[1,1].get_ylim()
@@ -447,7 +447,7 @@ class Sim(Parameters):
             r = self.rc
 
         with open("lambda_init.dat","w") as f:
-            lines = ["%.12g\t%.12g" %(x,l) for x,l in zip(r,lam)]
+            lines = ["{:.12f}\t{:.12f}".format(x,l) for x,l in zip(r,lam)]
             f.write('\n'.join(lines))
 
     def load_steadystate(self,directory=''):

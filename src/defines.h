@@ -1,2 +1,2 @@
 #define OPENMP
-#define GRIDTORQUE
+#define NONLOCAL

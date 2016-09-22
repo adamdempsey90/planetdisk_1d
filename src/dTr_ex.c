@@ -6,6 +6,24 @@ double fits[3][4] ={ { 0.0012, -.14, 0.0017, -0.115},
                     {0.7,0.06,0.8,0.12}};
 
 
+double dTr_kanagawa(double x, double a) {
+    
+    double norm = 2*M_PI*.4*.4*planet.q*planet.q;
+    
+    if (x < a) norm *= -1;
+
+    double fac = 2*M_PI*x;
+
+    double dist = fabs(x/a - 1);
+    
+
+    if (dist > 1.3*params.h) {
+        return norm*pow(dist,-4.)/fac;
+    }
+    
+    return 0;
+
+}
 
 double dTr_linear(double x,double a) {
     double left_fac, right_fac; 
@@ -73,6 +91,8 @@ double dTr_fit(double x, double a) {
 }
 
 double dTr_ex(double x, double a) {
+
+    return dTr_kanagawa(x,a);
 
 #ifdef TRANSLATE
     double xd = planet.xd*params.h*a;
