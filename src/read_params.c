@@ -117,11 +117,15 @@ void set_params(char *parfile) {
     params.mth = params.h*params.h*params.h;
     params.mvisc = sqrt(27.*M_PI/8  * params.alpha * params.mach);
     params.tvisc = params.ro*params.ro/nu(params.ro); 
-    planet.rh = pow( planet.mp * params.mth/3.,1./3) * planet.a;
+
+    planet.q = planet.mp * params.mth;
+    planet.rh = pow( planet.q/3.,1./3) * planet.a;
     planet.omp = pow(planet.a,-1.5);
     planet.dep = params.h*planet.a;
     planet.T0 = 2*M_PI*planet.a*planet.mp*planet.mp*params.mth/params.h;
     planet.vs = 0;
+    planet.K = planet.q*planet.q*pow(params.h,-5.0)/params.alpha;
+
 
     printf("Parameters:\n\tnr = %d\n\talpha = %.1e\n\th = %.2f\n\t(ri,ro) = (%lg,%lg)\n\tMach = %.1f\n\tm_th = %.2e\n\tm_visc = %.2e\n\tt_visc=%.2e\n",
             params.nr,

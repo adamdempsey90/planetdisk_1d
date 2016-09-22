@@ -1,0 +1,48 @@
+#Grid Parameters:
+nr = 512
+ri = 0.2
+ro = 4.0
+
+#Disk Parameters:
+alpha = 0.001
+gamma = 0.5
+h = 0.05
+
+#Boundary Conditions:
+bc_lam_inner = 0.0
+bc_lam_outer = 1.0
+bc_mdot = 0.0000236
+flux_bc = T
+
+#Time Parameters:
+dt = 100.0
+cfl = 0.8
+nvisc = 1.0
+nt = 100
+release_time = 0
+start_ss = F
+read_initial_conditions = F
+
+
+#Planet Properties:
+planet_torque = T
+explicit_stepper = F
+move_planet = F 
+move_planet_implicit = F
+gaussian = F
+symmetric_torque = T
+nonlocal_torque = T
+shock_dep = F
+forced_torque = F
+hs_visc = F
+one_sided = 0
+a  = 1.0
+mp = 8.0
+G1 = 0.0
+beta = 0.66666667
+delta = 0.05
+c = 0.6666667
+eps = 0.2
+xd  = 4.0
+outputname = results_xd4.hdf5
+

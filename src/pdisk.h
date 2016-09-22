@@ -86,6 +86,7 @@ typedef struct param_t {
 
 typedef struct Planet {
     double a, omp, delta, G1, beta, mp,vs;
+    double K,q;
     double rh, dep;
     double c,eps;
     double onesided;

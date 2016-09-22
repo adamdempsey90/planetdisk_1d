@@ -36,7 +36,7 @@ ifeq ($(UNAME),jupiter)
 CC=gcc-4.9
 endif
 ifeq ($(UNAME),zeus)
-CC=gcc
+CC=gcc-
 INCLIB=-I/usr/local/include/
 LDLIB=-L/usr/local/lib/
 #CC=gcc-4.9
