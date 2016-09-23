@@ -145,7 +145,7 @@ void set_params(char *parfile) {
             \trh = %lg = %lg h\n",
             planet.a, 
             planet.mp,planet.mp*params.mth,planet.mp/params.mvisc,
-            planet.mp*params.h/params.alpha,
+            planet.K,
             planet.rh, planet.rh/params.h);
      printf("\tplanet_torque = %s\n \
              \tmove_planet = %s\n \

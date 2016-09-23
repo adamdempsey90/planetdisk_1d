@@ -242,6 +242,36 @@ class Sim(Parameters):
             res[:,-1] = (q[:,-1]-q[:,-2])/(self.rc[-1]-self.rc[-2])
         return res
 
+    def plot(self,q='lam',i=-1,logx=False,logy=False,norm=None,ax=None,fig=None):
+
+        try:
+            dat = getattr(self,q)[:,i]
+        except AttributeError:
+            print('Q not found!')
+            return
+        except IndexError:
+            print('{:d} not a valid index!'.format(i))
+            return
+
+        if ax is None:
+            fig= plt.figure()
+            ax = fig.add_subplot(111)
+
+        if norm is not None:
+            dat /= norm
+
+        ax.plot(self.rc,dat,'-k')
+
+        if logx:
+            ax.set_xscale('log')
+        if logy:
+            ax.set_yscale('log')
+
+        ax.set_xlabel('Radius [AU]',fontsize=15)
+
+
+
+
     def animate(self,tend,skip,tstart=0,q='lam',logx = True,logy=True,ylims=None):
         fig=plt.figure()
         ax=fig.add_subplot(111)

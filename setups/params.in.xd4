@@ -1,7 +1,7 @@
 #Grid Parameters:
 nr = 512
 ri = 0.2
-ro = 4.0
+ro = 3.0
 
 #Disk Parameters:
 alpha = 0.001
@@ -17,7 +17,7 @@ flux_bc = T
 #Time Parameters:
 dt = 100.0
 cfl = 0.8
-nvisc = 1.0
+nvisc = 3.0
 nt = 100
 release_time = 0
 start_ss = F
@@ -42,7 +42,7 @@ G1 = 0.0
 beta = 0.66666667
 delta = 0.05
 c = 0.6666667
-eps = 0.2
+eps = 0.4
 xd  = 4.0
-outputname = results_xd4.hdf5
+outputname = results_3.hdf5
 

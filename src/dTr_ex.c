@@ -8,7 +8,7 @@ double fits[3][4] ={ { 0.0012, -.14, 0.0017, -0.115},
 
 double dTr_kanagawa(double x, double a) {
     
-    double norm = 2*M_PI*.4*.4*planet.q*planet.q;
+    double norm = 2*M_PI*.4*planet.eps*planet.q*planet.q;
     
     if (x < a) norm *= -1;
 

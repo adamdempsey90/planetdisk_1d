@@ -12,52 +12,53 @@ int in_region(double x, double a, double leftr, double rightr) {
         }
 }
 
+
+void set_dep_box(double a,double xd, double wd, double *box_region) {
+    int i,j;
+    int have_set[4] = {FALSE, FALSE, FALSE, FALSE};
+    box_region[0] = a - xd - wd/2;
+    box_region[1] = a - xd + wd/2;
+    box_region[2] = a + xd - wd/2;
+    box_region[3] = a + xd + wd/2;
+
+    printf("\n%lg\t%lg\t%lg\n",a,xd,wd);
+    for(i=0;i<4;i++) printf("%lg\t",box_region[i]);
+    printf("\n");
+
+    for(i=0;i<NR;i++) {
+        for(j=0;j<4;j++) {
+            if (!have_set[j]) {
+                if (box_region[j] >= rmin[i]) {
+                    box_region[j] = rmin[i];
+                    have_set[j] = TRUE;
+                }
+            }
+        }
+    }
+
+    return;
+}
+
 double dep_func(double x, double a, double xd, double w) {
-    double hp = scaleH(a);
-
-    double sigma = w;
-    sigma *= sigma;
-
-    //double dist = (x-a)/hp;
-    double dist = fabs(x-a);
-    double res = 1./w;
-    double leftr, rightr;
     if (xd == 0) {
         return dTr_ex(x,a);
     }
-    else {
-       /* 
-        if (dist < 0) dist += (xd);
-        else        dist -= (xd);
-        dist *= dist;
-        return exp(- dist/(2.*sigma)) / (sqrt(2*M_PI)*sigma);
-       */ 
-        if (x < a) {
-            leftr = a - xd - w/2;
-            rightr = a - xd + w/2;
 
-            if ( (x > leftr) && (x < rightr) ) {
-                return res;
-            }
-            else {
-                return 0;
-            }
+    double dist, res;
 
-        }
-        else {
-            
-            leftr = a + xd - w/2;
-            rightr = a + xd + w/2;
+    double wd = w/4;
+    wd *= wd;
 
-            if ( (x > leftr) && (x < rightr) ) {
-                return res;
-            }
-            else {
-                return 0;
-            }
-        }
-        
+
+    if (x <=a) {
+        xd *= -1;
     }
+    dist = (x-(a+xd));
+    dist *= dist;
+    return exp( - dist/(2*wd))/sqrt(2*M_PI*wd); 
+
+
+}
 /*
     double leftr = (xd-.5)*w;
     double rightr = (xd+.5)*w;
@@ -79,7 +80,6 @@ double dep_func(double x, double a, double xd, double w) {
 */
 
 
-}
 
 
 void set_uw(double *u, double *w, double a, int n) {
@@ -139,23 +139,40 @@ void set_uw(double *u, double *w, double a, int n) {
 void set_torque_nl(double a, double *y, double *res) {
     int i;
     double TL, TR;
-    double hp, xd;
+    double hp = params.h*a;
+    double gdepth = 1./(1 + .04*planet.K);
+    double kp = pow(planet.K * params.h*params.h,.25); 
+    double dr1 = (gdepth/4. + .08)*kp*a;
+    double dr2 = .33*kp*a;
+    double xd = .5*(dr1 +dr2);
+    double wd = (dr2-dr1);
 
-    hp = params.h*a;
-    xd = planet.xd;
+    //TL = calc_inner_torque(a,y);
+    //TR = calc_outer_torque(a,y);
 
-    TL = calc_inner_torque(a,y);
-    TR = calc_outer_torque(a,y);
+    TL = 0;
+    TR = 0;
+//#ifdef OPENMP
+//#pragma omp parallel for reduction(+:TL,TR) private(i)
+//#endif
+    for(i=0; i < NR; i++) {
+        if (rc[i] <= a) {
+            TL += dr[i] * dTr_ex(rc[i],a) * y[i];
+        }
+        if (rc[i] >= a) {
+            TR+= dr[i] * dTr_ex(rc[i],a) * y[i];
+        }
+    }
 
 #ifdef OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
         if (rc[i] <= a) {
-            res[i] = TL*dep_func(rc[i],a,xd,hp);
+            res[i] = TL*dep_func(rc[i],a,xd,wd);
         }
         else {
-            res[i] = TR*dep_func(rc[i],a,xd,hp);
+            res[i] = TR*dep_func(rc[i],a,xd,wd);
         }
 
     }
