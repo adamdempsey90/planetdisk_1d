@@ -107,6 +107,7 @@ class Sim(Parameters):
         self.mdot = sols['mdot'][:].transpose()
         self.torque= sols['torque'][:].transpose()
         self.dTr = ss['dTr'][:].transpose()
+        self.dep_func = ss['dep_func'][:].transpose()
 
         self.rc = mesh['rc'][:]
         self.l = np.sqrt(self.rc)
@@ -124,6 +125,11 @@ class Sim(Parameters):
         self.rhs = mat['fm'][:]
         self.u = mat['u'][:]
         self.w = mat['w'][:]
+
+        self.lamex = self.dTr * self.lam
+        self.ilamex = self.lamex * self.dr[:,np.newaxis]
+        self.ilamdep = self.torque * self.dr[:,np.newaxis]
+
         try:
             self.col = mat['col'][:]
         except KeyError:

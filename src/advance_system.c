@@ -45,6 +45,7 @@ void advance_system(double dt, double *t, double tend) {
     if ((params.move_planet) && (*t >= params.release_time)) {
         planet.a = newa;
         planet.vs = calc_drift_speed(planet.a,lam);
+        set_planet_deposition();
     }
 
     *t += dt;

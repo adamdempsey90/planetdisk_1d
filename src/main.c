@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
         fld.ivals_ss[i] = fld_ss.ivals[i];
         fld.kvals_ss[i] = fld_ss.kvals[i];
         fld.dTr[i] = dTr_ex(rc[i],planet.a);
+        fld.dep_func[i] = dep_func(rc[i],planet.a,planet.xd,planet.wd);
     }
 
 
@@ -132,6 +133,7 @@ int main(int argc, char *argv[]) {
             fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
             fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
             fld.dTr[j + NR*i] = dTr_ex(rc[j],planet.a);
+            fld.dep_func[j + NR*i] = dep_func(rc[j],planet.a,planet.xd,planet.wd);
         }
     
     }

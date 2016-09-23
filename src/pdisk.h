@@ -86,13 +86,12 @@ typedef struct param_t {
 
 typedef struct Planet {
     double a, omp, delta, G1, beta, mp,vs;
-    double K,q;
+    double K,q,xd,wd;
     double rh, dep;
     double c,eps;
     double onesided;
     int gaussian;
     int symmetric_torque;
-    double xd;
     double T0;
 } Planet;
 
@@ -123,6 +122,7 @@ typedef struct Field {
     double *efficiency;
     double *nu_grid;
     double *dTr;
+    double *dep_func;
     double *grid_torque;
     double *grid_torquec;
 } Field;
@@ -198,3 +198,4 @@ double calc_outer_torque(double a, double *y);
 void zero_array(double *v, int n);
 void steadystate_config_nl(SteadyStateField *tmpfld,double a);
 void read_torque_file(Field *tmpfld,char *trq_file_name);
+void set_planet_deposition(void);

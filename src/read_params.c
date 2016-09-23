@@ -126,6 +126,7 @@ void set_params(char *parfile) {
     planet.vs = 0;
     planet.K = planet.q*planet.q*pow(params.h,-5.0)/params.alpha;
 
+    set_planet_deposition();
 
     printf("Parameters:\n\tnr = %d\n\talpha = %.1e\n\th = %.2f\n\t(ri,ro) = (%lg,%lg)\n\tMach = %.1f\n\tm_th = %.2e\n\tm_visc = %.2e\n\tt_visc=%.2e\n",
             params.nr,

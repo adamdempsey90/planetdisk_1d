@@ -175,6 +175,7 @@ void write_hdf5_file(void) {
     write_hdf5_double(fld.times,dims1_t,1,solution_id,"times");
 
     write_hdf5_double(fld.dTr,dims2,2,steadystate_id,"dTr");
+    write_hdf5_double(fld.dep_func,dims2,2,steadystate_id,"dep_func");
      write_hdf5_double(fld.avals,dims1_t,1,solution_id,"avals");
      write_hdf5_double(fld.vs,dims1_t,1,solution_id,"vs");
   
