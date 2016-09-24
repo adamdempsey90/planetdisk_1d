@@ -251,7 +251,7 @@ class Sim(Parameters):
     def plot(self,q='lam',i=-1,logx=False,logy=False,norm=None,ax=None,fig=None):
 
         try:
-            dat = getattr(self,q)[:,i]
+            dat = getattr(self,q)[:,i].copy()
         except AttributeError:
             print('Q not found!')
             return

@@ -1,11 +1,11 @@
 #Grid Parameters:
 nr = 512
-ri = 0.2
-ro = 3.0
+ri = 0.1
+ro = 1.6
 
 #Disk Parameters:
-alpha = 0.001
-gamma = 0.5
+alpha = 0.01
+gamma = 0.0
 h = 0.05
 
 #Boundary Conditions:
@@ -15,9 +15,9 @@ bc_mdot = 0.0000236
 flux_bc = T
 
 #Time Parameters:
-dt = 100.0
+dt = 10.0
 cfl = 0.8
-nvisc = 3.0
+nvisc = .001
 nt = 100
 release_time = 0
 start_ss = F
@@ -37,7 +37,7 @@ forced_torque = F
 hs_visc = F
 one_sided = 0
 a  = 1.0
-mp = 8.0
+mp = 0.0
 G1 = 0.0
 beta = 0.66666667
 delta = 0.05

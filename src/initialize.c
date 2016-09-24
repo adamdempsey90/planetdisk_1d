@@ -1,5 +1,5 @@
 #include "pdisk.h"
-
+#include <gsl/gsl_sf_bessel.h>
 void init_lam_from_file(void) {
     FILE *f = fopen("lambda_init.dat","r");
     if (f == NULL) {
@@ -24,13 +24,38 @@ void init_lam_from_file(void) {
 
 }
 
+void init_ring_test(void) {
+
+    double t = 100.;
+    double nu0 = nu(1.0);
+    double r0 = 1.0;
+    double tau = 12*nu0*t/(r0*r0);
+    double m = 1;
+    double norm = m/(M_PI*r0*r0) * (1/tau);
+    double fac,u;
+    int i;
+
+    printf("initializing to viscously spreading ring\n");
+    for(i=0;i<NR;i++) {
+        u = rc[i]/r0;
+        fac = 2*M_PI*rc[i];
+        lam[i] = norm * pow(u,-.25) * exp(-(1 + u*u)/tau) * gsl_sf_bessel_Inu(.25,2*u/tau);
+    }
+
+    return;
+}
+
 
 void init_lam(void) {
     int i;
+
+    init_ring_test();
     printf("Init lam\n");
+    /*
     for(i=0;i<NR;i++) {
         lam[i] = params.bc_mdot*2*rc[i]/(3*nu(rc[i]));
     }
+    */
     printf("Done\n");
     return;
 }
