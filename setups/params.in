@@ -1,49 +1,43 @@
 #Grid Parameters:
-nr = 700
+nr = 512
 ri = 0.1
-ro = 10.0
+ro = 4.0
 
 #Disk Parameters:
-alpha = 0.001
-gamma = 0.5
+alpha = 0.01
+gamma = 0.0
 h = 0.05
 
 #Boundary Conditions:
-bc_lam_inner = 0.0
-bc_lam_outer = 1.0
-bc_mdot = 0.0000236
-flux_bc = T
+inner_bc = LAM
+outer_bc = LAM
+bc_val_inner_0 = 1.0
+bc_val_inner_1 = 0.0
+bc_val_outer_0 = 10.0
+bc_val_outer_1 = 0.0
+
+
 
 #Time Parameters:
 dt = 100.0
 cfl = 0.8
-nvisc = 1.0
+tend = 1.0
+nvisc = Yes
+logtime = No
 nt = 100
 release_time = 0
-start_ss = F
-read_initial_conditions = F
+start_ss = No
+read_initial_conditions = No
 
 
 #Planet Properties:
-planet_torque = T
-explicit_stepper = F
-move_planet = F 
-move_planet_implicit = F
-gaussian = F
-symmetric_torque = T
-nonlocal_torque = F
-shock_dep = F
-forced_torque = T
-hs_visc = F
-one_sided = 0
+planet_torque = No
+move_planet = No
+symmetric_torque = Yes
+nonlocal_torque = Yes
+shock_dep = No
 a  = 1.0
-mp = 8.0
-G1 = 0.0
-beta = 0.66666667
-delta = 0.05
-c = 0.6666667
-eps = 0.1
-xd  = 1.0
-outputname = results2.hdf5
-torque_file = trq_4_out_full.dat
+mp = 0.0
+eps = 0.4
+outputname = results.hdf5
 

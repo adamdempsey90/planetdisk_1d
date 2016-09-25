@@ -4,13 +4,13 @@
 
 
 # Enable parallelization
-#+OPENMP
++OPENMP
 
 # Enable non-local deposition
 #+GRIDTORQUE
 #+TORQUEFIT 
 #+TRANSLATE
-+NONLOCAL
+#+NONLOCAL
 # Enable non-local deposition through shocks
 #+SHOCKS
 

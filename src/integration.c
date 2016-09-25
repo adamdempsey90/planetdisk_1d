@@ -1,10 +1,11 @@
 #include "pdisk.h"
 void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;
-    double em,ec,ep;
-    double lm,lc,lp;
+   // double em,ec,ep;
+   // double lm,lc,lp;
     double rm, rp;
-    double dp_tot, dm_tot, dp,dm,dc;
+    double am,ap,num,nup,bm,bp,drm,drp;
+ //   double dp_tot, dm_tot, dp,dm,dc;
 
     for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;
@@ -21,31 +22,28 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     }
 
 #ifdef OPENMP
-#pragma omp parallel for private(i,rm,rp,lm,lc,lp,em,ec,ep,dm,dc,dp,dm_tot,dp_tot) shared(matrix,rc,rmin)
+//#pragma omp parallel for private(i,rm,rp,lm,lc,lp,em,ec,ep,dm,dc,dp,dm_tot,dp_tot) shared(matrix,rc,rmin)
+//#pragma omp parallel for private(i,rm,rp,num,nup,am,bm,ap,bp,drm,drp)
 #endif
     for(i=1;i<NR-1;i++) {
         rm = rmin[i];
         rp = rmin[i+1];
 
-        lm = sqrt(rc[i-1]);
-        lc = sqrt(rc[i]);
-        lp = sqrt(rc[i+1]);
+        num = nu(rm);
+        nup = nu(rp);
 
-        em = 1.5*nu(rc[i-1])/sqrt(rc[i-1]);
-        ec = 1.5*nu(rc[i])/sqrt(rc[i]);
-        ep = 1.5*nu(rc[i+1])/sqrt(rc[i+1]);
+        am = 3*num;
+        bm = 3*(num/rm)*(params.gamma - .5);
 
-        dp_tot = dr[i] + dr[i+1];
-        dm_tot = dr[i] + dr[i-1];
-        dp = dr[i+1];
-        dc = dr[i];
-        dm = dr[i-1];
+        ap = 3*nup;
+        bp = 3*(nup/rp)*(params.gamma-.5);
 
+        drm = rc[i]-rc[i-1];
+        drp = rc[i+1]-rc[i];
 
-        matrix.md[i] = -ec*(1./(lc-lm) + 1./(lp-lc));
-        matrix.ld[i-1] = em/(lc-lm);
-        matrix.ud[i] = ep/(lp-lc);
-
+        matrix.md[i] = ( bp * ( rc[i+1] - rp) - ap) / drp - ( am + bm * ( rm - rc[i-1] ) ) / drm;
+        matrix.ud[i] = ( ap + bp * ( rp - rc[i] ) ) / drp;
+        matrix.ld[i-1] = - ( bm *(rc[i] - rm ) - am ) / drm; 
 
 #ifndef NONLOCAL
         if (params.planet_torque) {
@@ -53,11 +51,13 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
                  matrix.fm[i] += 2*sqrt(rm) * 2*M_PI*rm * fld.grid_torque[i] - 2*sqrt(rp) * 2 *M_PI*rp * fld.grid_torque[i+1];
             }
             else {
+                /*
                 em = 2*sqrt(rm)*dTr_ex(rm,aplanet);
                 ep = 2*sqrt(rp)*dTr_ex(rp,aplanet);
                 matrix.ld[i-1] += em*dc/dm_tot;
                 matrix.ud[i] -= ep*dc/dp_tot;
                 matrix.md[i] += em*dm/dm_tot - ep*dp/dp_tot;
+                */
             }
         }
 #endif
@@ -76,11 +76,12 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     set_boundary();
     // Coefficient Matrix is all set
 
-#ifdef NONLOCAL    
-    matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt,dt/2.,NR,2);
-#else
-    matvec(matrix.ld,matrix.md,matrix.ud,y,matrix.fm,dt,dt/2.,NR);
-#endif
+    if (params.planet_torque && params.nonlocal_torque) {
+        matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt,dt/2.,NR,2);
+    }
+    else {
+        matvec(matrix.ld,matrix.md,matrix.ud,y,matrix.fm,dt,dt/2.,NR);
+    }
 
 
 #ifdef OPENMP
@@ -105,4 +106,25 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
     return;
 }
+
+/*
+        lm = sqrt(rc[i-1]);
+        lc = sqrt(rc[i]);
+        lp = sqrt(rc[i+1]);
+
+        em = 1.5*nu(rc[i-1])/sqrt(rc[i-1]);
+        ec = 1.5*nu(rc[i])/sqrt(rc[i]);
+        ep = 1.5*nu(rc[i+1])/sqrt(rc[i+1]);
+
+        dp_tot = dr[i] + dr[i+1];
+        dm_tot = dr[i] + dr[i-1];
+        dp = dr[i+1];
+        dc = dr[i];
+        dm = dr[i-1];
+
+
+        matrix.md[i] = -ec*(1./(lc-lm) + 1./(lp-lc));
+        matrix.ld[i-1] = em/(lc-lm);
+        matrix.ud[i] = ep/(lp-lc);
+*/
 

@@ -1,4 +1,5 @@
 #include "pdisk.h"
+#define H5_use_16_API
 
 void write_hdf5_double(double *data, hsize_t *dims, int ndims, hid_t group_path, char *name) {
   hid_t dspc_id, dset_id;
@@ -17,6 +18,7 @@ void write_hdf5_double(double *data, hsize_t *dims, int ndims, hid_t group_path,
 
 
 }
+/*
 void write_hdf5_params(hid_t *params_id) {
   hid_t memtype,dspc_id, dset_id;
   hsize_t dims[1] = {1};
@@ -131,7 +133,7 @@ void write_hdf5_params(hid_t *params_id) {
 
     return;
 }
-
+*/
 void write_hdf5_file(void) {
   
   printf("Outputting Results to %s...\n",params.outputname);
@@ -141,8 +143,8 @@ void write_hdf5_file(void) {
   hid_t mesh_id = H5Gcreate(root_id,"Mesh",0);
   hid_t solution_id = H5Gcreate(root_id,"Solution",0);
   hid_t matrix_id = H5Gcreate(root_id,"Matrix",0);
-  hid_t params_id = H5Gcreate(root_id,"Parameters",0);
-    hid_t steadystate_id = H5Gcreate(root_id,"SteadyState",0);
+ // hid_t params_id = H5Gcreate(root_id,"Parameters",0);
+ // hid_t steadystate_id = H5Gcreate(root_id,"SteadyState",0);
 
 
     hsize_t dims1[1] = {NR};
@@ -174,12 +176,13 @@ void write_hdf5_file(void) {
     write_hdf5_double(fld.sol_mdot,dims2,2,solution_id,"mdot");
     write_hdf5_double(fld.times,dims1_t,1,solution_id,"times");
 
-    write_hdf5_double(fld.dTr,dims2,2,steadystate_id,"dTr");
-    write_hdf5_double(fld.dep_func,dims2,2,steadystate_id,"dep_func");
+  //  write_hdf5_double(fld.dTr,dims2,2,steadystate_id,"dTr");
+  //  write_hdf5_double(fld.dep_func,dims2,2,steadystate_id,"dep_func");
      write_hdf5_double(fld.avals,dims1_t,1,solution_id,"avals");
      write_hdf5_double(fld.vs,dims1_t,1,solution_id,"vs");
   
 // Steady State Solution
+/*
     write_hdf5_double(fld.sol_ss,dims2,2,steadystate_id,"lam_ss");
     write_hdf5_double(fld.lamp,dims2,2,steadystate_id,"lamp");
     write_hdf5_double(fld.lam0,dims2,2,steadystate_id,"lam0");
@@ -188,14 +191,14 @@ void write_hdf5_file(void) {
     write_hdf5_double(fld.efficiency,dims1_t,1,steadystate_id,"eff");
     write_hdf5_double(fld.ivals_ss,dims2,2,steadystate_id,"ivals_ss");
     write_hdf5_double(fld.kvals_ss,dims2,2,steadystate_id,"kvals_ss");
-
-    write_hdf5_params(&params_id);
+*/
+   // write_hdf5_params(&params_id);
 
     HDF5_INSERT_ERROR(H5Gclose(mesh_id));
   HDF5_INSERT_ERROR(H5Gclose(matrix_id));
   HDF5_INSERT_ERROR(H5Gclose(solution_id));
- HDF5_INSERT_ERROR(H5Gclose(params_id));
- HDF5_INSERT_ERROR(H5Gclose(steadystate_id));
+ //HDF5_INSERT_ERROR(H5Gclose(params_id));
+ //HDF5_INSERT_ERROR(H5Gclose(steadystate_id));
 
   HDF5_INSERT_ERROR(H5Gclose(root_id));
   HDF5_INSERT_ERROR(H5Fclose(file_id));

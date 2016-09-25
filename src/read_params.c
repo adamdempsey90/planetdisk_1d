@@ -1,117 +1,227 @@
 #include "pdisk.h"
+#include <ctype.h>
 
-void set_bool(char *buff, int *val) {
-    if ( (!strncmp(buff,"TRUE",MAXSTRLEN)) || (!strncmp(buff,"true",MAXSTRLEN)) || (!strncmp(buff,"True",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"T",MAXSTRLEN)) || (!strncmp(buff,"1",MAXSTRLEN))) {
-        *val = TRUE;
-            }
-    else {
-        *val = FALSE;
-            }
+#define PRINT_DOUBLE(NAME,VAL) printf("\t%s = %lg\n",NAME,VAL)
+#define PRINT_INT(NAME,VAL) printf("\t%s = %d\n",NAME,VAL)
+#define PRINT_STR(NAME,VAL) printf("\t%s = %s\n",NAME,VAL)
+#define FPRINT_DOUBLE(F,NAME,VAL) fprintf(f,"%s = %lg\n",NAME,VAL)
+#define FPRINT_INT(F,NAME,VAL) fprintf(f,"%s = %d\n",NAME,VAL)
+#define FPRINT_STR(F,NAME,VAL) fprintf(f,"%s = %s\n",NAME,VAL)
+
+void set_var(char *name,int int_val, double double_val, int bool_val, char *str_val) {
+    if (strcmp(name,"nr") == 0) {
+        params.nr = int_val;
+        PRINT_INT(name,int_val);
+    }
+    else if (strcmp(name,"ri") == 0) {	
+        params.ri = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }else if (strcmp(name,"ro") == 0) {	
+        params.ro = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"alpha") == 0) {	
+        params.alpha = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"gamma") == 0) {	
+        params.gamma = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"h") == 0) {	
+        params.h = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"inner_bc") == 0) {	
+        if (strcmp(str_val,"MDOT") == 0) {
+            params.bc_type[0] = BCMDOTIN;
+        }
+        else if (strcmp(str_val,"GRAD") == 0) {
+            params.bc_type[0] = BCGRADIN;
+        }
+        else if (strcmp(str_val,"LAM") == 0) {
+            params.bc_type[0] = BCLAMIN;
+        }
+        else {
+            params.bc_type[0] = BCMIXEDIN;
+        }
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"outer_bc") == 0) {	
+        if (strcmp(str_val,"MDOT") == 0) {
+            params.bc_type[1] = BCMDOTOUT;
+        }
+        else if (strcmp(str_val,"GRAD") == 0) {
+            params.bc_type[1] = BCGRADOUT;
+        }
+        else if (strcmp(str_val,"LAM") == 0) {
+            params.bc_type[1] = BCLAMOUT;
+        }
+        else {
+            params.bc_type[1] = BCMIXEDOUT;
+        }
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"bc_val_inner_0") == 0) {	
+        params.bc_val[0] = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"bc_val_inner_1") == 0) {	
+        params.bc_val[1] = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"bc_val_outer_0") == 0) {	
+        params.bc_val[2] = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"bc_val_outer_1") == 0) {	
+        params.bc_val[3] = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"dt") == 0) {	
+        params.dt = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"cfl") == 0) {	
+        params.cfl = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"tend") == 0) {	
+        params.tend = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"nvisc") == 0) {	
+        params.nvisc = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"logtime") == 0) {	
+        params.logtime = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"nt") == 0) {	
+        params.nt = int_val;
+        PRINT_INT(name,int_val);
+
+    }
+    else if (strcmp(name,"release_time") == 0) {	
+        params.release_time = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"start_ss") == 0) {	
+        params.start_ss = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"read_initial_conditions") == 0) {	
+        params.read_initial_conditions = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"mp") == 0) {	
+        planet.mp = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"planet_torque") == 0) {	
+        params.planet_torque = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"move_planet") == 0) {	
+        params.move_planet = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"nonlocal_torque") == 0) {	
+        planet.nonlocal_torque = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"shock_dep") == 0) {	
+        planet.shock_dep = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"symmetric_torque") == 0) {	
+        planet.symmetric_torque = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"a") == 0) {	
+        planet.a = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"eps") == 0) {	
+        planet.eps = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"outputname") == 0) {	
+        strcpy(params.outputname,str_val);
+        PRINT_STR(name,str_val);
+
+    }
+
     return;
-
 }
-void read_input_file(char *fname) {
-    char garbage[100],tmpstr[MAXSTRLEN];
-    char *gchar;
-    int read_res;
+
+void read_param_file(char *fname) {
     FILE *f;
 
+    char tok[20] = "\t :=>";
 
+    char line[100],name[100],strval[100];
+    char *data;
+    double temp;
+    int status;
+    int int_val;
+    int bool_val;
+    char testbool;
+    unsigned int i;
 
+    f= fopen(fname,"r");
 
-    f = fopen(fname,"r");
+    while (fgets(line,100,f)) {
+       // printf("%s\n",line);
+        status = sscanf(line,"%s",name);
 
-    if (f==NULL) printf("\n\nERROR Can't Find Input File!\n\n");
-  
-	gchar=fgets(garbage,sizeof(garbage),f);	// Grid Parameters
+      //  printf("%s\n",name);
+        if (name[0] != '#' && status == 1) {
+        
+             data = line + (int)strlen(name);
+             sscanf(data + strspn(data,tok),"%lf",&temp);
+             sscanf(data + strspn(data,tok),"%s",strval);
+             //printf("%lf\t%s\n",temp,strval);
+            int_val = (int)temp;
+            testbool = toupper(strval[0]);
+            if (testbool == 'Y') bool_val = TRUE;
+            else bool_val = FALSE;
+            
+            for (i = 0; i<strlen(name); i++) name[i] = (char)tolower(name[i]);
+            
+            set_var(name,int_val,temp,bool_val,strval);
 
-    read_res=fscanf(f,"nr = %d \n",&NR);
-    read_res=fscanf(f,"ri = %lg \n",&params.ri);
-    read_res=fscanf(f,"ro = %lg \n",&params.ro);   
-    gchar=fgets(garbage,sizeof(garbage),f); //	Disk Parameters:
-    read_res=fscanf(f,"alpha = %lg \n",&params.alpha); 
-    read_res=fscanf(f,"gamma = %lg \n",&params.gamma);
-    read_res=fscanf(f,"h = %lg \n",&params.h);
-   
-    gchar=fgets(garbage,sizeof(garbage),f);	//Boundary Conditions:
+        }
+    }
 
-    read_res=fscanf(f,"bc_lam_inner = %lg \n",&params.bc_lam[0]);
-    read_res=fscanf(f,"bc_lam_outer = %lg \n",&params.bc_lam[1]);
-    read_res=fscanf(f,"bc_mdot = %lg \n",&params.bc_mdot);
-    read_res=fscanf(f,"flux_bc = %s \n",tmpstr);
-    set_bool(tmpstr,&params.flux_bc);
-    
-    gchar=fgets(garbage,sizeof(garbage),f); //	Time Parameters:
-    read_res=fscanf(f,"dt = %lg \n",&params.dt);
-    read_res=fscanf(f,"cfl = %lg \n",&params.cfl);
-    read_res=fscanf(f,"nvisc = %lg \n",&params.nvisc);
-    read_res=fscanf(f,"nt = %d \n",&params.nt);
-    read_res=fscanf(f,"release_time = %lg \n",&params.release_time);
-    read_res=fscanf(f,"start_ss = %s \n",tmpstr);
-    set_bool(tmpstr,&params.start_ss);
-    read_res=fscanf(f,"read_initial_conditions = %s \n",tmpstr);
-    set_bool(tmpstr,&params.read_initial_conditions);
-  
-    gchar=fgets(garbage,sizeof(garbage),f);	// Planet Properties:
-
-    read_res=fscanf(f,"planet_torque = %s \n",tmpstr);
-    set_bool(tmpstr,&params.planet_torque);
-    read_res=fscanf(f,"explicit_stepper = %s \n",tmpstr);
-    set_bool(tmpstr,&params.explicit_stepper);
-    read_res=fscanf(f,"move_planet = %s \n",tmpstr);
-    set_bool(tmpstr,&params.move_planet);
-    read_res=fscanf(f,"move_planet_implicit = %s \n",tmpstr);
-    set_bool(tmpstr,&params.move_planet_implicit);
-    read_res=fscanf(f,"gaussian = %s \n",tmpstr);
-    set_bool(tmpstr,&planet.gaussian);
-    
-    read_res=fscanf(f,"symmetric_torque = %s \n",tmpstr);
-    set_bool(tmpstr,&planet.symmetric_torque);
-
-    read_res=fscanf(f,"nonlocal_torque = %s \n",tmpstr);
-    set_bool(tmpstr,&params.nonlocal_torque);
-    read_res=fscanf(f,"shock_dep = %s \n",tmpstr);
-    set_bool(tmpstr,&params.shock_dep);
-    read_res=fscanf(f,"forced_torque = %s \n",tmpstr);
-    set_bool(tmpstr,&params.forced_torque);
-    read_res=fscanf(f,"hs_visc = %s \n",tmpstr);
-    set_bool(tmpstr,&params.hs_visc);
-
-    read_res=fscanf(f,"one_sided = %lg \n",&planet.onesided);
-    read_res=fscanf(f,"a  = %lg \n",&planet.a);
-    read_res=fscanf(f,"mp = %lg \n",&planet.mp);
-    read_res=fscanf(f,"G1 = %lg \n",&planet.G1);
-    read_res=fscanf(f,"beta = %lg \n",&planet.beta);
-    read_res=fscanf(f,"delta = %lg \n",&planet.delta);
-    read_res=fscanf(f,"c = %lg \n",&planet.c);
-    read_res=fscanf(f,"eps = %lg \n",&planet.eps);
-    read_res=fscanf(f,"xd = %lg \n",&planet.xd);
-    
-    read_res=fscanf(f,"outputname = %s\n",tmpstr); 
-    sprintf(params.outputname,"outputs/%s",tmpstr);
-
-    read_res=fscanf(f,"torque_file = %s\n",tmpstr); 
-    sprintf(params.torque_file,"%s",tmpstr);
-    fclose(f);
-    printf("Outputting results to %s...\n",params.outputname);
-
-/*
-    rm_sub_string(fname,"params.in");
-    char *dirname = fname;
-    sprintf(outputname,"%s%s.hdf5",dirname,inputstr);
-*/
-// Leave me alone compiler
-    read_res += 1; garbage[0] = gchar[0];
-
-
-  return;
-
-}
-
-
-void set_params(char *parfile) {
-    read_input_file(parfile);
-    
     params.mach = 1/params.h;
     params.nu0 = params.alpha * params.h*params.h;
     params.mth = params.h*params.h*params.h;
@@ -127,38 +237,9 @@ void set_params(char *parfile) {
     planet.K = planet.q*planet.q*pow(params.h,-5.0)/params.alpha;
 
     set_planet_deposition();
+    
 
-    printf("Parameters:\n\tnr = %d\n\talpha = %.1e\n\th = %.2f\n\t(ri,ro) = (%lg,%lg)\n\tMach = %.1f\n\tm_th = %.2e\n\tm_visc = %.2e\n\tt_visc=%.2e\n",
-            params.nr,
-            params.alpha,
-            params.h,
-            params.ri,
-            params.ro,
-            params.mach,
-            params.mth,
-            params.mvisc,
-            params.tvisc);
 
-     printf("Planet properties:\n \
-            \ta = %lg\n \
-            \tmass = %lg mth = %.2e Mstar = %.2e mvisc\n \
-            \tK = %.2e\n \
-            \trh = %lg = %lg h\n",
-            planet.a, 
-            planet.mp,planet.mp*params.mth,planet.mp/params.mvisc,
-            planet.K,
-            planet.rh, planet.rh/params.h);
-     printf("\tplanet_torque = %s\n \
-             \tmove_planet = %s\n \
-             \tmove_planet_implicit = %s\n \
-             \tgaussian = %s\n \
-             \tread_initial_conditions = %s\n \
-             \toutputname = %s\n",
-             params.planet_torque ? "TRUE" : "FALSE", 
-             params.move_planet ? "TRUE" : "FALSE", 
-             params.move_planet_implicit ? "TRUE" : "FALSE", 
-             planet.gaussian ? "TRUE" : "FALSE", 
-             params.read_initial_conditions ? "TRUE" : "FALSE", 
-             params.outputname);
     return;
 }
+

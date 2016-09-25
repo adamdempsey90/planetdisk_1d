@@ -498,3 +498,22 @@ class Sim(Parameters):
 
 def plaw(x,a,b):
     return a*x**b
+
+
+class Field():
+    def __init__(self,fname='results.hdf5'):
+        dat = h5py.File(fname)
+        sols = dat['/Migration/Solution']
+        mesh = dat['/Migration/Mesh']
+        mat = dat['/Migration/Matrix']
+        self.rc = mesh['rc'][:]
+        self.t =  sols['times'][:]
+        self.mdot = sols['mdot'][:].transpose()
+        self.torque = sols['torque'][:].T
+        self.lam = sols['lam'][:].T
+        self.sigma = self.lam/(2*np.pi*self.rc[:,np.newaxis])
+        self.md = mat['md'][:]
+        self.ld = mat['ld'][:]
+        self.ud = mat['ud'][:]
+        self.fm = mat['fm'][:]
+        dat.close()

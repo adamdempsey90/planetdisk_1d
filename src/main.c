@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 #endif
 */
     printf("Reading parameters from %s...\n",parfile);
-    set_params(parfile);
+    read_param_file(parfile);
     
         printf("Setting up grid...\n");
     allocate_field(&fld);
@@ -89,7 +89,22 @@ int main(int argc, char *argv[]) {
     fld.vs[0] = planet.vs;
     fld.times[0] = 0;
     for(i=0;i<nt-1;i++) {
-        fld.times[i+1] = pow(10,i * log10(params.nvisc*params.tvisc) /((double) (nt-1)));
+        if (params.nvisc) {
+            if (params.logtime) {
+                fld.times[i+1] = pow(10,i * log10(params.tend*params.tvisc) /((double) (nt-1)));
+            }
+            else {
+                fld.times[i+1] = (i+1)*params.tend*params.tvisc /((double) (nt-1));
+            }
+        }
+        else {
+            if (params.logtime) {
+                fld.times[i+1] = pow(10,i * log10(params.tend) /((double) (nt-1)));
+            }
+            else {
+                fld.times[i+1] = (i+1)*params.tend /((double) (nt-1));
+            }
+        }
     }
 
     printf("Viscous time is %.1e...\n", params.tvisc); 

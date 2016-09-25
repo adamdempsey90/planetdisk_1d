@@ -22,17 +22,30 @@
 #define HDF5_INSERT_ERROR(status)  if (status < 0) printf("HDF5 error at line %d\n",__LINE__);
 #define MALLOC_SAFE(ptr) if (ptr == NULL) printf("Malloc error at line %d!\n",__LINE__);
 
+#define BCMDOTIN 0
+#define BCMDOTOUT 1
+#define BCLAMIN 2
+#define BCLAMOUT 3
+#define BCGRADIN 4
+#define BCGRADOUT 5
+#define BCMIXEDIN 6
+#define BCMIXEDOUT 7
+
+
 typedef struct Parameters {
     double alpha,h,ri,ro,gamma, mach, mth, mvisc, tvisc; 
     double nu0;
     int nr,nt;
-    double dt,nvisc;
+    double dt,tend;
+    int nvisc;
+    int logtime;
     int planet_torque, move_planet,move_planet_implicit;
     int read_initial_conditions;
     int explicit_stepper;
     int start_ss;
     int hs_visc;
-    double bc_lam[2];
+    double bc_val[4];
+    int bc_type[2];
     double bc_mdot;
     double cfl;
     int flux_bc;
@@ -92,6 +105,8 @@ typedef struct Planet {
     double onesided;
     int gaussian;
     int symmetric_torque;
+    int nonlocal_torque;
+    int shock_dep;
     double T0;
 } Planet;
 
@@ -178,7 +193,7 @@ void outer(double *v1, double *v2, double *res, int n);
 void set_mdot(int planet_torque);
 double calc_drift_speed(double a,double *y);
 void move_planet(double dt, double *y, double *vs, double *a);
-void set_params(char *parfile);
+void read_param_file(char *parfile);
 void set_grid(void);
 void free_grid(void);
 void set_matrix(void);

@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+
+\begin{document}
+
+In WSS the evolution equation is,
+\begin{equation}
+\partial_t(\langle \lambda \rangle r^2 \langle \Omega \rangle) + \partial_r( -\dot{M}  \langle r^2 \Omega \rangle  - \nu \langle \lambda \rangle  r^2 \partial_r \langle \Omega \rangle) = 2\pi r \Lambda_{ex} - 2 \pi \partial_r (F_w) 
+\end{equation}
+where $\lambda = 2\pi r \Sigma$ and $\dot{M} = -2\pi r\langle \Sigma v_r\rangle$. Setting $\Lambda_d = \Lambda_{ex} - \partial_r F_w$ and $\Omega = \Omega_K$, $\partial_t \Omega = 0$, and dropping the angle brackets gives,
+\begin{equation} \label{eq:evolution_eqn}
+\partial_t \lambda = \partial_r \dot{M}
+\end{equation}
+\begin{equation} \label{eq:mdot_def}
+\dot{M} = \left( \partial_r (r^2 \Omega) \right)^{-1} \left[ \partial_r(- \nu \lambda r^2 \partial_r \Omega ) - 2 \pi r \Lambda_d \right]
+\end{equation}
+If we have a model for the wave deposition, then we can specify $\Lambda_d$ in terms of $\lambda$. 
+
+We integrate \eqref{eq:evolution_eqn} by integrating over a cell,
+\begin{equation}
+\frac{d}{dt} \int dr \, \lambda = \dot{M}_+ - \dot{M}_-
+\end{equation}          
+Where we can calculate the mass flux at the edges of the cell using \eqref{eq:mdot_def} (using $ \frac{d \ln \Omega}{d \ln r} = -3/2$ and $\frac{d \ln \nu}{d \ln r} = \gamma$),
+\begin{equation}
+\dot{M}_\pm = 3 \nu_\pm \left. \partial_r \lambda \right|_\pm +  \frac{3 \nu_\pm}{r_\pm} \left( \gamma -1/2\right) \lambda_\pm - 2 \sqrt{r_\pm} 2 \pi r \Lambda_{d,\pm}
+\end{equation}
+
+The gradients in $\lambda$ are given by,
+\begin{equation}
+\left. \partial_r \lambda \right|_+ = \frac{ \lambda_{i+1} - \lambda_i}{r_{i+1} - r_{i}} \qquad \left. \partial_r \lambda \right|_- = \frac{ \lambda_{i} - \lambda_{i-1}}{r_{i} - r_{i-1}}
+\end{equation}
+And $\lambda$ at each edge is,
+\begin{equation}
+\lambda_+ = \left( \frac{ r_{i+1} -r_+}{r_{i+1}-r_i} \right) \lambda_i + \left( \frac{r_+ - r_i}{r_{i+1}-r_i} \right) \lambda_{i+1}
+\end{equation}
+\begin{equation}
+\lambda_- = \left( \frac{ r_{i} -r_-}{r_{i}-r_{i-1}} \right) \lambda_{i-1} + \left( \frac{r_- - r_{i-1}}{r_{i}-r_{i-1}} \right) \lambda_{i}
+\end{equation}
+
+The mass flux (neglecting the planet) at each edge,
+\begin{eqnarray}
+\dot{M}_+ &=& \left(\frac{3 \nu_+}{r_+} ( \gamma - 1/2) \left( \frac{ r_{i+1} -r_+}{r_{i+1}-r_i} \right) - \frac{3 \nu_+}{r_{i+1}-r_i} \right) \lambda_i \nonumber \\
+&+& \left( \frac{3 \nu_+}{r_{i+1} - r_i}  +   \frac{3 \nu_+}{r_+}(\gamma - 1/2) \left( \frac{r_+ - r_i}{r_{i+1}-r_i} \right)\right) \lambda_{i+1}
+\end{eqnarray}
+\begin{eqnarray}
+\dot{M}_- &=& \left(\frac{ 3\nu_-}{r_-} (\gamma - 1/2) \left( \frac{ r_{i} -r_-}{r_{i}-r_{i-1}} \right) - \frac{3 \nu_-}{r_i - r_{i-1}} \right) \lambda_{i-1} \nonumber \\
+&+& \left( \frac{3 \nu_-}{r_i-r_{i-1}} +   \frac{ 3 \nu_-}{r_-} (\gamma -1/2) \left( \frac{r_- - r_{i-1}}{r_{i}-r_{i-1}} \right) \right) \lambda_i
+\end{eqnarray}
+
+Approximating $\int dr \, \lambda = (r_+ - r_-) \lambda_i = \Delta r_i \lambda_i$ across a cell gives an update equation for $\lambda$,
+
+\begin{equation}
+\Delta r_i \frac{d \lambda_i}{d t} = L_i \lambda_{i-1} + M_i \lambda_i + U_i \lambda_{i+1}
+\end{equation}
+\begin{equation}
+L_i = - \left( \frac{ 3 \nu_-}{r_-} (\gamma - 1/2) \left( \frac{ r_{i} -r_-}{r_{i}-r_{i-1}} \right) - \frac{3 \nu_-}{r_i - r_{i-1}} \right) 
+\end{equation}
+\begin{eqnarray}
+M_i &=& \left( \frac{3 \nu_+}{r_+} (\gamma -1/2) \left( \frac{ r_{i+1} -r_+}{r_{i+1}-r_i} \right) - \frac{3 \nu_+}{r_{i+1}-r_i} \right)  \nonumber \\
+&-&  \left( \frac{3 \nu_-}{r_i-r_{i-1}} + \frac{ 3 \nu_-}{r_-} (\gamma -1/2)  \left( \frac{r_- - r_{i-1}}{r_{i}-r_{i-1}} \right) \right)
+\end{eqnarray}
+\begin{equation}
+U_i = \left( \frac{3 \nu_+}{r_{i+1} - r_i}  +  \frac{3 \nu_+}{r_+} ( \gamma -1/2)\left( \frac{r_+ - r_i}{r_{i+1}-r_i} \right)\right) 
+\end{equation}
+Setting $\mathbf{I}_{ij} = \Delta r_i \delta_{ij}$ and $\mathbf{A}_{ij} = M_i \delta_{ij} + L_i \delta_{i,j-1} + U_i \delta_{i,j+1}$, 
+\begin{equation}
+\mathbf{I} \frac{d}{d t} \mathbf{\lambda} = \mathbf{A} \mathbf{\lambda} + \mathbf{F}
+\end{equation}
+Stepping in time with Crank-Nicholson gives,
+\begin{equation}
+\left( \mathbf{I} - \frac{\Delta t}{2} \mathbf{A} \right) \mathbf{\lambda}^{n+1} = \left( \mathbf{I} + \frac{\Delta t}{2} \mathbf{A} \right) \mathbf{\lambda}^n+ \Delta t \mathbf{F}
+\end{equation}
+
+For boundary conditions we can use a general mixed b.c
+\begin{equation}
+\left. \partial_r \lambda \right|_B + \alpha \lambda_B = \beta
+\end{equation}
+So that $\dot{M}$ at either boundary is, (setting $A = 3 \nu$, $B = 3 \nu (\gamma -1/2)/r$)
+\begin{equation}
+\dot{M}_{\pm} = \beta A_\pm \left( \frac{1 - \frac{B_\pm}{A_\pm} (r_j - r_\pm)}{1 - \alpha (r_j - r_\pm)} \right)  + \left[ \frac{B_\pm}{A_\pm} - \alpha \left( \frac{ 1 - \frac{B_\pm}{A_\pm}(r_j - r_\pm)}{1 - \alpha (r_j - r_\pm)} \right)  \right] A_\pm  \lambda_j
+\end{equation}
+where $\pm$ refers to the outer and inner boundaries and $j = N-1,0$ denotes the last and first grid points inside the computational domain. Different choices of $\alpha$ and $\beta$ give some familiar boundary conditions:
+\begin{enumerate}
+\item Fixed $\lambda$ : \hfill $\alpha = 1/(r_g - r_B)$ \hfill $\beta = \lambda_g/(r_g - r_B)$
+\item Fixed $\partial_r \lambda$: \hfill $\alpha = 0$ \hfill $ \beta = \lambda'$
+\item Fixed $\dot{M}$: \hfill $\alpha = B_\pm / A_\pm$ \hfill $\beta = \dot{M}_0 / A_\pm$
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

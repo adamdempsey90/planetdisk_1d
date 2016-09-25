@@ -45,17 +45,56 @@ void init_ring_test(void) {
     return;
 }
 
+void init_constant_mdot(void) {
+    printf("Initializing profile to connstant mdot %.e\n", params.bc_val[2]);
+    int i;
+    for(i=0;i<NR;i++) {
+        lam[i] = params.bc_val[2]*2*rc[i]/(3*nu(rc[i]));
+    }
+
+  
+
+}
+void init_grad_prof(void) {
+
+    int i;
+    for(i=0;i<NR;i++) {
+        lam[i] = 1.0;
+    }
+    return;
+
+}
+
+void init_linear_prof(void) {
+    printf("Initializing profile to linear between %lg and %lg\n", params.bc_val[0],params.bc_val[2]);
+    int i;
+    double rp = exp( log(rmin[NR]) + dlr);
+    double rm = exp( log(rmin[0]) - dlr);
+    for(i=0;i<NR;i++) {
+        lam[i] = params.bc_val[0] + (params.bc_val[2]-params.bc_val[0])*(rc[i] - rm)/(rp-rm);
+    }
+
+
+    double mfinal = 1.5*( params.bc_val[2]*nu(rp)/sqrt(rp) - params.bc_val[0]*nu(rm)/sqrt(rm))/(sqrt(rp)-sqrt(rm));
+    printf("Final Mdot should be %lg\n",mfinal);
+    return;
+}
 
 void init_lam(void) {
     int i;
 
-    init_ring_test();
-    printf("Init lam\n");
-    /*
-    for(i=0;i<NR;i++) {
-        lam[i] = params.bc_mdot*2*rc[i]/(3*nu(rc[i]));
+    //init_ring_test();
+    //
+    if (params.bc_type[1] == BCMDOTOUT) {
+        init_constant_mdot();
     }
-    */
+    else if (params.bc_type[1] == BCLAMOUT) {
+        init_linear_prof();
+    }
+    else if (params.bc_type[1] == BCGRADOUT) {
+        init_grad_prof();
+    }
+    printf("Init lam\n");
     printf("Done\n");
     return;
 }
