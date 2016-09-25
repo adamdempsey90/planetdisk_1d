@@ -162,6 +162,7 @@ void write_hdf5_file(void) {
       write_hdf5_double(fld.nu_grid,dims1,1,mesh_id,"nu_grid");
     write_hdf5_double(tauc,dims1,1,mesh_id,"tauc");
     write_hdf5_double(taumin,dims1,1,mesh_id,"taumin");
+    write_hdf5_double(fld.dep_func,dims1,1,mesh_id,"dep_func");
 // Write Matrix
    write_hdf5_double(matrix.md,dims1,1,matrix_id,"md");
     write_hdf5_double(matrix.ld,dims1_small,1,matrix_id,"ld");
@@ -173,6 +174,7 @@ void write_hdf5_file(void) {
 // Write Solution
     write_hdf5_double(fld.sol,dims2,2,solution_id,"lam");
     write_hdf5_double(fld.torque,dims2,2,solution_id,"torque");
+    write_hdf5_double(fld.dTr,dims2,2,solution_id,"dTr");
     write_hdf5_double(fld.sol_mdot,dims2,2,solution_id,"mdot");
     write_hdf5_double(fld.times,dims1_t,1,solution_id,"times");
 

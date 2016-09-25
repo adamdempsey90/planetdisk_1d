@@ -41,20 +41,8 @@ double calc_total_torque(double a, double *y) {
 
 void set_torque(double a, double *y, double *res) {
 
-#ifndef NONLOCAL
-    int i;
 
-#ifdef _OPENMP
-#pragma omp parallel for private(i)
-#endif
-    for(i=0;i<NR;i++) {
-        res[i] = y[i]*dTr_ex(rc[i],a);
-    }
-
-#else
-
-    set_torque_nl(a,y,res);
-#endif
+     set_torque_nl(a,y,res,FALSE);
     
     return;
 

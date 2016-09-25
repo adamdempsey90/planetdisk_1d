@@ -89,6 +89,51 @@ where $\pm$ refers to the outer and inner boundaries and $j = N-1,0$ denotes the
 
 
 
+\subsection{Adding Planet}
+
+Adding the planet in modifies the mass flux,
+
+\begin{equation}
+\dot{M}_+ - \dot{M}_- = 2 \sqrt{r_+} \left( -2 \pi r_+ \Lambda_{d,+} \right) - 2 \sqrt{r_-} \left( -2 \pi r_- \Lambda_{d,-} \right)
+\end{equation}
+
+Kanagawa's model has,
+
+\begin{equation}
+2 \pi r \Lambda_d = 
+\begin{cases}
+f(r) \int_{r_p}^\infty dr \, \frac{d T_p}{d r}   & r_d - \frac{w_d}{2} < r -r_p  < r_d + \frac{w_d}{2} \\
+f(r) \int_{0}^{r_p} dr \, \frac{d T_p}{d r}   & r_d - \frac{w_d}{2} < r_p - r  < r_d + \frac{w_d}{2}
+\end{cases}
+\end{equation}
+where,
+\begin{equation}
+\frac{d T_p}{d r} = 
+\begin{cases}
+\pm .4 f_{NL} 2 \pi r_p^3 \Omega_p^2 q^2  \left( \frac{r_p}{r - r_p} \right)^4  \Sigma & |r - a| > 1.3 H(r_p) \\
+0 & \text{else}
+\end{cases} 
+\end{equation}
+and 
+\begin{equation}
+f(r) = \frac{1}{w_d} \qquad \text{or} \qquad f(r) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{- ((r-(r_p \pm x_d))^2/(2 \sigma^2))}
+\end{equation}
+
+On the grid, the deposited torque matrix looks like,
+\begin{equation}
+(2 \pi r \Lambda_d)_{ij} = f_i^L \sum_{j=0}^{r_p-\Delta } w_j^L \Sigma_j + f_i^R \sum_{j=r_p+\Delta}^N w_j^R \Sigma_j
+\end{equation}
+\begin{equation}
+w_j^L = -.4 f_{NL} 2 \pi r_p^3 \Omega_p^2 q^2  \left( \frac{r_p}{r_j - r_p} \right)^4 \Delta r_j
+\end{equation}
+\begin{equation}
+w_j^R=  .4 f_{NL} 2 \pi r_p^3 \Omega_p^2 q^2  \left( \frac{r_p}{r_j - r_p} \right)^4 \Delta r_j
+\end{equation}
+\begin{equation}
+(2 \pi r \Lambda_d) = (\mathbf{f}_L \mathbf{w}_L^T + \mathbf{f}_R \mathbf{w}_R^T ) \mathbf{\Sigma}
+\end{equation}
+
+
 
 
 

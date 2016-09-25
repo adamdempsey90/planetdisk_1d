@@ -507,17 +507,20 @@ class Field():
         mesh = dat['/Migration/Mesh']
         mat = dat['/Migration/Matrix']
         self.rc = mesh['rc'][:]
+        self.dr = mesh['dr'][:]
+        self.dep_func = mesh['dep_func'][:]
         self.t =  sols['times'][:]
         self.mdot = sols['mdot'][:].transpose()
         self.torque = sols['torque'][:].T
         self.lam = sols['lam'][:].T
+        self.dTr = sols['dTr'][:].T * self.lam
         self.sigma = self.lam/(2*np.pi*self.rc[:,np.newaxis])
         self.md = mat['md'][:]
         self.ld = mat['ld'][:]
         self.ud = mat['ud'][:]
         self.fm = mat['fm'][:]
         dat.close()
-    def plotall(self,q='sigma',ax=None,norm=None):
+    def plotall(self,q='sigma',ax=None,norm=None,logx=False,logy=False,**kargs):
         try:
             dat = getattr(self,q).copy()
         except AttributeError:
@@ -526,28 +529,44 @@ class Field():
         if norm is not None:
             try:
                 dat /= norm[:,np.newaxis]
-            except TypeError:
+            except (TypeError, ValueError) as e:
                 dat /= norm
 
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
-        ax.plot(self.rc,dat)
+        ax.plot(self.rc,dat,**kargs)
         ax.set_xlabel('Radius [AU]',fontsize=15)
+        if logx:
+            ax.set_xscale('log')
+        if logy:
+            ax.set_yscale('log')
 
-    def plot(self,q='sigma',i=-1,ax=None,norm=None):
+    def plot(self,q='sigma',i=-1,ax=None,initial=True,norm=None,logy=False,logx=False,**kargs):
         try:
             dat = getattr(self,q)[:,i].copy()
+            if initial:
+                dat0 = getattr(self,q)[:,0].copy()
         except AttributeError:
             print('{} is ot a valid field!'.format(q))
             return
         if norm is not None:
             try:
                 dat /= norm[:,np.newaxis]
-            except TypeError:
+                if initial:
+                    dat /= norm[:,np.newaxis]
+            except (TypeError,ValueError) as e:
                 dat /= norm
+                if initial:
+                    dat /= norm
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
-        ax.plot(self.rc,dat)
+        ax.plot(self.rc,dat,**kargs)
+        if initial:
+            ax.plot(self.rc,dat0,'--k')
         ax.set_xlabel('Radius [AU]',fontsize=15)
+        if logx:
+            ax.set_xscale('log')
+        if logy:
+            ax.set_yscale('log')

@@ -45,38 +45,29 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         matrix.ud[i] = ( ap + bp * ( rp - rc[i] ) ) / drp;
         matrix.ld[i-1] = - ( bm *(rc[i] - rm ) - am ) / drm; 
 
-#ifndef NONLOCAL
+
+/*
         if (params.planet_torque) {
             if (params.forced_torque) {
                  matrix.fm[i] += 2*sqrt(rm) * 2*M_PI*rm * fld.grid_torque[i] - 2*sqrt(rp) * 2 *M_PI*rp * fld.grid_torque[i+1];
             }
             else {
-                /*
-                em = 2*sqrt(rm)*dTr_ex(rm,aplanet);
-                ep = 2*sqrt(rp)*dTr_ex(rp,aplanet);
-                matrix.ld[i-1] += em*dc/dm_tot;
-                matrix.ud[i] -= ep*dc/dp_tot;
-                matrix.md[i] += em*dm/dm_tot - ep*dp/dp_tot;
-                */
             }
         }
-#endif
-        
+*/ 
     }
     
     
-#ifdef NONLOCAL
-    if (params.planet_torque && !(params.forced_torque) ) {
+    if (params.planet_torque && planet.nonlocal_torque ) {
         set_uw(matrix.u,matrix.w,aplanet,NR);
     }
-#endif
 
 
 
     set_boundary();
     // Coefficient Matrix is all set
 
-    if (params.planet_torque && params.nonlocal_torque) {
+    if (params.planet_torque && planet.nonlocal_torque) {
         matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt,dt/2.,NR,2);
     }
     else {
@@ -98,7 +89,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
  
 
-    if (params.planet_torque && params.nonlocal_torque) {
+    if (params.planet_torque && planet.nonlocal_torque) {
         trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
     }
     else {

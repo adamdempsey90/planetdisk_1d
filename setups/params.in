@@ -1,43 +1,43 @@
 #Grid Parameters:
-nr = 512
+nr = 256
 ri = 0.1
 ro = 4.0
 
 #Disk Parameters:
-alpha = 0.01
+alpha = 0.001
 gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
 inner_bc = LAM
 outer_bc = LAM
-bc_val_inner_0 = 1.0
+bc_val_inner_0 = 0.1
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 10.0
+bc_val_outer_0 = 1.0
 bc_val_outer_1 = 0.0
 
 
 
 #Time Parameters:
-dt = 10.0
+dt = 1000.0
 cfl = 0.8
-tend = 1.0
+tend = 5.0
 nvisc = Yes
 logtime = No
-nt = 100
+nt = 10
 release_time = 0
 start_ss = No
 read_initial_conditions = No
 
 
 #Planet Properties:
-planet_torque = No
+planet_torque = Yes
 move_planet = No
 symmetric_torque = Yes
 nonlocal_torque = Yes
 shock_dep = No
 a  = 1.0
-mp = 0.0
+mp = 8.0
 eps = 0.4
 outputname = results.hdf5
 

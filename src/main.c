@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    set_mdot(FALSE);
+    set_mdot(TRUE);
     set_torque(planet.a,lam,fld.torque);
     for(i=0;i<NR;i++) {
         fld.sol[i] = lam[i];
@@ -129,12 +129,13 @@ int main(int argc, char *argv[]) {
         fld.avals[i] = planet.a;
         fld.vs[i] = planet.vs;
         set_torque(planet.a,lam,&fld.torque[i*NR]);
-
+/*
 #ifdef NONLOCAL
         steadystate_config_nl(&fld_ss,planet.a);
 #else
         steadystate_config(&fld_ss,planet.a);
 #endif
+*/
         fld.vs_ss[i] = fld_ss.vs;
         fld.mdot_ss[i] = fld_ss.mdot;
         fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;

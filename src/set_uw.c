@@ -6,8 +6,10 @@ void set_planet_deposition(void) {
     double kp = pow(planet.K * params.h*params.h,.25); 
     double dr1 = (gdepth/4. + .08)*kp*planet.a;
     double dr2 = .33*kp*planet.a;
-    planet.xd = .5*(dr1 +dr2);
+    planet.xd =  .5*(dr1 +dr2);
     planet.wd = (dr2-dr1);
+    
+    printf("Gap depth should be %.2e\n",gdepth); 
 
     return;
 }
@@ -57,7 +59,7 @@ double dep_func(double x, double a, double xd, double w) {
 
     double dist, res;
 
-    double wd = w/(2*4);
+    double wd = w/(2*2);
     wd *= wd;
 
 
@@ -67,7 +69,26 @@ double dep_func(double x, double a, double xd, double w) {
     dist = (x-(a+xd));
     dist *= dist;
     return exp( - dist/(2*wd))/sqrt(2*M_PI*wd); 
+/*
+    if (x<a) {
 
+        if ((xd -.5*w < -fabs(x-a)) && (-fabs(x-1)<xd+.5*w)){
+            return 1./w;
+        }
+        else {
+            return 0;
+        }
+    }
+    else {
+
+        if ((xd -.5*w < fabs(x-a)) && (fabs(x-1)<xd+.5*w)){
+            return 1./w;
+        }
+        else {
+            return 0;
+        }
+    }
+*/
 
 }
 /*
@@ -102,7 +123,6 @@ void set_uw(double *u, double *w, double a, int n) {
 
     double rm, rp;
     double facm, facp;
-
 
 #ifdef _OPENMP
 #pragma omp parallel for private(i,rm,rp,facm,facp) 
@@ -140,7 +160,7 @@ void set_uw(double *u, double *w, double a, int n) {
     return;
 
 }
-void set_torque_nl(double a, double *y, double *res) {
+void set_torque_nl(double a, double *y, double *res, int edge) {
     int i;
     double TL, TR;
 
@@ -160,16 +180,29 @@ void set_torque_nl(double a, double *y, double *res) {
             TR += dr[i] * dTr_ex(rc[i],a) * y[i];
         }
     }
+    //printf("total torque TL = %lg, TR = %lg, dT = %lg \n",TL,TR,TL+TR);
 
 #ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
         if (rc[i] <= a) {
-            res[i] = TL*dep_func(rc[i],a,planet.xd,planet.wd);
+            if (edge) {
+                res[i] = TL*dep_func(rmin[i],a,planet.xd,planet.wd);
+            }
+            else {
+                fld.dep_func[i] = dep_func(rc[i],a,planet.xd,planet.wd);
+                res[i] = TL* fld.dep_func[i];
+            }
         }
         else {
-            res[i] = TR*dep_func(rc[i],a,planet.xd,planet.wd);
+            if (edge) {
+                res[i] = TR*dep_func(rmin[i],a,planet.xd,planet.wd);
+            }
+            else {
+                fld.dep_func[i] = dep_func(rc[i],a,planet.xd,planet.wd);
+                res[i] = TR*fld.dep_func[i];
+            }
         }
 
     }

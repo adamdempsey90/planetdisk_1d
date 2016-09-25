@@ -14,7 +14,7 @@ double dTr_kanagawa(double x, double a) {
 
     double fac = 2*M_PI*x;
 
-    double dist = fabs(x/a - 1);
+    double dist = fabs(x/a-1);
     
 
     if (dist > 1.3*params.h) {
@@ -93,7 +93,7 @@ double dTr_fit(double x, double a) {
 double dTr_ex(double x, double a) {
 
     return dTr_kanagawa(x,a);
-
+/*
 #ifdef TRANSLATE
     double xd = planet.xd*params.h*a;
     if (x > a) {
@@ -110,6 +110,6 @@ double dTr_ex(double x, double a) {
     return dTr_linear(x,a);
 #endif
 #endif
-
+*/
 
 }

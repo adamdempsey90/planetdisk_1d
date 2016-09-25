@@ -62,6 +62,7 @@ void init_grad_prof(void) {
     for(i=0;i<NR;i++) {
         lam[i] = 1.0;
     }
+    printf("Init to 1.\n");
     return;
 
 }

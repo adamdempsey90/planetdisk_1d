@@ -237,6 +237,8 @@ void read_param_file(char *fname) {
     planet.K = planet.q*planet.q*pow(params.h,-5.0)/params.alpha;
 
     set_planet_deposition();
+
+    printf("Planet:\n\tK = %lg\n\txd = %lg\n\twd = %lg\n",planet.K,planet.xd,planet.wd);
     
 
 
