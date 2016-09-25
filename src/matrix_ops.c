@@ -12,7 +12,7 @@ void matvec(double *ld, double *md, double *ud, double *y, double *res, double a
 
 
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) 
 #endif
     for(i=1;i<n-1;i++) {
@@ -39,7 +39,7 @@ void matvec_full(double *ld, double *md, double *ud,double *u, double *w, double
     res[0] = a*res[0] + b* (md[0]*y[0] + ud[0]*y[1]);
 
     temp=0;
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(j,k) collapse(2) reduction(+:temp)  
 #endif
     for(j=0;j<nw;j++) {
@@ -49,7 +49,7 @@ void matvec_full(double *ld, double *md, double *ud,double *u, double *w, double
     }
     res[0] += temp;
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i,j,k)  
 #endif
     for(i=1;i<n-1;i++) {
@@ -63,7 +63,7 @@ void matvec_full(double *ld, double *md, double *ud,double *u, double *w, double
     res[n-1] = a*res[n-1] + b*( ld[n-2]*y[n-2] + md[n-1] * y[n-1]);
 
     temp=0;
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(j,k) collapse(2) reduction(+:temp)  
 #endif
     for(j=0;j<nw;j++) {
@@ -79,7 +79,7 @@ double dotprod(double *v1, double *v2, int n) {
 
     double res=0;
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) reduction(+:res)
 #endif
     for(i=0;i<n;i++) {
@@ -92,7 +92,7 @@ double dotprod(double *v1, double *v2, int n) {
 void outer(double *v1, double *v2, double *res, int n) {
     int i,j;
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i,j) collapse(2)
 #endif
     for(i=0;i<n;i++) {

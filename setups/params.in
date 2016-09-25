@@ -5,7 +5,7 @@ ro = 4.0
 
 #Disk Parameters:
 alpha = 0.01
-gamma = 0.0
+gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
@@ -19,7 +19,7 @@ bc_val_outer_1 = 0.0
 
 
 #Time Parameters:
-dt = 100.0
+dt = 10.0
 cfl = 0.8
 tend = 1.0
 nvisc = Yes

@@ -214,3 +214,5 @@ void zero_array(double *v, int n);
 void steadystate_config_nl(SteadyStateField *tmpfld,double a);
 void read_torque_file(Field *tmpfld,char *trq_file_name);
 void set_planet_deposition(void);
+double get_outer_bc_mdot(double);
+double get_inner_bc_mdot(double);

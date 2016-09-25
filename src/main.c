@@ -10,8 +10,8 @@ int main(int argc, char *argv[]) {
         strcpy(parfile,argv[1]);
     }
 /*
-#ifdef OPENMP
-    printf("Compilied code with OPENMP, using %d threads\n",OMP_NUM_THREADS);
+#ifdef _OPENMP
+    printf("Compilied code with _OPENMP, using %d threads\n",OMP_NUM_THREADS);
 #endif
 */
     printf("Reading parameters from %s...\n",parfile);

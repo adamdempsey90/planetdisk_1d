@@ -3,7 +3,7 @@
 double calc_inner_torque(double a, double *y) {
     int i;
     double res = 0;
-//#ifdef OPENMP
+//#ifdef _OPENMP
 //#pragma omp parallel for private(i) reduction(+:res) 
 //#endif
     for(i=0;rc[i]<a;i++) {
@@ -14,7 +14,7 @@ double calc_inner_torque(double a, double *y) {
 double calc_outer_torque(double a, double *y) {
     int i;
     double res = 0;
-//#ifdef OPENMP
+//#ifdef _OPENMP
 //#pragma omp parallel for private(i) reduction(+:res) 
 //#endif
     for(i=NR-1;rc[i]>a;i--) {
@@ -27,7 +27,7 @@ double calc_total_torque(double a, double *y) {
     int i;
     double res = 0;
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) reduction(+:res) 
 #endif
     for(i=0;i<NR;i++) {
@@ -44,7 +44,7 @@ void set_torque(double a, double *y, double *res) {
 #ifndef NONLOCAL
     int i;
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {

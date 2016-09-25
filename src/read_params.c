@@ -175,7 +175,7 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
 
     }
     else if (strcmp(name,"outputname") == 0) {	
-        strcpy(params.outputname,str_val);
+        sprintf(params.outputname,"outputs/%s",str_val);
         PRINT_STR(name,str_val);
 
     }

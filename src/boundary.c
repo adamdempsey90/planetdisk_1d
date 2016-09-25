@@ -31,6 +31,46 @@ void set_boundary(void) {
 
 }
 */
+double mixed_inner_boundary_value(double c1, double c2, double y0) {
+/* Inner boundary
+ * B.C of y' + c1*y  = c2
+ */
+    double rm = rmin[0];
+    double r0 = rc[0];
+
+
+    double num = nu(rm);
+    double am = 3*num;
+    double bm = 3*(num/rm)*(params.gamma - .5);
+
+    double fac1 = bm/am;
+    double fac2 = ( 1- fac1*(r0 - rm))/(1 - c1*(r0-rm));
+
+
+    
+    return  y0*am*(fac1 - c1*fac2) + am * c2*fac2;
+
+
+}
+double mixed_outer_boundary_value(double c1, double c2,double y0) {
+/* Outer boundary
+ * B.C of y' + c1*y  = c2
+ */
+    double rp = rmin[NR];
+    double rn = rc[NR-1];
+
+
+    double nup = nu(rp);
+    double ap = 3*nup;
+    double bp = 3*(nup/rp)*(params.gamma - .5);
+
+    double fac1 = bp/ap;
+    double fac2 = ( 1 - fac1*(rn - rp))/(1 - c1*(rn-rp));
+
+    return y0 * ap*(fac1 - c1*fac2) + c2*ap*fac2; 
+
+
+}
 
 void mixed_inner_boundary(double c1, double c2) {
 /* Inner boundary
@@ -129,6 +169,68 @@ void fixed_outer_boundary_grad(double val) {
     return;
 }
 
+double fixed_inner_boundary_mdot_value(double val,double y0) {
+    double rm = rmin[0];
+    double num = nu(rm);
+    double am = 3*num;
+    double bm = 3*(num/rm)*(params.gamma - .5);
+    return mixed_inner_boundary_value(bm/am, val/am,y0);
+}
+double fixed_outer_boundary_mdot_value(double val,double y0) {
+    double rp = rmin[NR];
+    double nup = nu(rp);
+    double ap = 3*nup;
+    double bp = 3*(nup/rp)*(params.gamma - .5);
+    return mixed_outer_boundary_value(bp/ap, val/ap,y0);
+}
+
+double fixed_inner_boundary_lam_value(double val,double y0) {
+    double rm = .5*(rmin[0] + exp( log(rmin[0]) - dlr));
+    double dr1 = rm - rmin[0];
+    return mixed_inner_boundary_value(1./dr1, val/dr1,y0);
+}
+double fixed_outer_boundary_lam_value(double val,double y0) {
+    double rp = .5*(rmin[NR] + exp( log(rmin[NR]) + dlr));
+    double dr1 = rp - rmin[NR];
+    return mixed_outer_boundary_value(1./dr1, val/dr1,y0);
+}
+double fixed_inner_boundary_grad_value(double val, double y0) {
+    return mixed_inner_boundary_value(0, val,y0);
+}
+double fixed_outer_boundary_grad_value(double val, double y0) {
+    return mixed_outer_boundary_value(0,val,y0);
+}
+
+double get_inner_bc_mdot(double y0) {
+    switch(params.bc_type[0]) {
+
+        case BCMDOTIN:
+            return fixed_inner_boundary_mdot_value(params.bc_val[0],y0);
+        case BCLAMIN:
+            return fixed_inner_boundary_lam_value(params.bc_val[0],y0);
+        case BCGRADIN:
+            return fixed_inner_boundary_grad_value(params.bc_val[0],y0);
+        default:
+            // Mixed BC
+            return mixed_inner_boundary_value(params.bc_val[0],params.bc_val[1],y0);
+    }
+}
+double get_outer_bc_mdot(double y0) {
+
+    switch(params.bc_type[1]) {
+
+        case BCMDOTOUT:
+            return fixed_outer_boundary_mdot_value(params.bc_val[2],y0);
+        case BCLAMOUT:
+            return fixed_outer_boundary_lam_value(params.bc_val[2],y0);
+        case BCGRADOUT:
+            return fixed_outer_boundary_grad_value(params.bc_val[2],y0);
+        default:
+            // Mixed BC
+            return mixed_outer_boundary_value(params.bc_val[2],params.bc_val[3],y0);
+    }
+
+}
 
 void set_boundary(void) {
     /* Set the boundary conditions

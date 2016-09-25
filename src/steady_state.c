@@ -48,7 +48,7 @@ void steadystate_config(SteadyStateField *tmpfld, double a) {
         resp = res;
     }
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
@@ -71,14 +71,14 @@ void steadystate_config(SteadyStateField *tmpfld, double a) {
         tmpfld->lam0[i] = params.bc_mdot*2*rc[i]/(3*nu(rc[i])); 
     }
         
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
          tmpfld->lam[i] = (1 + tmpfld->kvals[i]/sqrt(params.ri))/(tmpfld->ivals[i]);
          tmpfld->lam[i] *= tmpfld->lam0[i]*sqrt(params.ri/rc[i]);
     }
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {

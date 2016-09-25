@@ -21,7 +21,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         }
     }
 
-#ifdef OPENMP
+#ifdef _OPENMP
 //#pragma omp parallel for private(i,rm,rp,lm,lc,lp,em,ec,ep,dm,dc,dp,dm_tot,dp_tot) shared(matrix,rc,rmin)
 //#pragma omp parallel for private(i,rm,rp,num,nup,am,bm,ap,bp,drm,drp)
 #endif
@@ -84,7 +84,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     }
 
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) shared(y,dr,matrix)
 #endif
     for(i=0;i<NR;i++) {
@@ -98,12 +98,12 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
  
 
-#ifdef NONLOCAL
-    trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
-#else
-    trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
-#endif
-
+    if (params.planet_torque && params.nonlocal_torque) {
+        trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
+    }
+    else {
+        trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
+    }
     return;
 }
 

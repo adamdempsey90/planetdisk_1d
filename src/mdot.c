@@ -37,7 +37,7 @@ void set_mdot(int planet_torque) {
 
     }
 
-    mdot[0] = params.bc_val[0];
+    mdot[0] = get_inner_bc_mdot(lam[0]);
     
     //mdot[0] = -mdot[0]*2*sqrt(rc[i]) + lam[0]*1.5*nu(rmin[0])/rmin[0];
     if (planet_torque && params.forced_torque) {

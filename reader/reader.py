@@ -501,7 +501,7 @@ def plaw(x,a,b):
 
 
 class Field():
-    def __init__(self,fname='results.hdf5'):
+    def __init__(self,fname='outputs/results.hdf5'):
         dat = h5py.File(fname)
         sols = dat['/Migration/Solution']
         mesh = dat['/Migration/Mesh']
@@ -517,3 +517,37 @@ class Field():
         self.ud = mat['ud'][:]
         self.fm = mat['fm'][:]
         dat.close()
+    def plotall(self,q='sigma',ax=None,norm=None):
+        try:
+            dat = getattr(self,q).copy()
+        except AttributeError:
+            print('{} is ot a valid field!'.format(q))
+            return
+        if norm is not None:
+            try:
+                dat /= norm[:,np.newaxis]
+            except TypeError:
+                dat /= norm
+
+        if ax is None:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+        ax.plot(self.rc,dat)
+        ax.set_xlabel('Radius [AU]',fontsize=15)
+
+    def plot(self,q='sigma',i=-1,ax=None,norm=None):
+        try:
+            dat = getattr(self,q)[:,i].copy()
+        except AttributeError:
+            print('{} is ot a valid field!'.format(q))
+            return
+        if norm is not None:
+            try:
+                dat /= norm[:,np.newaxis]
+            except TypeError:
+                dat /= norm
+        if ax is None:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+        ax.plot(self.rc,dat)
+        ax.set_xlabel('Radius [AU]',fontsize=15)

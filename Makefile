@@ -12,8 +12,6 @@ OPENMPFLAG=-fopenmp
 HDF5FLAG=-DH5_USE_16_API
 
 
-LDFLAGS= $(MATHLIB) $(HDF5LIB) $(OPENMPLIB)
-CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG) $(OPENMPFLAG)
 
 
 INCLIB=
@@ -36,7 +34,9 @@ ifeq ($(UNAME),jupiter)
 CC=gcc-4.9
 endif
 ifeq ($(UNAME),zeus)
-CC=gcc-
+CC=gcc
+OPENMPLIB=
+OPENMPFLAG=
 INCLIB=-I/usr/local/include/
 LDLIB=-L/usr/local/lib/
 #CC=gcc-4.9
@@ -56,6 +56,9 @@ CC=gcc
 LDLIB=-L/software/lapack/3.4.0/lib -L/software/gsl/1.16-gcc4.8.3/lib/ -L/software/hdf5/1.8.12-serial/lib/
 INCLIB=-I/software/hdf5/1.8.12-serial/include/
 endif
+
+LDFLAGS= $(MATHLIB) $(HDF5LIB) $(OPENMPLIB)
+CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG) $(OPENMPFLAG)
 
 #!!!!!DO NOT EDIT ANYTHING UNDER THIS LINE!!!!!
 OBJECTS=$(SOURCES:.c=.o)

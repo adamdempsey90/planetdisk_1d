@@ -1,5 +1,5 @@
 #include "pdisk.h"
-#include <gsl/gsl_sf_bessel.h>
+//#include <gsl/gsl_sf_bessel.h>
 void init_lam_from_file(void) {
     FILE *f = fopen("lambda_init.dat","r");
     if (f == NULL) {
@@ -39,7 +39,8 @@ void init_ring_test(void) {
     for(i=0;i<NR;i++) {
         u = rc[i]/r0;
         fac = 2*M_PI*rc[i];
-        lam[i] = norm * pow(u,-.25) * exp(-(1 + u*u)/tau) * gsl_sf_bessel_Inu(.25,2*u/tau);
+        lam[i] = 0;
+     //   lam[i] = norm * pow(u,-.25) * exp(-(1 + u*u)/tau) * gsl_sf_bessel_Inu(.25,2*u/tau);
     }
 
     return;

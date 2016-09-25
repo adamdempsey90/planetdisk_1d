@@ -104,7 +104,7 @@ void set_uw(double *u, double *w, double a, int n) {
     double facm, facp;
 
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i,rm,rp,facm,facp) 
 #endif
     for(i=0;i<n;i++) {
@@ -149,7 +149,7 @@ void set_torque_nl(double a, double *y, double *res) {
 
     TL = 0;
     TR = 0;
-//#ifdef OPENMP
+//#ifdef _OPENMP
 //#pragma omp parallel for reduction(+:TL,TR) private(i)
 //#endif
     for(i=0; i < NR; i++) {
@@ -161,7 +161,7 @@ void set_torque_nl(double a, double *y, double *res) {
         }
     }
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {

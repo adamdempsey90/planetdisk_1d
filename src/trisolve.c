@@ -49,14 +49,14 @@ void trisolve_sm(double *ld, double *md, double *ud, double *d, double *sol, dou
     trisolve(ld,md,ud,u,x1,n);
 
     fac1=0;fac2=0;
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) reduction(+:fac1,fac2) 
 #endif
     for(i=0;i<n;i++) {
         fac1 += w[i]*sol[i];
         fac2 += w[i]*x1[i];
     }
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) shared(fac1,fac2) 
 #endif
     for(i=0;i<n;i++) {
@@ -82,14 +82,14 @@ void trisolve_sm2(double *ld, double *md, double *ud, double *d, double *sol, do
 
     fac1=0;
     fac2=0;
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) reduction(+:fac1,fac2) 
 #endif
     for(i=0;i<n;i++) {
         fac1 += w[i+n]*sol[i];
         fac2 += w[i+n]*x1[i];
     }
-#ifdef OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for private(i) shared(fac1,fac2)
 #endif
     for(i=0;i<n;i++) {
