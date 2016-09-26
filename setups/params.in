@@ -4,16 +4,16 @@ ri = 0.1
 ro = 4.0
 
 #Disk Parameters:
-alpha = 0.003
-gamma = 0.5
+alpha = 0.001
+gamma = 0.0
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = MDOT
-outer_bc = MDOT
+inner_bc = SIG
+outer_bc = SIG
 bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 1.0
+bc_val_outer_0 = 10.0
 bc_val_outer_1 = 0.0
 
 
@@ -39,5 +39,5 @@ shock_dep = No
 a  = 1.0
 mp = 8.0
 eps = 0.4
-outputname = results.hdf5
+outputname = results_temp.hdf5
 

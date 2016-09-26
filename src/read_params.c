@@ -47,6 +47,9 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         else if (strcmp(str_val,"LAM") == 0) {
             params.bc_type[0] = BCLAMIN;
         }
+        else if (strcmp(str_val,"SIG") == 0) {
+            params.bc_type[0] = BCSIGIN;
+        }
         else {
             params.bc_type[0] = BCMIXEDIN;
         }
@@ -62,6 +65,9 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         }
         else if (strcmp(str_val,"LAM") == 0) {
             params.bc_type[1] = BCLAMOUT;
+        }
+        else if (strcmp(str_val,"SIG") == 0) {
+            params.bc_type[1] = BCSIGOUT;
         }
         else {
             params.bc_type[1] = BCMIXEDOUT;

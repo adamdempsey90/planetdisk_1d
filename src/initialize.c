@@ -45,6 +45,19 @@ void init_ring_test(void) {
 
     return;
 }
+void init_constant_mdot_2(void) {
+    printf("Initializing profile to connstant mdot %.e\n", params.bc_val[2]);
+    int i;
+    for(i=0;i<NR;i++) {
+        lam[i] = params.bc_val[2]*2*rc[i]/(3*nu(rc[i]));
+    }
+    
+    double rg =.5*(rmin[0] + exp(log(rmin[0]) -dlr));
+    params.bc_val[0] = params.bc_val[2]*2*rg/(3*nu(rg));
+
+
+    return;
+}
 
 void init_constant_mdot(void) {
     printf("Initializing profile to connstant mdot %.e\n", params.bc_val[2]);
@@ -67,13 +80,25 @@ void init_grad_prof(void) {
 
 }
 
+void init_sigma_prof(void) {
+    printf("Initializing profile to linear between %lg and %lg\n", params.bc_val[0],params.bc_val[2]);
+    int i;
+    double rp = exp( log(rmin[NR]) + dlr);
+    double rm = exp( log(rmin[0]) - dlr);
+    for(i=0;i<NR;i++) {
+        lam[i] = 2*M_PI*((rm*params.bc_val[0] + (rp*params.bc_val[2]-rm*params.bc_val[0])*(rc[i] - rm)/(rp-rm)));
+    }
+    return;
+
+}
+
 void init_linear_prof(void) {
     printf("Initializing profile to linear between %lg and %lg\n", params.bc_val[0],params.bc_val[2]);
     int i;
     double rp = exp( log(rmin[NR]) + dlr);
     double rm = exp( log(rmin[0]) - dlr);
     for(i=0;i<NR;i++) {
-        lam[i] = params.bc_val[0] + (params.bc_val[2]-params.bc_val[0])*(rc[i] - rm)/(rp-rm);
+        lam[i] = (params.bc_val[0] + (params.bc_val[2]-params.bc_val[0])*(rc[i] - rm)/(rp-rm));
     }
 
 
@@ -87,14 +112,20 @@ void init_lam(void) {
 
     //init_ring_test();
     //
-    if (params.bc_type[1] == BCMDOTOUT) {
+    if ((params.bc_type[0] == BCMDOTIN) && (params.bc_type[1] == BCMDOTOUT)) {
         init_constant_mdot();
     }
-    else if (params.bc_type[1] == BCLAMOUT) {
+    else if ((params.bc_type[0] == BCLAMIN) && (params.bc_type[1] == BCLAMOUT)) {
         init_linear_prof();
+    }
+    else if ((params.bc_type[0] == BCSIGIN) && (params.bc_type[1] == BCSIGOUT)) {
+        init_sigma_prof();
     }
     else if (params.bc_type[1] == BCGRADOUT) {
         init_grad_prof();
+    }
+    else if ( (params.bc_type[0] == BCLAMIN) && (params.bc_type[1] == BCMDOTOUT)) {
+        init_constant_mdot_2();
     }
     printf("Init lam\n");
     printf("Done\n");

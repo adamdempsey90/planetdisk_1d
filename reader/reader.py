@@ -507,6 +507,7 @@ class Field():
         mesh = dat['/Migration/Mesh']
         mat = dat['/Migration/Matrix']
         self.rc = mesh['rc'][:]
+        self.nr = len(self.rc)
         self.dr = mesh['dr'][:]
         self.dep_func = mesh['dep_func'][:]
         self.t =  sols['times'][:]
@@ -515,10 +516,26 @@ class Field():
         self.lam = sols['lam'][:].T
         self.dTr = sols['dTr'][:].T * self.lam
         self.sigma = self.lam/(2*np.pi*self.rc[:,np.newaxis])
+        self.drlam = np.zeros(self.lam.shape)
+        self.drlam[1:-1,:] = (self.lam[2:,:]-self.lam[:-2,:])/(self.rc[2:]-self.rc[:-2])[:,np.newaxis]
+        self.drlam[0,:] = (self.lam[1,:]-self.lam[0,:])/(self.rc[1]-self.rc[0])
+        self.drlam[-1,:] = (self.lam[-1,:]-self.lam[-2,:])/(self.rc[-1]-self.rc[-2])
+        self.dtlam = np.diff(self.lam,axis=1)/np.diff(self.t)
+        self.mdot_c = np.zeros((self.nr,len(self.t)-1))
+        for i in range(len(self.t)-1):
+            self.mdot_c[:,i] = ((self.dtlam[:,i]*self.dr)[::-1].cumsum()+self.mdot[-1,i])[::-1]
         self.md = mat['md'][:]
         self.ld = mat['ld'][:]
         self.ud = mat['ud'][:]
         self.fm = mat['fm'][:]
+
+
+        temp = mat['u'][:]
+        self.uL = temp[:self.nr]
+        self.uR = temp[-self.nr:]
+        temp = mat['w'][:]
+        self.wL = temp[:self.nr]
+        self.wR = temp[-self.nr:]
         dat.close()
     def plotall(self,q='sigma',ax=None,norm=None,logx=False,logy=False,**kargs):
         try:
@@ -542,7 +559,7 @@ class Field():
         if logy:
             ax.set_yscale('log')
 
-    def plot(self,q='sigma',i=-1,ax=None,initial=True,norm=None,logy=False,logx=False,**kargs):
+    def plot(self,q='sigma',i=-1,ax=None,initial=False,norm=None,logy=False,logx=False,**kargs):
         try:
             dat = getattr(self,q)[:,i].copy()
             if initial:
@@ -554,11 +571,11 @@ class Field():
             try:
                 dat /= norm[:,np.newaxis]
                 if initial:
-                    dat /= norm[:,np.newaxis]
+                    dat0 /= norm[:,np.newaxis]
             except (TypeError,ValueError) as e:
                 dat /= norm
                 if initial:
-                    dat /= norm
+                    dat0 /= norm
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
@@ -570,3 +587,39 @@ class Field():
             ax.set_xscale('log')
         if logy:
             ax.set_yscale('log')
+    def plot_itorque(self,ax=None,logx=False,i=-1,a=1):
+        if ax is None:
+            fig = plt.figure()
+            ax=fig.add_subplot(111)
+
+
+        TeR = (self.dr*self.dTr[:,i])[self.rc>=a].cumsum()
+        TeL = -(self.dr*self.dTr[:,i])[self.rc<=a][::-1].cumsum()
+        TdR = (self.dr*self.torque[:,i])[self.rc>=a].cumsum()
+        TdL = -(self.dr*self.torque[:,i])[self.rc<=a][::-1].cumsum()
+
+        ax.plot(self.rc[self.rc>=a],TeR,'-k')
+        ax.plot(self.rc[self.rc<=a][::-1],TeL,'-k')
+        ax.plot(self.rc[self.rc>=a],TdR,'-r')
+        ax.plot(self.rc[self.rc<=a][::-1],TdL,'-r')
+
+        ax.set_xlabel('Radius [AU]',fontsize=15)
+    def summary(self,axes=None,logx=False,logy=True):
+        if axes is None:
+            fig,axes= plt.subplots(2,1,sharex=True)
+
+        axes[0].plot(self.rc,self.sigma[:,-1]/self.sigma[:,0])
+        axes[1].plot(self.rc,self.mdot_c[:,-1])
+
+        for ax in axes:
+            if logx:
+                ax.set_xscale('log')
+            ax.minorticks_on()
+
+        if logy:
+            axes[0].set_yscale('log')
+
+        axes[1].set_xlabel('Radius [AU]',fontsize=15)
+
+        axes[1].set_ylabel('$\\dot{M}$',fontsize=20)
+        axes[0].set_ylabel('$\\Sigma/\\Sigma_0$',fontsize=20)

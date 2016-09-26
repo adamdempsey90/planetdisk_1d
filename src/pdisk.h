@@ -30,6 +30,8 @@
 #define BCGRADOUT 5
 #define BCMIXEDIN 6
 #define BCMIXEDOUT 7
+#define BCSIGIN 8
+#define BCSIGOUT 9
 
 
 typedef struct Parameters {

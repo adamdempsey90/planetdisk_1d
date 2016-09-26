@@ -148,6 +148,8 @@ void fixed_outer_boundary_mdot(double val) {
     return;
 }
 
+
+
 void fixed_inner_boundary_lam(double val) {
     double rm = .5*(rmin[0] + exp( log(rmin[0]) - dlr));
     double dr1 = rm - rmin[0];
@@ -158,6 +160,16 @@ void fixed_outer_boundary_lam(double val) {
     double rp = .5*(rmin[NR] + exp( log(rmin[NR]) + dlr));
     double dr1 = rp - rmin[NR];
     mixed_outer_boundary(1./dr1, val/dr1);
+    return;
+}
+void fixed_inner_boundary_sigma(double val) {
+    double rm = .5*(rmin[0] + exp( log(rmin[0]) - dlr));
+    fixed_inner_boundary_lam(2*M_PI*rm*val);
+    return;
+}
+void fixed_outer_boundary_sigma(double val) {
+    double rp = .5*(rmin[NR] + exp( log(rmin[NR]) + dlr));
+    fixed_outer_boundary_lam(2*M_PI*rp*val);
     return;
 }
 void fixed_inner_boundary_grad(double val) {
@@ -247,6 +259,9 @@ void set_boundary(void) {
         case BCGRADIN:
             fixed_inner_boundary_grad(params.bc_val[0]);
             break;
+        case BCSIGIN:
+            fixed_inner_boundary_sigma(params.bc_val[0]);
+            break;
         default:
             // Mixed BC
             mixed_inner_boundary(params.bc_val[0],params.bc_val[1]);
@@ -262,6 +277,9 @@ void set_boundary(void) {
             break;
         case BCGRADOUT:
             fixed_outer_boundary_grad(params.bc_val[2]);
+            break;
+        case BCSIGOUT:
+            fixed_outer_boundary_sigma(params.bc_val[2]);
             break;
         default:
             // Mixed BC
