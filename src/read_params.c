@@ -189,7 +189,34 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
     return;
 }
 
-void read_param_file(char *fname) {
+void parse_argument(int argc, char *argv[]) {
+    int j;
+    unsigned int i;
+    char name[100],strval[100];
+    double dval;
+    int ival;
+    int bool_val;
+    char testbool;
+
+
+    for(j=0;j<argc;j++) {
+        sscanf(argv[j],"%32[^=]=%s",name,strval);
+        printf("Redefining %s = %s\n",name,strval);
+        dval = atof(strval);
+        ival = atoi(strval);
+        testbool = toupper(strval[0]);
+        if (testbool == 'Y') bool_val = TRUE;
+        else bool_val = FALSE;
+        for (i = 0; i<strlen(name); i++) name[i] = (char)tolower(name[i]);
+        set_var(name,ival,dval,bool_val,strval);
+    }
+
+
+
+    return;
+}
+
+void read_param_file(char *fname, int argc, char *argv[]) {
     FILE *f;
 
     char tok[20] = "\t :=>";
@@ -228,6 +255,10 @@ void read_param_file(char *fname) {
         }
     }
 
+    if (argc > 0) {
+        parse_argument(argc,argv);
+    }
+
     params.mach = 1/params.h;
     params.nu0 = params.alpha * params.h*params.h;
     params.mth = params.h*params.h*params.h;
@@ -250,4 +281,5 @@ void read_param_file(char *fname) {
 
     return;
 }
+
 

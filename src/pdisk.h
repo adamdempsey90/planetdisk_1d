@@ -195,7 +195,7 @@ void outer(double *v1, double *v2, double *res, int n);
 void set_mdot(int planet_torque);
 double calc_drift_speed(double a,double *y);
 void move_planet(double dt, double *y, double *vs, double *a);
-void read_param_file(char *parfile);
+void read_param_file(char *parfile, int argc, char *argv[]);
 void set_grid(void);
 void free_grid(void);
 void set_matrix(void);

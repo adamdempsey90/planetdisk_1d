@@ -15,7 +15,12 @@ int main(int argc, char *argv[]) {
 #endif
 */
     printf("Reading parameters from %s...\n",parfile);
-    read_param_file(parfile);
+    if (argc > 2) {
+        read_param_file(parfile,argc-2,&argv[2]);
+    }
+    else {
+        read_param_file(parfile,0,NULL);
+    }
     
         printf("Setting up grid...\n");
     allocate_field(&fld);
