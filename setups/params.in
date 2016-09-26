@@ -4,14 +4,14 @@ ri = 0.1
 ro = 4.0
 
 #Disk Parameters:
-alpha = 0.001
+alpha = 0.003
 gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = LAM
-outer_bc = LAM
-bc_val_inner_0 = 0.1
+inner_bc = MDOT
+outer_bc = MDOT
+bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
 bc_val_outer_0 = 1.0
 bc_val_outer_1 = 0.0
@@ -19,9 +19,9 @@ bc_val_outer_1 = 0.0
 
 
 #Time Parameters:
-dt = 1000.0
+dt = 100.0
 cfl = 0.8
-tend = 5.0
+tend = 1.0
 nvisc = Yes
 logtime = No
 nt = 10
