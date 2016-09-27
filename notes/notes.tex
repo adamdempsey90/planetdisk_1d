@@ -4,6 +4,7 @@
 
 \begin{document}
 
+\subsection{No planet}
 In WSS the evolution equation is,
 \begin{equation}
 \partial_t(\langle \lambda \rangle r^2 \langle \Omega \rangle) + \partial_r( -\dot{M}  \langle r^2 \Omega \rangle  - \nu \langle \lambda \rangle  r^2 \partial_r \langle \Omega \rangle) = 2\pi r \Lambda_{ex} - 2 \pi \partial_r (F_w) 
@@ -137,18 +138,14 @@ w_j^R=  .4 f_{NL} 2 \pi r_p^3 \Omega_p^2 q^2  \left( \frac{r_p}{r_j - r_p} \righ
 
 \subsection{Zero torque solution}
 
-If we fix $\Sigma$ at both ends of the domain, the disk will approach a constant $\dot{M}$ profile. The proper solution should have 
+
+Inside the inner edge of the computational domain (but still away from the physical inner edge of the disk) we expect the surface density to follow the power law solution, $\dot{M} = 3\pi \nu \Sigma$. This assumes that there is no net torque exerted on the disk in this region. If there was a torque in this region it would offset $\Sigma_i$ at the inner edge of the domain from $\dot{M}/(3 \pi \nu)$, i.e
 \begin{equation}
-\dot{M} l_i = F_{\nu,i}
+\dot{M} l = 3 \pi \nu \Sigma l + \int_\text{inner} \Lambda dr 
 \end{equation}
-at the inner boundary, but in general there will be an extra offset,
-\begin{equation}
-\dot{M} l_i = F_{\nu_i}  + \Delta F_i
-\end{equation}
-Note that both of these satisfy the EOM
-\begin{equation}
-\left. \dot{M} \frac{d l}{d r} \right|_i = \left. \frac{d F_\nu}{d r} \right|_i
-\end{equation}
+If $3 \pi \nu_i \Sigma_i \neq \dot{M}$ then there must be some torque injection inside the computational domain. The \textbf{zero-torque} solution is the one in which the inner boundary surface density is consistent with both the steady-state $\dot{M}$ and the inner disk power law solution $ \dot{M} = 3 \pi \nu \Sigma(r)$. 
+
+Simulation's which fix $\Sigma$ to the wrong values at the boundaries are then implicitly injecting torque in the disk. 
 
 
 

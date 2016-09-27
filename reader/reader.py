@@ -607,6 +607,20 @@ class Field():
         ax.plot(self.rc[self.rc<=a][::-1],TdL,'-r')
 
         ax.set_xlabel('Radius [AU]',fontsize=15)
+    def zero_torque(self,ax=None,remove=False,fac=3*np.pi*.001*.05*.05,gamma=0):
+        md = self.mdot_c[:,-1]*np.sqrt(self.rc) - (fac*self.rc**gamma*self.sigma[:,-1])
+        if remove:
+            md = self.mdot_c[0,-1]*np.sqrt(self.rc[0]) - (fac*self.rc[0]**gamma *self.sigma[0,-1])
+        dt = -(self.dr*self.torque[:,-1]).cumsum()
+        if ax is None:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+
+        ax.plot(self.rc,md,'-b')
+        ax.plot(self.rc,dt,'-r')
+        ax.set_xlabel('Radius [AU]',fontsize=15)
+
+
     def summary(self,axes=None,logx=False,logy=True):
         if axes is None:
             fig,axes= plt.subplots(2,1,sharex=True)

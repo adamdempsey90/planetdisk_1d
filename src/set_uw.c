@@ -145,7 +145,12 @@ void set_uw(double *u, double *w, double a, int n) {
         
         if (rc[i] < a) {
         /* Inner disk */
-            w[i] = dr[i]*dTr_ex(rc[i],a); // lower integral weights
+            if (planet.symmetric_torque) {
+                w[i] = 0;
+            }
+            else {
+                w[i] = dr[i]*dTr_ex(rc[i],a); // lower integral weights
+            }
             w[i+n] = 0; // upper integral weights
             
             facm = dep_func(rm,a,planet.xd,planet.wd);
@@ -156,8 +161,13 @@ void set_uw(double *u, double *w, double a, int n) {
         }
         else {
         /* Outer disk */
-            w[i] = 0; // lower integral weights
             w[i+n] = dr[i]*dTr_ex(rc[i],a); // upper integral weights
+            if (planet.symmetric_torque) {
+                w[i] = -w[i+n]; // lower integral weights
+            }
+            else {
+                w[i] = 0;
+            }
 
             facm = dep_func(rm,a,planet.xd,planet.wd);
             facp = dep_func(rp,a,planet.xd,planet.wd);
@@ -191,6 +201,9 @@ void set_torque_nl(double a, double *y, double *res, int edge) {
         else {
             TR += dr[i] * dTr_ex(rc[i],a) * y[i];
         }
+    }
+    if (planet.symmetric_torque) {
+        TL = - TR;
     }
     //printf("total torque TL = %lg, TR = %lg, dT = %lg \n",TL,TR,TL+TR);
 

@@ -5,23 +5,23 @@ ro = 4.0
 
 #Disk Parameters:
 alpha = 0.001
-gamma = 0.0
+gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
 inner_bc = SIG
-outer_bc = SIG
+outer_bc = MDOT
 bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 2.07213
+bc_val_outer_0 = 8.11408e-6 #4.8773
 bc_val_outer_1 = 0.0
 
 
 
 #Time Parameters:
-dt = 100.0
+dt = 1000.0
 cfl = 0.8
-tend = 1.0
+tend = 20.0
 nvisc = Yes
 logtime = No
 nt = 10
@@ -33,14 +33,14 @@ read_initial_conditions = No
 #Planet Properties:
 planet_torque = Yes
 move_planet = No
-symmetric_torque = Yes
+symmetric_torque = No
 nonlocal_torque = Yes
 scaling_dep = Yes
 shock_dep = No
 a  = 1.0
 mp = 8.0
-eps = 0.1
+eps = 0.4
 xd = .4
 wd = .05
-outputname = results_temp.hdf5
+outputname = results_3.hdf5
 

@@ -216,7 +216,6 @@ void parse_argument(int argc, char *argv[]) {
 
     for(j=0;j<argc;j++) {
         sscanf(argv[j],"%32[^=]=%s",name,strval);
-        printf("Redefining %s = %s\n",name,strval);
         dval = atof(strval);
         ival = atoi(strval);
         testbool = toupper(strval[0]);
@@ -270,6 +269,7 @@ void read_param_file(char *fname, int argc, char *argv[]) {
         }
     }
 
+    printf("Redefined on the command line:\n");
     if (argc > 0) {
         parse_argument(argc,argv);
     }
