@@ -2,14 +2,17 @@
 
 
 void set_planet_deposition(void) {
-    double gdepth = 1./(1 + .04*planet.K);
-    double kp = pow(planet.K * params.h*params.h,.25); 
-    double dr1 = (gdepth/4. + .08)*kp*planet.a;
-    double dr2 = .33*kp*planet.a;
-    planet.xd =  .5*(dr1 +dr2);
-    planet.wd = (dr2-dr1);
-    
-    printf("Gap depth should be %.2e\n",gdepth); 
+
+    if (planet.scaling_dep) {
+        double gdepth = 1./(1 + .04*planet.K);
+        double kp = pow(planet.K * params.h*params.h,.25); 
+        double dr1 = (gdepth/4. + .08)*kp*planet.a;
+        double dr2 = .33*kp*planet.a;
+        planet.xd =  .5*(dr1 +dr2);
+        planet.wd = (dr2-dr1);
+        
+        printf("Gap depth should be %.2e\n",gdepth); 
+    }
 
     return;
 }
@@ -57,18 +60,27 @@ double dep_func(double x, double a, double xd, double w) {
         return dTr_ex(x,a);
     }
 
-    double dist, res;
+    double distL,distR, res;
 
-    double wd = w/(2*2);
+    double wd;
+    if (planet.scaling_dep) {
+        wd = w/(2*4);
+    }
+    else {
+        wd = w;
+    }
+
     wd *= wd;
 
 
-    if (x <=a) {
-        xd *= -1;
-    }
-    dist = (x-(a+xd));
-    dist *= dist;
-    return exp( - dist/(2*wd))/sqrt(2*M_PI*wd); 
+   // if (x <=a) {
+   //     xd *= -1;
+    //}
+    distL = (x-(a+xd));
+    distR = (x-(a-xd));
+    distL *= distL;
+    distR *= distR;
+    return exp(-distL/(2*wd))/sqrt(2*M_PI*wd) + exp( - distR/(2*wd))/sqrt(2*M_PI*wd); 
 /*
     if (x<a) {
 
@@ -173,10 +185,10 @@ void set_torque_nl(double a, double *y, double *res, int edge) {
 //#pragma omp parallel for reduction(+:TL,TR) private(i)
 //#endif
     for(i=0; i < NR; i++) {
-        if (rc[i] <= a) {
+        if (rc[i] < a) {
             TL += dr[i] * dTr_ex(rc[i],a) * y[i];
         }
-        if (rc[i] >= a) {
+        else {
             TR += dr[i] * dTr_ex(rc[i],a) * y[i];
         }
     }
@@ -186,7 +198,7 @@ void set_torque_nl(double a, double *y, double *res, int edge) {
 #pragma omp parallel for private(i)
 #endif
     for(i=0;i<NR;i++) {
-        if (rc[i] <= a) {
+        if (rc[i] < a) {
             if (edge) {
                 res[i] = TL*dep_func(rmin[i],a,planet.xd,planet.wd);
             }

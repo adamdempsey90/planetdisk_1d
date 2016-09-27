@@ -13,7 +13,7 @@ inner_bc = SIG
 outer_bc = SIG
 bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 30.0
+bc_val_outer_0 = 2.07213
 bc_val_outer_1 = 0.0
 
 
@@ -35,9 +35,12 @@ planet_torque = Yes
 move_planet = No
 symmetric_torque = Yes
 nonlocal_torque = Yes
+scaling_dep = Yes
 shock_dep = No
 a  = 1.0
 mp = 8.0
-eps = 0.4
+eps = 0.1
+xd = .4
+wd = .05
 outputname = results_temp.hdf5
 

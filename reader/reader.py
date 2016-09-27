@@ -507,12 +507,15 @@ class Field():
         mesh = dat['/Migration/Mesh']
         mat = dat['/Migration/Matrix']
         self.rc = mesh['rc'][:]
+        self.rmin = mesh['rmin'][:]
         self.nr = len(self.rc)
         self.dr = mesh['dr'][:]
         self.dep_func = mesh['dep_func'][:]
         self.t =  sols['times'][:]
         self.mdot = sols['mdot'][:].transpose()
         self.torque = sols['torque'][:].T
+        self.mdL = sols['mdL'][:].T
+        self.mdR = sols['mdR'][:].T
         self.lam = sols['lam'][:].T
         self.dTr = sols['dTr'][:].T * self.lam
         self.sigma = self.lam/(2*np.pi*self.rc[:,np.newaxis])
@@ -623,3 +626,21 @@ class Field():
 
         axes[1].set_ylabel('$\\dot{M}$',fontsize=20)
         axes[0].set_ylabel('$\\Sigma/\\Sigma_0$',fontsize=20)
+    def evaulate_matrix(self):
+        fac1 = np.zeros(self.rc.shape)
+
+        for i in range(1,self.nr-1):
+            fac1[i] = self.md[i]*self.lam[i,-1] + self.ld[i-1]*self.lam[i-1,-1]+self.ud[i]*self.lam[i+1,-1]
+
+        fac1[0] = self.lam[0,-1]*self.md[0] + self.lam[1,-1]*self.ud[0]
+        fac1[-1] = self.lam[-1,-1]*self.md[-1] + self.lam[-2,-1]*self.ld[-1]
+
+        fac2 = self.uL *np.dot(self.wL,self.lam[:,-1]) + self.uR*np.dot(self.wR,self.lam[:,-1])
+
+        plt.figure()
+        plt.plot(self.rc,fac1,label='main')
+        plt.plot(self.rc,fac2,label='uw')
+        plt.plot(self.rc,self.fm,label='F')
+        plt.legend()
+        plt.figure()
+        plt.plot(self.rc,fac1+fac2-self.fm ,'-b')

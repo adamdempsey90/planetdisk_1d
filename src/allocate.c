@@ -18,6 +18,8 @@ void allocate_field( Field *tmpfld) {
 
      MALLOC_SAFE( (tmpfld->dTr = (double *)malloc(sizeof(double)*NR*params.nt)));
      MALLOC_SAFE( (tmpfld->dep_func = (double *)malloc(sizeof(double)*NR*params.nt)));
+     MALLOC_SAFE( (tmpfld->mdL = (double *)malloc(sizeof(double)*NR*params.nt)));
+     MALLOC_SAFE( (tmpfld->mdR = (double *)malloc(sizeof(double)*NR*params.nt)));
     MALLOC_SAFE( (tmpfld->lamp = (double *)malloc(sizeof(double)*NR*params.nt)));
     MALLOC_SAFE( (tmpfld->lam0 = (double *)malloc(sizeof(double)*NR*params.nt)));
      MALLOC_SAFE( (tmpfld->efficiency = (double *)malloc(sizeof(double)*params.nt)));

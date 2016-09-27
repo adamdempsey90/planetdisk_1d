@@ -148,6 +148,7 @@ void write_hdf5_file(void) {
 
 
     hsize_t dims1[1] = {NR};
+    hsize_t dims1_m[1] = {NR+1};
     hsize_t dims1_2[2] = {2*NR};
     hsize_t dims1_t[1]= {params.nt};
     hsize_t dims1_small[1] = {NR-1};
@@ -156,7 +157,7 @@ void write_hdf5_file(void) {
 // Write Mesh data
     write_hdf5_double(rc,dims1,1,mesh_id,"rc");
     write_hdf5_double(dr,dims1,1,mesh_id,"dr");
-      write_hdf5_double(rmin,dims1,1,mesh_id,"rmin");
+      write_hdf5_double(rmin,dims1_m,1,mesh_id,"rmin");
       write_hdf5_double(fld.lami,dims1,1,mesh_id,"lami");
       write_hdf5_double(fld.mdoti,dims1,1,mesh_id,"mdoti");
       write_hdf5_double(fld.nu_grid,dims1,1,mesh_id,"nu_grid");
@@ -174,6 +175,8 @@ void write_hdf5_file(void) {
 // Write Solution
     write_hdf5_double(fld.sol,dims2,2,solution_id,"lam");
     write_hdf5_double(fld.torque,dims2,2,solution_id,"torque");
+    write_hdf5_double(fld.mdR,dims2,2,solution_id,"mdR");
+    write_hdf5_double(fld.mdL,dims2,2,solution_id,"mdL");
     write_hdf5_double(fld.dTr,dims2,2,solution_id,"dTr");
     write_hdf5_double(fld.sol_mdot,dims2,2,solution_id,"mdot");
     write_hdf5_double(fld.times,dims1_t,1,solution_id,"times");

@@ -55,6 +55,8 @@ typedef struct Parameters {
     char outputname[MAXSTRLEN];
     char torque_file[MAXSTRLEN];
     int nonlocal_torque;
+    int scaling_dep;
+    
     int shock_dep;
     int forced_torque;
 } Parameters;
@@ -85,6 +87,7 @@ typedef struct param_t {
     int gaussian;
     int symmetric_torque;
     int nonlocal_torque;
+    int scaling_dep;
     int shock_dep;
     int forced_torque;
     int hs_visc;
@@ -108,6 +111,7 @@ typedef struct Planet {
     int gaussian;
     int symmetric_torque;
     int nonlocal_torque;
+    int scaling_dep;
     int shock_dep;
     double T0;
 } Planet;
@@ -140,6 +144,8 @@ typedef struct Field {
     double *nu_grid;
     double *dTr;
     double *dep_func;
+    double *mdL;
+    double *mdR;
     double *grid_torque;
     double *grid_torquec;
 } Field;
@@ -219,3 +225,4 @@ void set_planet_deposition(void);
 double get_outer_bc_mdot(double);
 double get_inner_bc_mdot(double);
 double dep_func(double x, double a, double xd, double w);
+void explicit_step_func(double aplanet, double *y,double *mdL, double *mdR);

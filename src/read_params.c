@@ -160,6 +160,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_STR(name,str_val);
 
     }
+    else if (strcmp(name,"scaling_dep") == 0) {	
+        planet.scaling_dep = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"shock_dep") == 0) {	
         planet.shock_dep = bool_val;
         PRINT_STR(name,str_val);
@@ -177,6 +182,16 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
     }
     else if (strcmp(name,"eps") == 0) {	
         planet.eps = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"xd") == 0) {	
+        planet.xd = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"wd") == 0) {	
+        planet.wd = double_val;
         PRINT_DOUBLE(name,double_val);
 
     }
