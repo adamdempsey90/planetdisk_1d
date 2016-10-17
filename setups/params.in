@@ -9,38 +9,42 @@ gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = SIG
+inner_bc = MDOT
 outer_bc = MDOT
 bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 8.11408e-6 #4.8773
+bc_val_outer_0 = 1.0 #8.11408e-6 #4.8773
 bc_val_outer_1 = 0.0
+use_floor = No
+mass_floor = 1e-4
+
 
 
 
 #Time Parameters:
-dt = 1000.0
+dt = .1
 cfl = 0.8
-tend = 20.0
-nvisc = Yes
+tend = 1000.0
+nvisc = No
 logtime = No
-nt = 10
+nt = 100
 release_time = 0
 start_ss = No
 read_initial_conditions = No
+implicit = No
 
 
 #Planet Properties:
 planet_torque = Yes
 move_planet = No
 symmetric_torque = No
-nonlocal_torque = Yes
+nonlocal_torque = No
+linear_torque = Yes
 scaling_dep = Yes
 shock_dep = No
 a  = 1.0
 mp = 8.0
-eps = 0.4
+eps = 0.05
 xd = .4
 wd = .05
-outputname = results_3.hdf5
-
+outputname = results_2.hdf5

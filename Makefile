@@ -33,6 +33,9 @@ endif
 ifeq ($(UNAME),jupiter)
 CC=gcc-4.9
 endif
+ifeq ($(UNAME),adam)
+CC=gcc
+endif
 ifeq ($(UNAME),zeus)
 CC=gcc
 OPENMPLIB=

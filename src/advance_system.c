@@ -40,7 +40,12 @@ void advance_system(double dt, double *t, double tend) {
         move_planet(dt,lam,&newv,&newa);
     }
 
-    crank_nicholson_step(dt,planet.a,lam);
+    if (params.implicit) {
+        crank_nicholson_step(dt,planet.a,lam);
+    }
+    else {
+        tvd_step(dt,planet.a,lam);
+    }
 
     if ((params.move_planet) && (*t >= params.release_time)) {
         planet.a = newa;

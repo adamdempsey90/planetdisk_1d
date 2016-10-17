@@ -36,6 +36,8 @@
 
 typedef struct Parameters {
     double alpha,h,ri,ro,gamma, mach, mth, mvisc, tvisc; 
+    double mass_floor;
+    int use_floor;
     double nu0;
     int nr,nt;
     double dt,tend;
@@ -56,6 +58,7 @@ typedef struct Parameters {
     char torque_file[MAXSTRLEN];
     int nonlocal_torque;
     int scaling_dep;
+    int implicit;
     
     int shock_dep;
     int forced_torque;
@@ -111,6 +114,7 @@ typedef struct Planet {
     int gaussian;
     int symmetric_torque;
     int nonlocal_torque;
+    int linear_torque;
     int scaling_dep;
     int shock_dep;
     double T0;
@@ -226,3 +230,6 @@ double get_outer_bc_mdot(double);
 double get_inner_bc_mdot(double);
 double dep_func(double x, double a, double xd, double w);
 void explicit_step_func(double aplanet, double *y,double *mdL, double *mdR);
+void set_torque_linear(double aplanet, double *y); 
+void calculate_linear_torque(double aplanet, double *y, double *TL, double *TR);
+void tvd_step(double dt, double aplanet, double *y);

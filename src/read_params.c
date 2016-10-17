@@ -27,6 +27,16 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_DOUBLE(name,double_val);
 
     }
+    else if (strcmp(name,"use_floor") == 0) {	
+        params.use_floor = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"mass_floor") == 0) {	
+        params.mass_floor = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
     else if (strcmp(name,"gamma") == 0) {	
         params.gamma = double_val;
         PRINT_DOUBLE(name,double_val);
@@ -150,6 +160,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_STR(name,str_val);
 
     }
+    else if (strcmp(name,"implicit") == 0) {	
+        params.implicit = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"move_planet") == 0) {	
         params.move_planet = bool_val;
         PRINT_STR(name,str_val);
@@ -157,6 +172,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
     }
     else if (strcmp(name,"nonlocal_torque") == 0) {	
         planet.nonlocal_torque = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
+    else if (strcmp(name,"linear_torque") == 0) {	
+        planet.linear_torque = bool_val;
         PRINT_STR(name,str_val);
 
     }

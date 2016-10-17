@@ -234,3 +234,54 @@ void set_torque_nl(double a, double *y, double *res, int edge) {
 
     return;
 }
+
+void calculate_linear_torque(double aplanet, double *y, double *TL, double *TR) {
+    int i;    
+    *TL = 0;
+    *TR = 0;
+
+    for(i=0; i < NR; i++) {
+        if (rc[i] < aplanet) {
+            *TL += dr[i] * dTr_ex(rc[i],aplanet) * y[i];
+        }
+        else {
+            *TR += dr[i] * dTr_ex(rc[i],aplanet) * y[i];
+        }
+    }
+    return;
+}
+
+
+void set_torque_linear(double aplanet, double *y) {
+    int i;
+    double TL,TR;
+    double rm, rp;
+    double facm,facp;
+    calculate_linear_torque(aplanet, y,&TL,&TR);
+
+#ifdef _OPENMP
+#pragma omp parallel for private(i,rm,rp,facm,facp) 
+#endif
+    for(i=0;i<NR;i++) {
+        rm = rmin[i];
+        rp = rmin[i+1];
+        
+        if (rc[i] < aplanet) { 
+            facm = dep_func(rm,aplanet,planet.xd,planet.wd);
+            facp = dep_func(rp,aplanet,planet.xd,planet.wd);
+            matrix.fm[i] = TL*(-2*sqrt(rp)*facp + 2*sqrt(rm)*facm);
+
+        }
+        else {
+        /* Outer disk */
+            facm = dep_func(rm,aplanet,planet.xd,planet.wd);
+            facp = dep_func(rp,aplanet,planet.xd,planet.wd);
+            matrix.fm[i] = TR*(-2*sqrt(rp)*facp + 2*sqrt(rm)*facm);
+
+        }
+
+
+    }
+
+    return;
+}

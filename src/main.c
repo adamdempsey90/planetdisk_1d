@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         fld.kvals_ss[i] = fld_ss.kvals[i];
         fld.dTr[i] = dTr_ex(rc[i],planet.a);
         fld.dep_func[i] = dep_func(rc[i],planet.a,planet.xd,planet.wd);
-        explicit_step_func(planet.a,lam,fld.mdL,fld.mdR);
+        //explicit_step_func(planet.a,lam,fld.mdL,fld.mdR);
     }
 
 
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
             fld.dTr[j + NR*i] = dTr_ex(rc[j],planet.a);
             fld.dep_func[j + NR*i] = dep_func(rc[j],planet.a,planet.xd,planet.wd);
         }
-        explicit_step_func(planet.a,lam,&fld.mdL[i*NR],&fld.mdR[i*NR]);
+        //explicit_step_func(planet.a,lam,&fld.mdL[i*NR],&fld.mdR[i*NR]);
     
     }
     printf("\n"); 

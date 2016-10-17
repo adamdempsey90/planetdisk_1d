@@ -1,32 +1,28 @@
 #include "pdisk.h"
 
 
-
-void crank_nicholson_step(double dt, double aplanet, double *y) {
+void check_floor(double *y) {
     int i;
-   // double em,ec,ep;
-   // double lm,lc,lp;
-    double rm, rp;
-    double am,ap,num,nup,bm,bp,drm,drp;
- //   double dp_tot, dm_tot, dp,dm,dc;
 
-    for(i=0;i<NR;i++) {
-        matrix.fm[i] = 0;
-        matrix.md[i] = 0;
-        matrix.u[i] = 0;
-        matrix.u[i+NR] = 0;
-        matrix.w[i] = 0;
-        matrix.w[i+NR] = 0;
-
-        if (i < NR-1) {
-            matrix.ud[i] = 0;
-            matrix.ld[i] = 0;
+    if (params.use_floor) {
+#ifdef _OPENMP
+#pragma omp parallel for private(i)
+#endif
+        for(i=0;i<NR;i++) {
+            y[i] = fmax(y[i],params.mass_floor/dr[i]);
         }
     }
+    return;
+}
+
+
+void set_coeffs_matrix(void) {
+    int i;
+    double rm, rp;
+    double am,ap,num,nup,bm,bp,drm,drp;
 
 #ifdef _OPENMP
-//#pragma omp parallel for private(i,rm,rp,lm,lc,lp,em,ec,ep,dm,dc,dp,dm_tot,dp_tot) shared(matrix,rc,rmin)
-//#pragma omp parallel for private(i,rm,rp,num,nup,am,bm,ap,bp,drm,drp)
+#pragma omp parallel for private(rm,rp,num,nup,am,bm,ap,bp,drm,drp,i)
 #endif
     for(i=1;i<NR-1;i++) {
         rm = rmin[i];
@@ -49,17 +45,87 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         matrix.ld[i-1] = - ( bm *(rc[i] - rm ) - am ) / drm; 
 
 
-/*
-        if (params.planet_torque) {
-            if (params.forced_torque) {
-                 matrix.fm[i] += 2*sqrt(rm) * 2*M_PI*rm * fld.grid_torque[i] - 2*sqrt(rp) * 2 *M_PI*rp * fld.grid_torque[i+1];
-            }
-            else {
-            }
-        }
-*/ 
     }
+    return;
+}
+
+void explicit_step(double dt, double c1, double c2, double aplanet, double *y, double *res) {
+    /* Explicit step, y^{n+1} = c1*y^n + c2*dt*A*y^n
+     */
+    int i;
+
+    for(i=0;i<NR;i++) {
+        matrix.fm[i] = 0;
+        matrix.md[i] = 0;
+        matrix.u[i] = 0;
+        matrix.u[i+NR] = 0;
+        matrix.w[i] = 0;
+        matrix.w[i+NR] = 0;
+
+        if (i < NR-1) {
+            matrix.ud[i] = 0;
+            matrix.ld[i] = 0;
+        }
+    }
+/* Set the diffusion coefficient matrix */
+    set_coeffs_matrix(); 
+
     
+    if (params.planet_torque) {
+        if (planet.nonlocal_torque ) {
+            set_uw(matrix.u,matrix.w,aplanet,NR);
+        }
+        else if (planet.linear_torque) {
+            set_torque_linear(aplanet,y);
+        }
+        else {
+            printf("No torque function set!\n");
+            return;
+        }
+
+    }
+
+
+    set_boundary();
+    // Coefficient Matrix is all set
+
+    if (params.planet_torque && planet.nonlocal_torque) {
+        matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt*c2,dt*c2,NR,2);
+    }
+    else {
+        matvec(matrix.ld,matrix.md,matrix.ud,y,matrix.fm,dt*c2,dt*c2,NR);
+    }
+
+    /* Add final result */
+#ifdef _OPENP
+#pragma omp parallel for private(i)
+#endif
+    for(i=0;i<NR;i++) {
+        res[i] = y[i]*c1 + matrix.fm[i]/dr[i];;
+    }
+
+    return;
+}
+
+void crank_nicholson_step(double dt, double aplanet, double *y) {
+    int i;
+
+    for(i=0;i<NR;i++) {
+        matrix.fm[i] = 0;
+        matrix.md[i] = 0;
+        matrix.u[i] = 0;
+        matrix.u[i+NR] = 0;
+        matrix.w[i] = 0;
+        matrix.w[i+NR] = 0;
+
+        if (i < NR-1) {
+            matrix.ud[i] = 0;
+            matrix.ld[i] = 0;
+        }
+    }
+/* Set the diffusion coefficient matrix */
+    set_coeffs_matrix(); 
+
     
     if (params.planet_torque && planet.nonlocal_torque ) {
         set_uw(matrix.u,matrix.w,aplanet,NR);
@@ -102,87 +168,40 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     else {
         trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
     }
+    check_floor(y);
     return;
 }
 
-/*
-        lm = sqrt(rc[i-1]);
-        lc = sqrt(rc[i]);
-        lp = sqrt(rc[i+1]);
-
-        em = 1.5*nu(rc[i-1])/sqrt(rc[i-1]);
-        ec = 1.5*nu(rc[i])/sqrt(rc[i]);
-        ep = 1.5*nu(rc[i+1])/sqrt(rc[i+1]);
-
-        dp_tot = dr[i] + dr[i+1];
-        dm_tot = dr[i] + dr[i-1];
-        dp = dr[i+1];
-        dc = dr[i];
-        dm = dr[i-1];
 
 
-        matrix.md[i] = -ec*(1./(lc-lm) + 1./(lp-lc));
-        matrix.ld[i-1] = em/(lc-lm);
-        matrix.ud[i] = ep/(lp-lc);
-*/
 
-void explicit_step_func(double aplanet, double *y,double *mdL, double *mdR) {
+void tvd_step(double dt, double aplanet, double *y) {
+/* TVD step
+ * y' = y + dt*f(y)
+ * y_new = .5*y + .5*(y' + dt*f(y'))
+ */
+
     int i;
-    
-    double TL = 0;
-    double TR = 0;
-    double facm,facp,am,ap,bm,bp,nup,num,drm,drp;
-    double fac,rm,rp,mfacL,mfacR,lfacL,ufacR;
-    double yL,yM,yR;
+    double *res = (double *)malloc(sizeof(double)*NR);
+    double *res2 = (double *)malloc(sizeof(double)*NR);
+    explicit_step(dt, 1.0, 1.0,aplanet, y, res);
 
-    double rgL = .5*(rmin[0] + exp(log(rmin[0]) - dlr));
-    double rgR = .5*(rmin[NR] + exp(log(rmin[NR]) + dlr));
-    double bc_fac_L = 2*M_PI*rgL;
-    double bc_fac_R = 2*M_PI*rgR;
+    check_floor(res);
+    explicit_step(dt,1.0,1.0,aplanet,res,res2);
+    check_floor(res2);
 
+#ifdef _OPENMP
+#pragma omp parallel for private(i)
+#endif
     for(i=0;i<NR;i++) {
-
-        fac = dr[i]*dTr_ex(rc[i],aplanet)*y[i];
-        if (rc[i] < aplanet) TL += fac;
-        else    TR += fac;
+        y[i] = .5*y[i] + .5*res2[i];;
     }
 
-    for(i=0;i<NR;i++) {
-        rm = rmin[i];
-        rp = rmin[i+1];
-        facm = dep_func(rm,aplanet,planet.xd,planet.wd);
-        facp = dep_func(rp,aplanet,planet.xd,planet.wd);
-        facm *= (rm < aplanet) ? TL : TR; 
-        facp *= (rp > aplanet) ? TR : TL; 
-
-        num = nu(rm);
-        nup = nu(rp);
-
-        am = 3*num;
-        bm = 3*(num/rm)*(params.gamma - .5);
-
-        ap = 3*nup;
-        bp = 3*(nup/rp)*(params.gamma-.5);
-
-        drm = rc[i]-rc[i-1];
-        drp = rc[i+1]-rc[i];
-
-        mfacR = ( bp * ( rc[i+1] - rp) - ap) / drp;
-        mfacL = ( am + bm * ( rm - rc[i-1] ) ) / drm;
-        ufacR  = ( ap + bp * ( rp - rc[i] ) ) / drp;
-        lfacL  = ( bm *(rc[i] - rm ) - am ) / drm; 
-        yL = (i==0) ? params.bc_val[0]*bc_fac_L: y[i-1] ;
-
-        yM = y[i];
-        yR = (i==NR-1) ? params.bc_val[2]*bc_fac_R: y[i+1];
-            
-        mdL[i] = (lfacL*yL + mfacL*yM) - 2*sqrt(rp)*facp;
-        mdR[i] = (mfacR*yM + ufacR*yR) - 2*sqrt(rm)*facm;
-        //dy[i] = dt*(lfac*yL + mfac*yM + ufac*yR) ;
-        //dy[i] += dt*( -2*sqrt(rm)*facm + 2*sqrt(rp)*facp);
+    check_floor(y);
 
 
-    }
+    free(res);
+    free(res2);
 
     return;
 }
