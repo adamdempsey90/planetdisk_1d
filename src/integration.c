@@ -106,6 +106,49 @@ void explicit_step(double dt, double c1, double c2, double aplanet, double *y, d
 
     return;
 }
+void steady_state_step(double aplanet, double *y) {
+    int i;
+
+    for(i=0;i<NR;i++) {
+        matrix.fm[i] = 0;
+        matrix.md[i] = 0;
+        matrix.u[i] = 0;
+        matrix.u[i+NR] = 0;
+        matrix.w[i] = 0;
+        matrix.w[i+NR] = 0;
+
+        if (i < NR-1) {
+            matrix.ud[i] = 0;
+            matrix.ld[i] = 0;
+        }
+    }
+/* Set the diffusion coefficient matrix */
+    set_coeffs_matrix(); 
+
+    
+    if (params.planet_torque && planet.nonlocal_torque ) {
+        set_uw(matrix.u,matrix.w,aplanet,NR);
+    }
+
+
+
+    set_boundary();
+    for(i=0;i<NR;i++) {
+        matrix.fm[i] *= -1;
+    }
+    // Coefficient Matrix is all set
+    
+
+    if (params.planet_torque && planet.nonlocal_torque) {
+        trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
+    }
+    else {
+        trisolve(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,NR);
+    }
+    check_floor(y);
+
+    return;
+}
 
 void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;

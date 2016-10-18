@@ -118,23 +118,47 @@ int main(int argc, char *argv[]) {
     //printf("dt = %.3e\n",set_dt());
     double t = 0;
     int planet_has_left = FALSE;
-    for(i=1;i<nt;i++) {
-        //printf("t = %.2f\n", fld.times[i]);
-        while (t < fld.times[i]) {
-            advance_system(dt, &t, fld.times[i]);
-            if ((planet.a > params.ro) || (planet.a < params.ri)) {
-                if (!planet_has_left) {
-                    printf("\nPlanet has left the domain!\n");
-                    planet_has_left= TRUE;
+
+    if (params.one_step) {
+        steady_state_step(planet.a,lam);
+        set_mdot(params.planet_torque);     
+        fld.avals[1] = planet.a;
+        fld.vs[1] = planet.vs;
+        set_torque(planet.a,lam,&fld.torque[1*NR]);
+        fld.vs_ss[1] = fld_ss.vs;
+        fld.mdot_ss[1] = fld_ss.mdot;
+        fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;
+
+        for(j=0;j<NR;j++) {
+            fld.sol[j + NR*1] = lam[j];
+            fld.sol_mdot[j + NR*1] = mdot[j];
+            fld.sol_ss[j + NR*1] = fld_ss.lam[j];
+            fld.lamp[j+NR*1] = fld_ss.lamp[j];
+            fld.lam0[j+NR*1] = fld_ss.lam0[j];
+            fld.ivals_ss[j + NR*1] = fld_ss.ivals[j];
+            fld.kvals_ss[j + NR*1] = fld_ss.kvals[j];
+            fld.dTr[j + NR*1] = dTr_ex(rc[j],planet.a);
+            fld.dep_func[j + NR*1] = dep_func(rc[j],planet.a,planet.xd,planet.wd);
+        }
+    }
+    else {
+        for(i=1;i<nt;i++) {
+            //printf("t = %.2f\n", fld.times[i]);
+            while (t < fld.times[i]) {
+                advance_system(dt, &t, fld.times[i]);
+                if ((planet.a > params.ro) || (planet.a < params.ri)) {
+                    if (!planet_has_left) {
+                        printf("\nPlanet has left the domain!\n");
+                        planet_has_left= TRUE;
+                    }
                 }
             }
-        }
-        printf("\r t = %.2e = %.2e tvisc\t%02d%% complete...", t,t/params.tvisc,(int)(100* i/((float)nt)));
-        fflush(stdout);
-        set_mdot(params.planet_torque);     
-        fld.avals[i] = planet.a;
-        fld.vs[i] = planet.vs;
-        set_torque(planet.a,lam,&fld.torque[i*NR]);
+            printf("\r t = %.2e = %.2e tvisc\t%02d%% complete...", t,t/params.tvisc,(int)(100* i/((float)nt)));
+            fflush(stdout);
+            set_mdot(params.planet_torque);     
+            fld.avals[i] = planet.a;
+            fld.vs[i] = planet.vs;
+            set_torque(planet.a,lam,&fld.torque[i*NR]);
 /*
 #ifdef NONLOCAL
         steadystate_config_nl(&fld_ss,planet.a);
@@ -142,23 +166,24 @@ int main(int argc, char *argv[]) {
         steadystate_config(&fld_ss,planet.a);
 #endif
 */
-        fld.vs_ss[i] = fld_ss.vs;
-        fld.mdot_ss[i] = fld_ss.mdot;
-        fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;
+            fld.vs_ss[i] = fld_ss.vs;
+            fld.mdot_ss[i] = fld_ss.mdot;
+            fld.efficiency[i] = fld_ss.mdot/fld_ss.mdot0;
 
-        for(j=0;j<NR;j++) {
-            fld.sol[j + NR*i] = lam[j];
-            fld.sol_mdot[j + NR*i] = mdot[j];
-            fld.sol_ss[j + NR*i] = fld_ss.lam[j];
-            fld.lamp[j+NR*i] = fld_ss.lamp[j];
-            fld.lam0[j+NR*i] = fld_ss.lam0[j];
-            fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
-            fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
-            fld.dTr[j + NR*i] = dTr_ex(rc[j],planet.a);
-            fld.dep_func[j + NR*i] = dep_func(rc[j],planet.a,planet.xd,planet.wd);
+            for(j=0;j<NR;j++) {
+                fld.sol[j + NR*i] = lam[j];
+                fld.sol_mdot[j + NR*i] = mdot[j];
+                fld.sol_ss[j + NR*i] = fld_ss.lam[j];
+                fld.lamp[j+NR*i] = fld_ss.lamp[j];
+                fld.lam0[j+NR*i] = fld_ss.lam0[j];
+                fld.ivals_ss[j + NR*i] = fld_ss.ivals[j];
+                fld.kvals_ss[j + NR*i] = fld_ss.kvals[j];
+                fld.dTr[j + NR*i] = dTr_ex(rc[j],planet.a);
+                fld.dep_func[j + NR*i] = dep_func(rc[j],planet.a,planet.xd,planet.wd);
+            }
+            //explicit_step_func(planet.a,lam,&fld.mdL[i*NR],&fld.mdR[i*NR]);
+        
         }
-        //explicit_step_func(planet.a,lam,&fld.mdL[i*NR],&fld.mdR[i*NR]);
-    
     }
     printf("\n"); 
     printf("Outputting results...\n");

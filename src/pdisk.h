@@ -44,6 +44,7 @@ typedef struct Parameters {
     int nvisc;
     int logtime;
     int gaussian_dep;
+    int one_step;
     int planet_torque, move_planet,move_planet_implicit;
     int read_initial_conditions;
     int explicit_stepper;
@@ -234,3 +235,4 @@ void explicit_step_func(double aplanet, double *y,double *mdL, double *mdR);
 void set_torque_linear(double aplanet, double *y); 
 void calculate_linear_torque(double aplanet, double *y, double *TL, double *TR);
 void tvd_step(double dt, double aplanet, double *y);
+void steady_state_step(double aplanet, double *y);

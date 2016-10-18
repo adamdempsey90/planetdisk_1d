@@ -42,6 +42,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_STR(name,str_val);
 
     }
+    else if (strcmp(name,"one_step") == 0) {	
+        params.one_step = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"gamma") == 0) {	
         params.gamma = double_val;
         PRINT_DOUBLE(name,double_val);
