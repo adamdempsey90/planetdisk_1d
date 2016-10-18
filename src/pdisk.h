@@ -43,6 +43,7 @@ typedef struct Parameters {
     double dt,tend;
     int nvisc;
     int logtime;
+    int gaussian_dep;
     int planet_torque, move_planet,move_planet_implicit;
     int read_initial_conditions;
     int explicit_stepper;

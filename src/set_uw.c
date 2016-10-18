@@ -55,20 +55,55 @@ void set_dep_box(double a,double xd, double wd, double *box_region) {
     return;
 }
 
-double dep_func(double x, double a, double xd, double w) {
+
+double dep_func_box(double x, double a, double xd, double w) {
+    double left_edge;
+    double right_edge;
+    if (x >a) {
+        left_edge = a + xd - w/2.;
+        right_edge = a + xd + w/2.;
+
+        if (( x >= left_edge)&&(x <= right_edge)) {
+            return 1./w;
+        }
+        else {
+            return 0.;
+        }
+
+    }
+    else {
+
+        left_edge = a - xd - w/2.;
+        right_edge = a - xd + w/2.;
+
+        if (( x >= left_edge)&&(x <= right_edge)) {
+            return 1./w;
+        }
+        else {
+            return 0.;
+        }
+
+    }
+
+    return 0;
+}
+
+double dep_func_gauss(double x, double a, double xd, double w) {
     if (xd == 0) {
         return dTr_ex(x,a);
     }
 
-    double distL,distR, res;
+    double distL,distR;
 
-    double wd;
+    double wd = w/(2*4);
+    /*
     if (planet.scaling_dep) {
         wd = w/(2*4);
     }
     else {
         wd = w;
     }
+    */
 
     wd *= wd;
 
@@ -124,6 +159,15 @@ double dep_func(double x, double a, double xd, double w) {
 */
 
 
+double dep_func(double x, double a, double xd, double w) {
+
+    if (params.gaussian_dep) {
+        return dep_func_gauss(x,a,xd,w);
+    }
+    
+    return dep_func_box(x,a,xd,w);
+
+}
 
 
 void set_uw(double *u, double *w, double a, int n) {

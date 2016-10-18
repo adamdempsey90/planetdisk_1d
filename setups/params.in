@@ -1,16 +1,16 @@
 #Grid Parameters:
-nr = 256
+nr = 2000
 ri = 0.1
 ro = 4.0
 
 #Disk Parameters:
-alpha = 0.001
+alpha = 0.00001
 gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = MDOT
-outer_bc = MDOT
+inner_bc = SIG
+outer_bc = SIG
 bc_val_inner_0 = 1.0
 bc_val_inner_1 = 0.0
 bc_val_outer_0 = 1.0 #8.11408e-6 #4.8773
@@ -22,29 +22,30 @@ mass_floor = 1e-4
 
 
 #Time Parameters:
-dt = .1
+dt = .001
 cfl = 0.8
-tend = 1000.0
+tend = 1.
 nvisc = No
 logtime = No
 nt = 100
 release_time = 0
 start_ss = No
 read_initial_conditions = No
-implicit = No
+implicit = Yes
 
 
 #Planet Properties:
 planet_torque = Yes
 move_planet = No
 symmetric_torque = No
-nonlocal_torque = No
+nonlocal_torque = Yes
 linear_torque = Yes
-scaling_dep = Yes
+scaling_dep = No
 shock_dep = No
+gaussian_dep = Yes
 a  = 1.0
 mp = 8.0
-eps = 0.05
-xd = .4
+eps = 0.4
+xd = .3
 wd = .05
-outputname = results_2.hdf5
+outputname = results.hdf5

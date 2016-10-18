@@ -37,6 +37,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_DOUBLE(name,double_val);
 
     }
+    else if (strcmp(name,"gaussian_dep") == 0) {	
+        params.gaussian_dep = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"gamma") == 0) {	
         params.gamma = double_val;
         PRINT_DOUBLE(name,double_val);

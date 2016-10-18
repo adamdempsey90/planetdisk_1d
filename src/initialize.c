@@ -69,8 +69,9 @@ void init_constant_mdot_lam(void) {
 void init_constant_mdot(void) {
     printf("Initializing profile to connstant mdot %.e\n", params.bc_val[2]);
     int i;
+    double zero_fac = ((params.bc_val[0] == 0)&&(params.bc_val[2]==0)) ? 1.0 : 0.0;
     for(i=0;i<NR;i++) {
-        lam[i] = params.bc_val[2]*2*rc[i]/(3*nu(rc[i]));
+        lam[i] = 2*M_PI*rc[i] * ( params.bc_val[2]/(3*M_PI*nu(rc[i])) + zero_fac);
     }
 
   

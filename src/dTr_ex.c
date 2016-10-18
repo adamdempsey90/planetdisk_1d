@@ -14,12 +14,23 @@ double dTr_kanagawa(double x, double a) {
 
     double fac = 2*M_PI*x;
 
+    double rfac = (x>=a) ? 1 : x/a;
     double dist = fabs(x/a-1);
     
 
-    if (dist > 1.3*params.h) {
-        return norm*pow(dist,-4.)/fac;
+/*
+    if ((x>=rmin[400])&&(x<=rmin[401])) {
+        return 1.0;
     }
+    
+    return 0.0;
+    */
+    if (dist > 1.3*params.h) {
+        return norm*pow(dist/rfac,-4.)/fac;
+    }
+
+
+
     
     return 0;
 
