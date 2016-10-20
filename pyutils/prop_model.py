@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import fsolve
+import matplotlib.pyplot as plt
 
 
 class Sim():
@@ -67,14 +68,14 @@ class Sim():
         dist = np.array(x/self.a-1)
         return ((dist>=self.xd-self.wd/2)&(dist<=self.xd+self.wd/2)).astype(int)* (dist -(self.xd-self.wd/2))/self.wd + (dist>self.xd+self.wd/2).astype(int)
 
-    def func(self,T):
-        dens = self.sig0*(1 + T*self.dep_func_int(self.r,self.q)/(self.mdot*self.l) - (self.l[0]/self.l)*(.04*self.k*self.gd))
+    def func_outer(self,T):
+        dens = self.sig0*(1 + T*self.dep_func_int(self.r,self.q)/(self.mdot*self.l) - (.04*self.k*self.gd))
         integ = (self.dr*self.dtr*dens).sum()
         q = np.sqrt(T/integ)
 
         return self.q/q - 1
 
-    def solve(self):
+    def solve_outer(self):
 
         if self.q < self.h**3:
             fnl = 1
@@ -84,12 +85,21 @@ class Sim():
         T0 = 2*np.pi*fnl*self.a*self.q**2 / self.h**3
         T0 *= self.mdot/(3*np.pi*self.nu(self.a))
 
-        T = fsolve(self.func,T0)
+        T = fsolve(self.func_outer,T0)
 
-        self.dens_ans =  self.sig0*(1 + T*self.dep_func_int(self.r,self.q)/(self.mdot*self.l)- (self.l[0]/self.l)*(.04*self.k*self.gd))
+        self.dens_ans =  self.sig0*(1 + T*self.dep_func_int(self.r,self.q)/(self.mdot*self.l)- (.04*self.k*self.gd))
 
 
         return self.dens_ans,T
+
+    def explore(self):
+        tvals = 10**np.linspace(-10,-1,10000)
+        res = np.array([self.func_outer(t) for t in tvals])
+        plt.figure()
+        plt.plot(tvals,res)
+        plt.xscale('log')
+        plt.axhline(0,ls='-',c='k')
+        return
 
 
 
