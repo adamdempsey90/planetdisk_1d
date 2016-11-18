@@ -180,6 +180,12 @@ void fixed_outer_boundary_grad(double val) {
     mixed_outer_boundary(0,val);
     return;
 }
+void fixed_inner_boundary_zero_torque(double val) {
+    double rm = .5*(rmin[0] + exp( log(rmin[0]) - dlr));
+    val = params.bc_val[2]/(3*M_PI*params.alpha*params.h*params.h*pow(rm,params.gamma));
+    fixed_inner_boundary_sigma(val);
+    return;
+}
 
 double fixed_inner_boundary_mdot_value(double val,double y0) {
     double rm = rmin[0];
@@ -212,6 +218,7 @@ double fixed_inner_boundary_grad_value(double val, double y0) {
 double fixed_outer_boundary_grad_value(double val, double y0) {
     return mixed_outer_boundary_value(0,val,y0);
 }
+    
 
 double get_inner_bc_mdot(double y0) {
     switch(params.bc_type[0]) {
@@ -261,6 +268,8 @@ void set_boundary(void) {
             break;
         case BCSIGIN:
             fixed_inner_boundary_sigma(params.bc_val[0]);
+        case BCZTIN:
+            fixed_inner_boundary_zero_torque(params.bc_val[0]);
             break;
         default:
             // Mixed BC

@@ -34,8 +34,11 @@ void advance_system(double dt, double *t, double tend) {
 
     newa = planet.a;
     newv = planet.vs;
-
-    
+/*
+    if ((params.planet_torque) && (params.density_dep)) {
+        set_dep_func_density(lam,fld.lam0,planet.a, planet.xd, planet.wd,planet.box_func);
+    }
+  */  
     if ((params.move_planet) && (*t >= params.release_time)) {
         move_planet(dt,lam,&newv,&newa);
     }

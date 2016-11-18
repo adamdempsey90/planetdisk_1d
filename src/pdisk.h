@@ -32,6 +32,7 @@
 #define BCMIXEDOUT 7
 #define BCSIGIN 8
 #define BCSIGOUT 9
+#define BCZTIN 10
 
 
 typedef struct Parameters {
@@ -46,6 +47,7 @@ typedef struct Parameters {
     int gaussian_dep;
     int one_step;
     int planet_torque, move_planet,move_planet_implicit;
+    int density_dep;
     int read_initial_conditions;
     int explicit_stepper;
     int start_ss;
@@ -120,6 +122,7 @@ typedef struct Planet {
     int scaling_dep;
     int shock_dep;
     double T0;
+    double box_func[4];
 } Planet;
 
 typedef struct TridDiagMat {
@@ -171,7 +174,7 @@ typedef struct SteadyStateField {
 } SteadyStateField;
 
 
-double *rc, *rmin, *lam, *dr;
+double *rc, *rmin, *lam, *lam0, *dr;
 double *taumin, *tauc;
 double *lrc, *lrmin;
 double *mass, *ones, *mdot;
@@ -236,3 +239,5 @@ void set_torque_linear(double aplanet, double *y);
 void calculate_linear_torque(double aplanet, double *y, double *TL, double *TR);
 void tvd_step(double dt, double aplanet, double *y);
 void steady_state_step(double aplanet, double *y);
+void set_dep_func_density(double *lam, double *lam0, double a, double xd, double wd, double *box_func);
+void set_density_dep(double *ld, double *md, double *ud, double *lam, double TL, double TR, double a);

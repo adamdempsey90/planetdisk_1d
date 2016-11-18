@@ -99,6 +99,18 @@ void init_sigma_prof(void) {
     return;
 
 }
+void init_zero_torque(void) {
+    int i;
+    double rp = exp( log(rmin[NR]) + dlr);
+    double rm = exp( log(rmin[0]) - dlr);
+    printf("Initializing zero torque\n");
+    params.bc_val[0] = params.bc_val[2]/(3*M_PI*params.alpha*params.h*params.h*pow(rm,params.gamma));
+    for(i=0;i<NR;i++) {
+        lam[i] = 2*M_PI*rc[i]*params.bc_val[0] * pow(rc[i]/rm,-params.gamma);
+    }
+    return;
+
+}
 
 void init_linear_prof(void) {
     printf("Initializing profile to linear between %lg and %lg\n", params.bc_val[0],params.bc_val[2]);
@@ -137,6 +149,9 @@ void init_lam(void) {
     }
     else if ( (params.bc_type[0] == BCSIGIN) && (params.bc_type[1] == BCMDOTOUT)) {
         init_constant_mdot_sig();
+    }
+    else if ( (params.bc_type[0] == BCZTIN) && (params.bc_type[1] == BCMDOTOUT)) {
+        init_zero_torque();
     }
     printf("Init lam\n");
     printf("Done\n");

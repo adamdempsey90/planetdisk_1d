@@ -31,7 +31,7 @@ CC=gcc
 endif
 
 ifeq ($(UNAME),jupiter)
-CC=gcc-4.9
+CC=gcc-6
 endif
 ifeq ($(UNAME),adam)
 CC=gcc

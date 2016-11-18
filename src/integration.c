@@ -53,7 +53,11 @@ void explicit_step(double dt, double c1, double c2, double aplanet, double *y, d
     /* Explicit step, y^{n+1} = c1*y^n + c2*dt*A*y^n
      */
     int i;
-
+    double TL,TR;
+    if (params.density_dep) {
+        TL = calc_inner_torque(planet.a,y);
+        TR = calc_outer_torque(planet.a,y);
+    }
     for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;
         matrix.md[i] = 0;
@@ -71,25 +75,20 @@ void explicit_step(double dt, double c1, double c2, double aplanet, double *y, d
     set_coeffs_matrix(); 
 
     
-    if (params.planet_torque) {
-        if (planet.nonlocal_torque ) {
+    if (params.planet_torque && planet.nonlocal_torque) {
+        if (params.density_dep) {
+            set_density_dep(matrix.ld, matrix.md,matrix.ud,y,TL, TR, aplanet);
+        }  
+        else {
             set_uw(matrix.u,matrix.w,aplanet,NR);
         }
-        else if (planet.linear_torque) {
-            set_torque_linear(aplanet,y);
-        }
-        else {
-            printf("No torque function set!\n");
-            return;
-        }
-
     }
 
 
     set_boundary();
     // Coefficient Matrix is all set
 
-    if (params.planet_torque && planet.nonlocal_torque) {
+    if (params.planet_torque && planet.nonlocal_torque && !params.density_dep) {
         matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt*c2,dt*c2,NR,2);
     }
     else {
@@ -153,6 +152,11 @@ void steady_state_step(double aplanet, double *y) {
 void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;
 
+    double TL, TR;
+    if (params.density_dep) {
+        TL = calc_inner_torque(planet.a,y);
+        TR = calc_outer_torque(planet.a,y);
+    }
     for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;
         matrix.md[i] = 0;
@@ -167,11 +171,17 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
         }
     }
 /* Set the diffusion coefficient matrix */
+        
     set_coeffs_matrix(); 
-
     
-    if (params.planet_torque && planet.nonlocal_torque ) {
-        set_uw(matrix.u,matrix.w,aplanet,NR);
+    
+    if (params.planet_torque && planet.nonlocal_torque) {
+        if (params.density_dep) {
+            set_density_dep(matrix.ld, matrix.md,matrix.ud,y,TL, TR, aplanet);
+        }  
+        else {
+            set_uw(matrix.u,matrix.w,aplanet,NR);
+        }
     }
 
 
@@ -179,7 +189,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     set_boundary();
     // Coefficient Matrix is all set
 
-    if (params.planet_torque && planet.nonlocal_torque) {
+    if (params.planet_torque && planet.nonlocal_torque && !params.density_dep) {
         matvec_full(matrix.ld,matrix.md,matrix.ud,matrix.u,matrix.w,y,matrix.fm,dt,dt/2.,NR,2);
     }
     else {
@@ -205,7 +215,7 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
  
 
-    if (params.planet_torque && planet.nonlocal_torque) {
+    if (params.planet_torque && planet.nonlocal_torque && !params.density_dep) {
         trisolve_sm2(matrix.ld,matrix.md,matrix.ud,matrix.fm,y,matrix.u,matrix.w,NR);
     }
     else {

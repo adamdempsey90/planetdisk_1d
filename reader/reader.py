@@ -107,7 +107,6 @@ class Sim(Parameters):
         self.mdot = sols['mdot'][:].transpose()
         self.torque= sols['torque'][:].transpose()
         self.dTr = ss['dTr'][:].transpose()
-        self.dep_func = ss['dep_func'][:].transpose()
 
         self.rc = mesh['rc'][:]
         self.l = np.sqrt(self.rc)
@@ -119,6 +118,7 @@ class Sim(Parameters):
         self.lam0 = mesh['lami'][:]
         self.mdot0 = mesh['mdoti'][:]
         self.nu_grid = mesh['nu_grid'][:]
+        self.dep_func = mesh['dep_func'][:]
         self.main_diag = mat['md'][:]
         self.lower_diag = mat['ld'][:]
         self.upper_diag = mat['ud'][:]
@@ -510,7 +510,7 @@ class Field():
         self.rmin = mesh['rmin'][:]
         self.nr = len(self.rc)
         self.dr = mesh['dr'][:]
-        self.dep_func = mesh['dep_func'][:]
+        self.dep_func = mesh['dep_func'][:].transpose()
         self.t =  sols['times'][:]
         self.mdot = sols['mdot'][:].transpose()
         self.torque = sols['torque'][:].T
@@ -562,6 +562,12 @@ class Field():
         if logy:
             ax.set_yscale('log')
 
+    def loglog(self,**kargs):
+        self.plot(logx=True,logy=True,**kargs)
+    def semilogx(self,**kargs):
+        self.plot(logx=True,logy=False,**kargs)
+    def semilogy(self,**kargs):
+        self.plot(logx=False,logy=True,**kargs)
     def plot(self,q='sigma',i=-1,ax=None,initial=False,norm=None,logy=False,logx=False,**kargs):
         try:
             dat = getattr(self,q)[:,i].copy()

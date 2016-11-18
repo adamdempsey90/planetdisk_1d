@@ -1,19 +1,19 @@
 #Grid Parameters:
-nr = 500
-ri = 0.1
-ro = 4.0
+nr = 1024
+ri = 0.003
+ro = 10.0
 
 #Disk Parameters:
 alpha = 0.001
-gamma = 0.0
+gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = SIG
-outer_bc = SIG
-bc_val_inner_0 = 1.0
+inner_bc = ZT
+outer_bc = MDOT
+bc_val_inner_0 = 1.0e-5 #0.42441318157838748
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 1.0 #8.11408e-6 #4.8773
+bc_val_outer_0 = 1.0e-5 #4.8773
 bc_val_outer_1 = 0.0
 use_floor = No
 mass_floor = 1e-4
@@ -22,10 +22,10 @@ mass_floor = 1e-4
 
 
 #Time Parameters:
-dt = .1
+dt = 100
 cfl = 0.8
-tend = 1000
-nvisc = No
+tend = .01
+nvisc = Yes
 logtime = No
 nt = 10
 release_time = 0
@@ -38,14 +38,15 @@ one_step = No
 #Planet Properties:
 planet_torque = Yes
 move_planet = No
-symmetric_torque = Yes
+symmetric_torque = No
 nonlocal_torque = Yes
-linear_torque = Yes
+linear_torque = No
 scaling_dep = Yes
 shock_dep = No
-gaussian_dep = No
+gaussian_dep = Yes
+density_dep = No
 a  = 1.0
-mp = 8.0
+mp = 4.0
 eps = 1.0
 xd = .3
 wd = .05

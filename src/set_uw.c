@@ -28,6 +28,78 @@ int in_region(double x, double a, double leftr, double rightr) {
         }
 }
 
+void set_dep_func_density(double *lambda, double *lam0, double a, double xd, double wd, double *box_function) {
+    int i,j;
+
+    int have_planet = FALSE;
+    int have_inner = FALSE;
+    int have_outer = FALSE;
+    int j_planet, j_outer, j_inner;
+    for(i=0;i<NR;i++) {
+        if (!have_planet) {
+            if (rmin[i] >= a) {
+                j_planet = i;
+                have_planet = TRUE;
+            }
+        }
+        if (!have_outer) {
+            if (rmin[i] >= a + xd - wd/2) {
+                j_outer = i;
+                have_outer = TRUE;
+            }
+        }
+        if (!have_inner) {
+            if (rmin[i] >= a-xd + wd/2) {
+                if (rmin[i] == a - xd + wd/2) {
+                    j_inner = i;
+                }
+                else {
+                    j_inner = i-1;
+                }
+                have_inner = TRUE;
+            }
+        }
+        if (have_inner && have_outer && have_planet) {
+            break;
+        }
+    }
+   // printf("\t%lg\t%lg\t%lg\n",rmin[j_inner],rmin[j_planet],rmin[j_outer]);
+
+    double res = 0;
+    double norm = wd;
+    box_function[1] = a - xd + wd/2;
+    box_function[2] = a + xd - wd/2;
+    box_function[0] = a - xd - wd/2;
+    box_function[3] = a + xd + wd/2;
+    double lnorm = lambda[j_outer];
+    lnorm = 1./lnorm;
+    for(i=j_outer; i<NR;i++) {
+        res += (lambda[i])*lnorm*dr[i]; 
+        if (res >= norm) {
+            box_function[3] = rmin[i+1];
+            break;
+        }
+    }
+    res = 0;
+    lnorm = lambda[j_inner];
+    lnorm = 1./lnorm;
+
+    for(i=j_inner; i > 0; i--) {
+        res += lambda[i] *lnorm*dr[i];
+        //res += (lambda[i]/lam0[i])*lnorm*dr[i];
+        if (res >= norm) {
+            box_function[0] = rmin[i];
+            break;
+        }
+    }
+
+
+//    for(i=0;i<4;i++) printf("%lg\t",box_function[i]);
+//    printf("\n");
+
+    return;
+
+}
 
 void set_dep_box(double a,double xd, double wd, double *box_region) {
     int i,j;
@@ -56,9 +128,19 @@ void set_dep_box(double a,double xd, double wd, double *box_region) {
 }
 
 
-double dep_func_box(double x, double a, double xd, double w) {
-    double left_edge;
-    double right_edge;
+double dep_func_box(double x, double w, double *box_region) {
+
+
+    if ((x >= box_region[0]) && (x <= box_region[1])) {
+        return 1./w;
+    }
+    if ((x >= box_region[2]) && (x <= box_region[3])) {
+        return 1./w;
+    }
+    return 0;
+}
+
+/*
     if (x >a) {
         left_edge = a + xd - w/2.;
         right_edge = a + xd + w/2.;
@@ -87,6 +169,7 @@ double dep_func_box(double x, double a, double xd, double w) {
 
     return 0;
 }
+*/
 
 double dep_func_gauss(double x, double a, double xd, double w) {
     if (xd == 0) {
@@ -159,16 +242,47 @@ double dep_func_gauss(double x, double a, double xd, double w) {
 */
 
 
+
+
 double dep_func(double x, double a, double xd, double w) {
 
     if (params.gaussian_dep) {
         return dep_func_gauss(x,a,xd,w);
     }
     
-    return dep_func_box(x,a,xd,w);
+    return dep_func_box(x,w,planet.box_func);
 
 }
 
+
+void set_density_dep(double *ld, double *md, double *ud, double *lam, double TL, double TR, double a) {
+    int i;
+    double rm, rp;
+    double ap, am, bp,bm;
+    double facm, facp;
+    double Tval;
+    double lamnorm = lam[0];
+    for(i=1;i<NR-1;i++) {
+        rm = rmin[i];
+        rp = rmin[i+1];
+        ap = (rc[i+1]-rp)/(rc[i+1]-rc[i]);
+        am = (rm - rc[i-1])/(rc[i] - rc[i-1]);
+        bp = (rp - rc[i])/(rc[i+1]-rc[i]);
+        bm = (rc[i] - rm)/(rc[i]-rc[i-1]);
+
+        facm = -2*sqrt(rm)*dep_func(rm,a,planet.xd,planet.wd)/lamnorm;
+        facp = 2*sqrt(rp)*dep_func(rp,a,planet.xd,planet.wd)/lamnorm;
+
+
+        Tval = (rc[i] < a) ? TL : TR;
+        
+        md[i] -= Tval*(facp*ap + facm*am);
+        ud[i] -= Tval*facp*bp;
+        ld[i-1] -= Tval*facm*bm;
+
+    }
+    return;
+}
 
 void set_uw(double *u, double *w, double a, int n) {
 /* Set the u w vectors for non-local deposition.

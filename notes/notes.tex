@@ -134,6 +134,20 @@ w_j^R=  .4 f_{NL} 2 \pi r_p^3 \Omega_p^2 q^2  \left( \frac{r_p}{r_j - r_p} \righ
 (2 \pi r \Lambda_d) = (\mathbf{f}_L \mathbf{w}_L^T + \mathbf{f}_R \mathbf{w}_R^T ) \mathbf{\Sigma}
 \end{equation}
 
+\subsection{Density dependent deposition function}
+To prevent the density from going below zero we can choose our deposition function to be proportional to the density. Without worrying about normalizations for now this looks like,
+\begin{equation}
+2 \pi r \Lambda_d = T_\pm f(r) \frac{\lambda(r)}{\lambda_0}
+\end{equation}
+Before the time-step we calculate the total excitation torque, $T_\pm = \pm \int_a^\infty dr \, \frac{d T_p}{d r} $. The change in cell mass is then,
+\begin{eqnarray}
+\dot{M}_+ - \dot{M}_- = &-&T \left( 2 \sqrt{r_+} f(r_+) \frac{\lambda_+}{\lambda_0} - 2 \sqrt{r_-} f(r_-) \frac{\lambda_-}{\lambda_0} \right) \\
+= &-& T \left[ \frac{2 \sqrt{r_-} f_-}{\lambda_0} \left( \frac{r_i-r_-}{r_i-r_{i-1}} \right) \right] \lambda_{i-1} \\
+&-&T \left[ \frac{2 \sqrt{r_+} f_+}{\lambda_0} \left( \frac{r_{i+1}-r_+}{r_{i+1}-r_i} \right) - \frac{2 \sqrt{r_-} f_-}{\lambda_0} \left( \frac{r_{-}-r_{i-1}}{r_i-r_{i-1}} \right) \right] \lambda_i \\
+&-&T \left[ \frac{2 \sqrt{r_+} f_+}{\lambda_0} \left( \frac{r_+-r_i}{r_{i+1}-r_i} \right) \right] \lambda_{i+1} 
+\end{eqnarray}
+
+ 
 
 
 \subsection{Zero torque solution}
