@@ -1,7 +1,7 @@
 #Grid Parameters:
-nr = 1024
-ri = 0.003
-ro = 10.0
+nr = 512
+ri = 0.01
+ro = 3.68
 
 #Disk Parameters:
 alpha = 0.001
@@ -11,20 +11,20 @@ h = 0.05
 #Boundary Conditions:
 inner_bc = ZT
 outer_bc = MDOT
-bc_val_inner_0 = 1.0e-5 #0.42441318157838748
+bc_val_inner_0 = 2.36e-5 #0.42441318157838748
 bc_val_inner_1 = 0.0
-bc_val_outer_0 = 1.0e-5 #4.8773
+bc_val_outer_0 = 2.36e-5 #4.8773
 bc_val_outer_1 = 0.0
-use_floor = No
-mass_floor = 1e-4
+use_floor = Yes
+mass_floor = 1e-8
 
 
 
 
 #Time Parameters:
-dt = 100
+dt = 1000.0
 cfl = 0.8
-tend = .01
+tend = 10.0
 nvisc = Yes
 logtime = No
 nt = 10
@@ -41,13 +41,14 @@ move_planet = No
 symmetric_torque = No
 nonlocal_torque = Yes
 linear_torque = No
-scaling_dep = Yes
+scaling_dep = No
 shock_dep = No
-gaussian_dep = Yes
-density_dep = No
+gaussian_dep = No
+density_dep = Yes
+exp_dep = Yes
 a  = 1.0
-mp = 4.0
+mp = 8.0
 eps = 1.0
-xd = .3
-wd = .05
+xd = 1.2
+wd = 2.1
 outputname = results.hdf5

@@ -9,7 +9,7 @@ void check_floor(double *y) {
 #pragma omp parallel for private(i)
 #endif
         for(i=0;i<NR;i++) {
-            y[i] = fmax(y[i],params.mass_floor/dr[i]);
+            y[i] = fmax(y[i],2*M_PI*rc[i]*params.mass_floor);
         }
     }
     return;

@@ -45,6 +45,7 @@ typedef struct Parameters {
     int nvisc;
     int logtime;
     int gaussian_dep;
+    int exp_dep;
     int one_step;
     int planet_torque, move_planet,move_planet_implicit;
     int density_dep;
@@ -241,3 +242,4 @@ void tvd_step(double dt, double aplanet, double *y);
 void steady_state_step(double aplanet, double *y);
 void set_dep_func_density(double *lam, double *lam0, double a, double xd, double wd, double *box_func);
 void set_density_dep(double *ld, double *md, double *ud, double *lam, double TL, double TR, double a);
+double dep_func_exp(double x, double a, double xd, double w);

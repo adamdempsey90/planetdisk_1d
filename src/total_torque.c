@@ -7,6 +7,9 @@ double calc_inner_torque(double a, double *y) {
 //#pragma omp parallel for private(i) reduction(+:res) 
 //#endif
     for(i=0;rc[i]<a;i++) {
+        if (rc[i] >= a) {
+            printf("BAD\n");
+        }
         res += dr[i]*dTr_ex(rc[i],a)*y[i];
     }
     return res;

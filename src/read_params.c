@@ -42,6 +42,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_STR(name,str_val);
 
     }
+    else if (strcmp(name,"exp_dep") == 0) {	
+        params.exp_dep = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"density_dep") == 0) {	
         params.density_dep = bool_val;
         PRINT_STR(name,str_val);

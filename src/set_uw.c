@@ -13,6 +13,9 @@ void set_planet_deposition(void) {
         
         printf("Gap depth should be %.2e\n",gdepth); 
     }
+    else if (params.density_dep) {
+        planet.wd = 1.0;
+    }
 
     return;
 }
@@ -27,6 +30,7 @@ int in_region(double x, double a, double leftr, double rightr) {
             return FALSE;
         }
 }
+
 
 void set_dep_func_density(double *lambda, double *lam0, double a, double xd, double wd, double *box_function) {
     int i,j;
@@ -171,6 +175,33 @@ double dep_func_box(double x, double w, double *box_region) {
 }
 */
 
+double dep_func_exp(double x, double a, double xd, double w) {
+    double res;
+
+    double ld;
+
+    double rh = a*2*pow(planet.q/3.,1./3);
+    if (x < a) { 
+        //ld = 2.55;
+        xd = a - rh;
+        ld = .06; //2.55 * pow(params.alpha,.026);
+        if (x > xd) return 0;
+        return w * exp( - (fabs(x-xd))/ld);
+        //return -w * (exp(-xd/ld) - exp( -fabs(x-xd)/ld));
+    }
+    else {
+        //xd = a * 2*pow(planet.q/3.,1./3);
+        xd = a + rh; //a + rh;
+        xd = 1.2;
+        //ld = 3.16;
+        ld = .1; //3.16 * pow(params.alpha,-.1);
+        //ld = .1;
+        if (x < xd) return 0;
+        return w * exp(-( x-xd)/ld);
+    }        
+    return 0 ;
+}
+
 double dep_func_gauss(double x, double a, double xd, double w) {
     if (xd == 0) {
         return dTr_ex(x,a);
@@ -249,6 +280,9 @@ double dep_func(double x, double a, double xd, double w) {
     if (params.gaussian_dep) {
         return dep_func_gauss(x,a,xd,w);
     }
+    if (params.exp_dep) {
+        return dep_func_exp(x,a,xd,w);
+    }
     
     return dep_func_box(x,w,planet.box_func);
 
@@ -261,7 +295,24 @@ void set_density_dep(double *ld, double *md, double *ud, double *lam, double TL,
     double ap, am, bp,bm;
     double facm, facp;
     double Tval;
-    double lamnorm = lam[0];
+    double lamnorm = 1;//lam[0];
+
+    double normR, normL;
+    double resR = 0;
+    double resL = 0;
+    for(i=0;i<NR;i++) {
+        if (rc[i] < a) {
+            resL += dr[i]*dep_func(rc[i],a,planet.xd,1.0)*lam[i]/lamnorm;
+        }
+        else {
+            resR += dr[i]*dep_func(rc[i],a,planet.xd,1.0)*lam[i]/lamnorm;
+        }
+    }
+    normR = TR/fabs(resR);
+    normL = TL/fabs(resL);
+            
+
+
     for(i=1;i<NR-1;i++) {
         rm = rmin[i];
         rp = rmin[i+1];
@@ -270,11 +321,11 @@ void set_density_dep(double *ld, double *md, double *ud, double *lam, double TL,
         bp = (rp - rc[i])/(rc[i+1]-rc[i]);
         bm = (rc[i] - rm)/(rc[i]-rc[i-1]);
 
-        facm = -2*sqrt(rm)*dep_func(rm,a,planet.xd,planet.wd)/lamnorm;
-        facp = 2*sqrt(rp)*dep_func(rp,a,planet.xd,planet.wd)/lamnorm;
+        facm = -2*sqrt(rm)*dep_func(rm,a,planet.xd,1.0)/lamnorm;
+        facp = 2*sqrt(rp)*dep_func(rp,a,planet.xd,1.0)/lamnorm;
 
 
-        Tval = (rc[i] < a) ? TL : TR;
+        Tval = (rc[i] < a) ? normL : normR;
         
         md[i] -= Tval*(facp*ap + facm*am);
         ud[i] -= Tval*facp*bp;
