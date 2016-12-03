@@ -664,3 +664,19 @@ class Field():
         plt.legend()
         plt.figure()
         plt.plot(self.rc,fac1+fac2-self.fm ,'-b')
+
+def gaussian_ring(r,t, alpha=.01,h=.05,gamma=.5,r1=1.,m=1.):
+    from scipy.special import iv
+    ts = 12*alpha*h*h*r1**gamma * t/r1**2
+    norm = m/(np.pi*r1**2)
+    u = r/r1
+    return norm * iv(.25,2*u/ts) * np.exp(-(1 + u*u)/ts) / (u**(.25) * ts)
+
+def self_similar(sigma0, r,t, alpha=.01,h=.05,gamma=.5,r1=1.):
+    ts = 1./(3*(2-gamma)**2) * r1**2/(alpha*h**2*r1**gamma)
+    tval = t/ts + 1
+    return sigma0 * tval**( - (2.5-gamma)/(2-gamma)) * np.exp(- (1-tval)/tval * r/r1)
+
+def self_sim_bc(gamma, rin,rout):
+    res = np.array([rin,rout])
+    return (gamma-1) + (2-gamma)*res**(2-gamma)
