@@ -1,10 +1,10 @@
 #Grid Parameters:
 nr = 512
-ri = 0.01
-ro = 3.68
+ri = 0.05
+ro = 5.0
 
 #Disk Parameters:
-alpha = 0.001
+alpha = 0.003
 gamma = 0.5
 h = 0.05
 
@@ -18,13 +18,18 @@ bc_val_outer_1 = 0.0
 use_floor = Yes
 mass_floor = 1e-8
 
-
-
+#Linear wave parameters
+nlinear = 1024
+mstart = 1
+mend = 100
+nphilinear = 2000
+ri_lin = 0.3
+ro_lin = 3.0
 
 #Time Parameters:
-dt = 1000.0
+dt = 100.0
 cfl = 0.8
-tend = 10.0
+tend = .0001
 nvisc = Yes
 logtime = No
 nt = 10
@@ -46,9 +51,11 @@ shock_dep = No
 gaussian_dep = No
 density_dep = Yes
 exp_dep = Yes
+linear_torque = Yes
 a  = 1.0
 mp = 8.0
-eps = 1.0
+eps = 0.2
+soft = .03
 xd = 1.2
 wd = 2.1
 outputname = results.hdf5

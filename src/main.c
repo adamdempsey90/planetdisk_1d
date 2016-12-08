@@ -1,4 +1,7 @@
 #include "pdisk.h"
+
+extern void init_linearwaves(int, int,int,double,double);
+
 int main(int argc, char *argv[]) {
     
     int i,j;
@@ -42,6 +45,10 @@ int main(int argc, char *argv[]) {
        
     set_matrix(); 
     printf("Set matrix\n");
+
+    if (params.linear_torque) {
+        init_linearwaves(NR, 1, 50, params.ri,params.ro);
+    }
 
     double total_mass = 0;
     for(i=0;i<NR;i++) total_mass += dr[i]*lam[i];

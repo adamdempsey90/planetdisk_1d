@@ -1,5 +1,7 @@
 #include "pdisk.h"
 
+extern void calculate_linearwaves(double *, double *, double *);
+
 
 void check_floor(double *y) {
     int i;
@@ -154,8 +156,16 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
 
     double TL, TR;
     if (params.density_dep) {
-        TL = calc_inner_torque(planet.a,y);
-        TR = calc_outer_torque(planet.a,y);
+        if (params.linear_torque) {
+            calculate_linearwaves(y, &TL,&TR);
+            printf("T:\t%lg\t%lg\n",TL,TR);
+            TL *= planet.eps*planet.q*planet.q;
+            TR *= planet.eps*planet.q*planet.q;
+        }
+        else {
+            TL = calc_inner_torque(planet.a,y);
+            TR = calc_outer_torque(planet.a,y);
+        }
     }
     for(i=0;i<NR;i++) {
         matrix.fm[i] = 0;

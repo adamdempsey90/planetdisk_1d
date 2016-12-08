@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <complex.h>
 #include <hdf5.h>
 #include <string.h>
 #include "defines.h"
@@ -21,6 +22,7 @@
 #define MAXSTRLEN 300
 #define HDF5_INSERT_ERROR(status)  if (status < 0) printf("HDF5 error at line %d\n",__LINE__);
 #define MALLOC_SAFE(ptr) if (ptr == NULL) printf("Malloc error at line %d!\n",__LINE__);
+#define SAFE_FREE(ptr) free(ptr); ptr = NULL;
 
 #define BCMDOTIN 0
 #define BCMDOTOUT 1
@@ -37,6 +39,7 @@
 
 typedef struct Parameters {
     double alpha,h,ri,ro,gamma, mach, mth, mvisc, tvisc; 
+    double delta;
     double mass_floor;
     int use_floor;
     double nu0;
@@ -48,6 +51,7 @@ typedef struct Parameters {
     int exp_dep;
     int one_step;
     int planet_torque, move_planet,move_planet_implicit;
+    int linear_torque;
     int density_dep;
     int read_initial_conditions;
     int explicit_stepper;
@@ -67,6 +71,8 @@ typedef struct Parameters {
     
     int shock_dep;
     int forced_torque;
+    int nlinear,mstart,mend,nphilinear;
+    double ri_lin, ro_lin;
 } Parameters;
 
 
@@ -112,6 +118,7 @@ typedef struct param_t {
 
 typedef struct Planet {
     double a, omp, delta, G1, beta, mp,vs;
+    double soft;
     double K,q,xd,wd;
     double rh, dep;
     double c,eps;

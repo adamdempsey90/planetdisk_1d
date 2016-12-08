@@ -1,7 +1,8 @@
 EXECUTABLE=pdisk1d
-SOURCES=advance_system.c allocate.c boundary.c dTr_ex.c disk.c hdf5.c initialize.c integration.c main.c matrix_ops.c mdot.c move_planet.c read_params.c set_grid.c set_matrix.c set_uw.c steady_state.c total_torque.c trisolve.c interpolation.c
+SOURCES=advance_system.c allocate.c boundary.c dTr_ex.c disk.c hdf5.c initialize.c integration.c main.c matrix_ops.c mdot.c move_planet.c read_params.c set_grid.c set_matrix.c set_uw.c steady_state.c total_torque.c trisolve.c interpolation.c linear_torque.c
 HEADER=defines.h pdisk.h
 
+LWLIB=-llinearwaves
 LAPACKLIB=-llapack -lblas
 OPENMPLIB=-lgomp
 MATHLIB=-lm
@@ -40,7 +41,7 @@ ifeq ($(UNAME),zeus)
 CC=gcc
 OPENMPLIB=
 OPENMPFLAG=
-INCLIB=-I/usr/local/include/
+INCLIB=-I/usr/local/include/ -I/usr/local/include/liblinear/
 LDLIB=-L/usr/local/lib/
 #CC=gcc-4.9
 #INCLIB=-I/usr/local/include/
@@ -60,7 +61,7 @@ LDLIB=-L/software/lapack/3.4.0/lib -L/software/gsl/1.16-gcc4.8.3/lib/ -L/softwar
 INCLIB=-I/software/hdf5/1.8.12-serial/include/
 endif
 
-LDFLAGS= $(MATHLIB) $(HDF5LIB) $(OPENMPLIB)
+LDFLAGS= $(MATHLIB) $(GSLLIB) $(HDF5LIB) $(LAPACKLIB) $(LWLIB) $(OPENMPLIB)
 CFLAGS=-c -O3 -g $(WARNFLAGS) $(HDF5FLAG) $(OPENMPFLAG)
 
 #!!!!!DO NOT EDIT ANYTHING UNDER THIS LINE!!!!!

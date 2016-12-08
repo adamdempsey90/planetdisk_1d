@@ -27,6 +27,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         PRINT_DOUBLE(name,double_val);
 
     }
+    else if (strcmp(name,"linear_torque") == 0) {	
+        params.linear_torque = bool_val;
+        PRINT_STR(name,str_val);
+
+    }
     else if (strcmp(name,"use_floor") == 0) {	
         params.use_floor = bool_val;
         PRINT_STR(name,str_val);
@@ -66,6 +71,30 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
         params.h = double_val;
         PRINT_DOUBLE(name,double_val);
 
+    }
+    else if (strcmp(name,"nlinear") == 0) {
+        params.nlinear = int_val;
+        PRINT_INT(name,int_val);
+    }
+    else if (strcmp(name,"mstart") == 0) {
+        params.mstart = int_val;
+        PRINT_INT(name,int_val);
+    }
+    else if (strcmp(name,"mend") == 0) {
+        params.mend = int_val;
+        PRINT_INT(name,int_val);
+    }
+    else if (strcmp(name,"nphilinear") == 0) {
+        params.nphilinear = int_val;
+        PRINT_INT(name,int_val);
+    }
+    else if (strcmp(name,"ri_lin") == 0) {
+        params.ri_lin = double_val;
+        PRINT_DOUBLE(name,double_val);
+    }
+    else if (strcmp(name,"ro_lin") == 0) {
+        params.ro_lin = double_val;
+        PRINT_DOUBLE(name,double_val);
     }
     else if (strcmp(name,"inner_bc") == 0) {	
         if (strcmp(str_val,"MDOT") == 0) {
@@ -225,6 +254,11 @@ void set_var(char *name,int int_val, double double_val, int bool_val, char *str_
     }
     else if (strcmp(name,"eps") == 0) {	
         planet.eps = double_val;
+        PRINT_DOUBLE(name,double_val);
+
+    }
+    else if (strcmp(name,"soft") == 0) {	
+        planet.soft = double_val;
         PRINT_DOUBLE(name,double_val);
 
     }
