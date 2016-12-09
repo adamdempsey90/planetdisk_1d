@@ -680,3 +680,40 @@ def self_similar(sigma0, r,t, alpha=.01,h=.05,gamma=.5,r1=1.):
 def self_sim_bc(gamma, rin,rout):
     res = np.array([rin,rout])
     return (gamma-1) + (2-gamma)*res**(2-gamma)
+
+
+
+class Results():
+    def __init__(self,fname='output_test.dat'):
+        with open(fname,"r") as f:
+            n,m,mstart,mend=np.fromfile(f,dtype=float,count=4).astype(int)
+            self.TL = np.fromfile(f,dtype=float,count=m)
+            self.TR = np.fromfile(f,dtype=float,count=m)
+            self.r = np.fromfile(f,dtype=float,count=n)
+            self.lamex = np.fromfile(f,dtype=float,count=n*m).reshape(m,n).T
+            self.lamdep = np.fromfile(f,dtype=float,count=n*m).reshape(m,n).T
+            self.drfw = np.fromfile(f,dtype=float,count=n*m).reshape(m,n).T
+            self.fw = np.fromfile(f,dtype=float,count=n*m).reshape(m,n).T
+            self.dppot = np.fromfile(f,dtype=float,count=n*m).reshape(m,n).T
+            self.u= np.fromfile(f,dtype=complex,count=n*m).reshape(m,n).T
+            self.v = np.fromfile(f,dtype=complex,count=n*m).reshape(m,n).T
+            self.sig = np.fromfile(f,dtype=complex,count=n*m).reshape(m,n).T
+            self.dbar = np.fromfile(f,dtype=float,count=n)
+            self.n,self.nm,self.mstart,self.mend = n,m,mstart,mend
+    def mode_plot(self,m):
+        fig,axes=plt.subplots(1,3,figsize=(15,5))
+        axes[0].plot(self.r,self.u.real[:,m-1],self.r,self.u.imag[:,m-1])
+        axes[1].plot(self.r,self.v.real[:,m-1],self.r,self.v.imag[:,m-1])
+        axes[2].plot(self.r,self.sig.real[:,m-1],self.r,self.sig.imag[:,m-1])
+    def torque(self,m,tot=False):
+        fig=plt.figure()
+        ax = fig.add_subplot(111)
+        if tot:
+            ax.plot(self.r,self.lamex.sum(axis=1),'-k')
+            ax.plot(self.r,self.drfw.sum(axis=1),'-r')
+            ax.plot(self.r,self.lamdep.sum(axis=1),'-b')
+        else:
+            ax.plot(self.r,self.lamex[:,m-1],'-k')
+            ax.plot(self.r,self.drfw[:,m-1],'-r')
+            ax.plot(self.r,self.lamdep[:,m-1],'-b')
+

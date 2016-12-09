@@ -65,8 +65,57 @@ void init_linearwaves(void) {
 
     return;
 }
+void zero_linearwaves(void) {
+    int i;
+    for(i=0;i<linear_params.n*linear_params.nm;i++) {
+        grid->lamdep[i] = 0;
+        grid->lamex[i] = 0;
+        grid->fw[i] = 0;
+        grid->drfw[i] = 0;
+        grid->u[i] = 0;
+        grid->v[i] = 0;
+       // grid->s[i] = 0;
+    }
+    /*
+    for(i=0;i<linear_params.nm;i++) {
+        grid->TL[i] = 0;
+        grid->TR[i] = 0;
+    }
+    */
+    return;
+}
 
-void calculate_linearwaves(double *dbar, double *TL, double *TR) {
+void output_linear_torques(char *fname) {
+    FILE *f = fopen(fname,"w");
+
+    printf("Outputting to %s\n",fname);
+    double n = (double)linear_params.n;
+    double m = (double)grid->nm;
+    double mstart = (double)grid->mvals[0];
+    double mend = (double)grid->mvals[grid->nm-1];
+    fwrite(&n,sizeof(double),1,f);
+    fwrite(&m,sizeof(double),1,f);
+    fwrite(&mstart,sizeof(double),1,f);
+    fwrite(&mend,sizeof(double),1,f);
+    fwrite(grid->TL,sizeof(double),grid->nm,f);
+    fwrite(grid->TR,sizeof(double),grid->nm,f);
+    fwrite(grid->r,sizeof(double),linear_params.n,f);
+    fwrite(grid->lamex,sizeof(double),linear_params.n*grid->nm,f);
+    fwrite(grid->lamdep,sizeof(double),linear_params.n*grid->nm,f);
+    fwrite(grid->drfw,sizeof(double),linear_params.n*grid->nm,f);
+    fwrite(grid->fw,sizeof(double),linear_params.n*grid->nm,f);
+    fwrite(grid->dppot,sizeof(double),linear_params.n*grid->nm,f);
+    fwrite(grid->u,sizeof(double complex),linear_params.n*grid->nm,f);
+    fwrite(grid->v,sizeof(double complex),linear_params.n*grid->nm,f);
+    fwrite(grid->s,sizeof(double complex),linear_params.n*grid->nm,f);
+    fwrite(disk->sigma,sizeof(double),linear_params.n,f);
+
+    fclose(f);
+
+
+}
+
+void calculate_linearwaves(double *dbar, double *lamex, double *lamdep, double *TL, double *TR) {
     int i;
     int num_modes = linear_params.mend - linear_params.mstart + 1;
     for(i=0;i<NR;i++) work_arr[i] = log( dbar[i]/(2*M_PI*rc[i]));
@@ -77,11 +126,13 @@ void calculate_linearwaves(double *dbar, double *TL, double *TR) {
     }
     *TL = 0;
     *TR = 0;
+    //zero_linearwaves();
     for(i=0;i<num_modes;i++) {
         linearwaves(i,grid,linear_params,disk,TRUE);
         *TL -= grid->TL[i];
         *TR += grid->TR[i];
     }
+    //output_linear_torques("output_test.dat");
 /*
     FILE *f = fopen("output_test.dat","w");
     fwrite(grid->r,sizeof(double),linear_params.n,f);

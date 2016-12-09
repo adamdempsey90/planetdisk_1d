@@ -155,12 +155,18 @@ void crank_nicholson_step(double dt, double aplanet, double *y) {
     int i;
 
     double TL, TR;
+    double gtl,gtr;
     if (params.density_dep) {
         if (params.linear_torque) {
+            TL = 0;
+            TR = 0;
             calculate_linearwaves(y, &TL,&TR);
-            printf("T:\t%lg\t%lg\n",TL,TR);
             TL *= planet.eps*planet.q*planet.q;
             TR *= planet.eps*planet.q*planet.q;
+            gtl = calc_inner_torque(planet.a,y);
+            gtr = calc_outer_torque(planet.a,y);
+            printf("\n%lg\t%lg\t%lg\t%lg\n",TL,gtl,TR,gtr);
+
         }
         else {
             TL = calc_inner_torque(planet.a,y);

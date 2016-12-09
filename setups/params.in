@@ -1,7 +1,7 @@
 #Grid Parameters:
-nr = 512
-ri = 0.05
-ro = 5.0
+nr = 1024
+ri = 0.1
+ro = 3.0
 
 #Disk Parameters:
 alpha = 0.003
@@ -9,28 +9,28 @@ gamma = 0.5
 h = 0.05
 
 #Boundary Conditions:
-inner_bc = ZT
+inner_bc = MDOT
 outer_bc = MDOT
 bc_val_inner_0 = 2.36e-5 #0.42441318157838748
 bc_val_inner_1 = 0.0
 bc_val_outer_0 = 2.36e-5 #4.8773
 bc_val_outer_1 = 0.0
 use_floor = Yes
-mass_floor = 1e-8
+mass_floor = 1e-4
 
 #Linear wave parameters
-nlinear = 1024
+nlinear = 4096
 mstart = 1
-mend = 100
+mend = 50
 nphilinear = 2000
-ri_lin = 0.3
+ri_lin = 0.1
 ro_lin = 3.0
 
 #Time Parameters:
-dt = 100.0
+dt = .8
 cfl = 0.8
-tend = .0001
-nvisc = Yes
+tend = 15
+nvisc = No
 logtime = No
 nt = 10
 release_time = 0
@@ -45,16 +45,15 @@ planet_torque = Yes
 move_planet = No
 symmetric_torque = No
 nonlocal_torque = Yes
-linear_torque = No
-scaling_dep = No
+scaling_dep = Yes
 shock_dep = No
-gaussian_dep = No
+gaussian_dep = Yes
 density_dep = Yes
 exp_dep = Yes
 linear_torque = Yes
 a  = 1.0
 mp = 8.0
-eps = 0.2
+eps = .0005
 soft = .03
 xd = 1.2
 wd = 2.1

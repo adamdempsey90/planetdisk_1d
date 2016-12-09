@@ -48,7 +48,6 @@ double mixed_inner_boundary_value(double c1, double c2, double y0) {
 
 
     
-    printf("HERE\t%lg\t%lg\t%lg\n",c1,c2,y0);
     return  y0*am*(fac1 - c1*fac2) + am * c2*fac2;
 
 
